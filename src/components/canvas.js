@@ -1,0 +1,41 @@
+'use strict'
+
+import store from 'utils/store'
+
+import bel from 'bel'
+import drawSprite from 'utils/draw-sprite'
+
+import DomComponent from 'abstractions/DomComponent'
+
+export default class Canvas extends DomComponent {
+  render () {
+    this.scale = store.get('scale')
+    this.width = window.innerWidth * this.scale
+    this.height = window.innerHeight * this.scale
+
+    const el = bel`<canvas width='${this.width}' height='${this.height}'/>`
+    el.style.width = this.width + 'px'
+    el.style.height = this.height + 'px'
+
+    return el
+  }
+
+  didMount () {
+    this.context = this.refs.base.getContext('2d')
+    this.bindFuncs(['update'])
+    window.addEventListener('resize', this.update)
+  }
+
+  update () {
+    this.width = window.innerWidth * this.scale
+    this.height = window.innerHeight * this.scale
+    this.refs.base.width = this.width
+    this.refs.base.height = this.height
+    this.refs.base.style.width = this.width + 'px'
+    this.refs.base.style.height = this.height + 'px'
+  }
+
+  drawSprite (...args) {
+    drawSprite(this.context, ...args)
+  }
+}

@@ -1,0 +1,43 @@
+@mixin debug ($color: red) {
+  outline: 1px solid $color;
+}
+
+@mixin easing ($duration: 100ms, $property: all){
+  -webkit-transition: $property $duration cubic-bezier(0.250, 0.100, 0.250, 1.000);
+     -moz-transition: $property $duration cubic-bezier(0.250, 0.100, 0.250, 1.000);
+      -ms-transition: $property $duration cubic-bezier(0.250, 0.100, 0.250, 1.000);
+       -o-transition: $property $duration cubic-bezier(0.250, 0.100, 0.250, 1.000);
+          transition: $property $duration cubic-bezier(0.250, 0.100, 0.250, 1.000);
+}
+
+@mixin underline ($hover: false, $weight: 0.2em, $color: null, $duration: 300ms) {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: -$weight;
+    min-width: 0;
+    width: 0;
+    @if $hover {
+      width: 100%;
+    } @else {
+      @include easing($duration, width);
+      width: 0;
+    }
+    border-bottom: ($weight / 2) solid $color;
+  }
+
+  &:hover::after { width: 100%; }
+}
+
+// force ratio by padding height of :before (indexed on parent width)
+@mixin ratio ($ratio : 1) {
+  height: auto;
+  &::before {
+    content: '';
+    float: left;
+    padding-top: 100% / $ratio;
+  }
+}

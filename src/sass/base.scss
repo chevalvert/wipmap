@@ -1,0 +1,29 @@
+* { box-sizing: border-box; }
+html { font-size: 62.5%; }
+body {
+  font-family: 'Open Sans', sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  min-height: 100%;
+
+  font-size: 2rem;
+  line-height: 1.6em;
+  margin: 0;
+  padding: 0;
+
+  background: $white;
+}
+
+main {
+  min-height: 100%;
+}
+
+section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

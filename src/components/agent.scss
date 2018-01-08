@@ -1,0 +1,21 @@
+.agent {
+  position: absolute;
+
+  display: block;
+  width: 20px;
+  height: 20px;
+
+  margin-left: -10px;
+  margin-top: -10px;
+
+  $colors: (
+    'blue'
+    'red'
+    'green'
+    'pink'
+  );
+
+  @each $color in $colors {
+    &-#{$color} { background: #{$color}; }
+  }
+}
