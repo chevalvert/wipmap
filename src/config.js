@@ -5,8 +5,7 @@ import getUrlParam from 'utils/get-url-param'
 
 const config = {
   server: {
-    // address: window.location.origin
-    address: '192.168.1.56',
+    address: window.isProduction ? window.location.hostname : '192.168.0.16',
     port: 8888
   },
 
