@@ -1,21 +1,37 @@
+$agent-colors: (
+  'blue'
+  'red'
+  'green'
+  'pink'
+);
+
+$agent-radius: 20px;
+$agent-pov: 100px;
+
 .agent {
   position: absolute;
-
   display: block;
-  width: 20px;
-  height: 20px;
+  width: $agent-radius;
+  height: $agent-radius;
+  margin-left: -($agent-radius / 2);
+  margin-top: -($agent-radius / 2);
 
-  margin-left: -10px;
-  margin-top: -10px;
+  border-radius: 100%;
 
-  $colors: (
-    'blue'
-    'red'
-    'green'
-    'pink'
-  );
+  &::after {
+    content: '';
+    border: 1px solid;
+    display: block;
+    width: $agent-pov;
+    height: $agent-pov;
+    transform: translateX(calc(-50% + #{$agent-radius / 2})) translateY(calc(-50% + #{$agent-radius / 2}));
+    border-radius: 100%;
+  }
 
-  @each $color in $colors {
-    &-#{$color} { background: #{$color}; }
+  @each $color in $agent-colors {
+    &-#{$color} {
+      background: #{$color};
+      &::after { border-color: #{$color}; }
+    }
   }
 }

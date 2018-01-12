@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
+const cuid = require('cuid')
 const websocket = require('ws')
 const express = require('express')
 const Emitter = require('tiny-emitter')
@@ -50,6 +51,8 @@ module.exports = function WebServer (opts) {
         wss = new websocket.Server({ server })
         wss.on('connection', (client, req) => {
           client.ip = req.connection.remoteAddress
+          client.uid = cuid()
+
           events.emit('client', client)
 
           client.on('message', message => {
@@ -58,8 +61,8 @@ module.exports = function WebServer (opts) {
           })
 
           client.on('error', err => {
-            // TODO: handle err.code 'ECONNRESET' to emit client quit event
             events.emit('error', err)
+            if (err.code === 'ECONNRESET') events.emit('client.quit', client)
           })
         })
 
@@ -72,8 +75,8 @@ module.exports = function WebServer (opts) {
     },
 
     broadcast,
-    send: (event, data, client = null) => {
-      if (client) client.send(JSON.stringify({ event, data }))
+    send: (event, data = {}, client = null) => {
+      if (client) sendToClient(event, data, client)
       else broadcast(event, data)
     }
   }
@@ -81,8 +84,14 @@ module.exports = function WebServer (opts) {
   return api
 
   function broadcast (event, data) {
-    wss.clients.forEach(client => {
-      client.send(JSON.stringify({ event, data }))
-    })
+    wss.clients.forEach(client => { sendToClient(event, data, client) })
+  }
+
+  function sendToClient (event, data, client) {
+    if (client.readyState !== websocket.OPEN) {
+      console.log(`WebSocket is not open, ${event} won't be send`)
+      return
+    }
+    client.send(JSON.stringify({ event, data }))
   }
 }

@@ -31,6 +31,7 @@ const opts = {
 }
 
 // RESTful routing, available at /api/endpoint
+
 server.route('something/else', () => {})
 server.route('/map/:x/:y/:force?*', (req, res) => {
   const file = path.join(__dirname, 'data', `${req.params.x}_${req.params.y}.json`)
@@ -52,11 +53,35 @@ server.start().then(data => {
 })
 
 // Websocket routing
-server.on('client', client => { console.log(client.ip) })
-server.on('position', data => { console.log(data) })
 
-setInterval(() => {
-  const dx = Math.sin(Math.random() * Math.PI * 2)
-  const dy = Math.sin(Math.random() * Math.PI * 2)
-  server.broadcast('agent.move', { id: 'blue', direction: [dx, dy] })
-}, 500)
+const availableRemoteColors = ['blue', 'red', 'green']
+const remotes = {}
+const viewers = []
+
+server.on('client', client => { server.send('handshake', null, client) })
+server.on('handshake', ({ type }, client) => {
+  console.log(client.ip, client.uid, type)
+  if (type === 'viewer') viewers.push(client)
+  if (type === 'remote') {
+    const remote = availableRemoteColors.shift()
+    if (remote) remotes[client.uid] = remote
+    server.send('setcolor', {
+      color: remote
+    }, client)
+  }
+})
+
+server.on('client.quit', client => {
+  if (~viewers.indexOf(client)) viewers.splice(viewers.indexOf(client), 1)
+
+  if (remotes[client.uid]) {
+    availableRemoteColors.push(remotes[client.uid])
+    delete remotes[client.uid]
+  }
+})
+
+server.on('agent.move', data => {
+  viewers.forEach(client => {
+    server.send('agent.move', data, client)
+  })
+})

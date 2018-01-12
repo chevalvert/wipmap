@@ -4,12 +4,16 @@ import bel from 'bel'
 import DomComponent from 'abstractions/DomComponent'
 import store from 'utils/store'
 
-export default class LoadingScreen extends DomComponent {
+export default class MessageScreen extends DomComponent {
+  constructor (message) {
+    super()
+    this.message = message
+  }
+
   render () {
-    const message = 'chargement'
     const el = bel`
       <section class='loading-screen'>
-        <h1 class='loading-screen-message'>${message}</h1>
+        <h1 class='loading-screen-message'>${this.message}</h1>
       </section>`
     return el
   }

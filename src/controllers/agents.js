@@ -26,10 +26,10 @@ function setup () {
 
   ws.on('agent.add', add)
   ws.on('agent.remove', remove)
-  // ws.on('agent.move', ({ id, direction }) => {
-  store.watch('debug.agent.move', ({ id, direction }) => {
+  ws.on('agent.move', ({ id, direction }) => {
+  // store.watch('debug.agent.move', ({ id, direction }) => {
     const agent = agents[id] || add(id)
-    agent.move(direction)
+    agent.move(direction || [0, 0])
   })
 }
 

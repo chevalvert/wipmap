@@ -6,7 +6,7 @@ import getUrlParam from 'utils/get-url-param'
 const config = {
   server: {
     // address: window.location.origin
-    address: '192.168.0.16',
+    address: '192.168.1.56',
     port: 8888
   },
 
@@ -17,6 +17,14 @@ const config = {
 
   stored: {
     scale: getUrlParam('scale') || 1
+  },
+
+  agent: {
+    inertia: {
+      interpolation: 'linear',
+      rigidity: 0.1,
+      friction: 10
+    }
   },
 
   spritesheets: {

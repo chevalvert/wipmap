@@ -1,11 +1,14 @@
 'use strict'
 
+import config from 'config'
 import store from 'utils/store'
 import events from 'utils/events'
 
+import Inertia from 'utils/inertia'
 import inPolygon from 'point-in-polygon'
 import { toMap } from 'utils/map-to-world'
 
+import raf from 'raf'
 import bel from 'bel'
 import DomComponent from 'abstractions/DomComponent'
 
@@ -16,6 +19,10 @@ export default class Agent extends DomComponent {
     this.color = id
     this.x = x
     this.y = y
+
+    this.ix = new Inertia(Object.assign({}, { value: this.x }, config.agent.inertia || {}))
+    this.iy = new Inertia(Object.assign({}, { value: this.y }, config.agent.inertia || {}))
+
     console.log(`#agent-${this.id} was created`)
   }
 
@@ -27,7 +34,15 @@ export default class Agent extends DomComponent {
 
   didMount() {
     super.didMount()
-    this.translate(this.x, this.y)
+    this.bindFuncs(['update'])
+    this.applyPosition(this.x, this.y)
+    raf.add(this.update)
+  }
+
+  update () {
+    this.ix.update()
+    this.iy.update()
+    this.applyPosition(this.ix.value, this.iy.value)
   }
 
   forbid (cells) {
@@ -38,11 +53,15 @@ export default class Agent extends DomComponent {
   move ([dx, dy]) {
     const x = this.x + dx
     const y = this.y + dy
-    this.canMoveTo(x, y) && this.translate(x, y)
+    // TODO?: instead of stopping the agent, try to walk it around
+    if (this.canMoveTo(x, y)) {
+      this.ix.to(this.x + dx)
+      this.iy.to(this.y + dy)
+    }
     return this
   }
 
-  translate (x, y) {
+  applyPosition (x, y) {
     this.x = x
     this.y = y
     this.refs.base.style.transform = `translateX(${x}px) translateY(${y}px)`
@@ -50,7 +69,6 @@ export default class Agent extends DomComponent {
       id: this.id,
       position: [this.x, this.y]
     })
-
   }
 
   canMoveTo (x, y) {
