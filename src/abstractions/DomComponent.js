@@ -88,4 +88,14 @@ export default class DomComponent {
     this.refs = undefined
     this.mounted = false
   }
+
+  addClass (className) {
+    if (this.refs.base && this.refs.base.classList)
+      this.refs.base.classList.add(className)
+  }
+
+  removeClass (className) {
+    if (this.refs.base && this.refs.base.classList)
+      this.refs.base.classList.contains(className) && this.el.classList.remove(className)
+  }
 }

@@ -17,6 +17,8 @@ export default class Fog extends Canvas {
     super.didMount()
     this.bindFuncs(['clear'])
 
+    this.addClass('fog')
+
     this.context.fillStyle = this.color
     this.context.fillRect(0, 0, this.width, this.height)
 

@@ -10,7 +10,9 @@ $red:    #FF6464;
 
 
 @import 'sass/base';
-@import 'components/log-screen';
-@import 'components/canvas';
 @import 'components/agent';
+@import 'components/canvas';
+@import 'components/fog';
+@import 'components/log-screen';
+@import 'components/map';
 @import 'components/nipple';

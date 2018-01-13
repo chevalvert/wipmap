@@ -1,0 +1,7 @@
+canvas.fog {
+  @include easing(opacity, 300ms);
+}
+
+body:hover canvas.fog {
+  opacity: 0.7;
+}

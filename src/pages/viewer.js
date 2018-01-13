@@ -47,7 +47,7 @@ function start (json) {
   prng.setSeed(json.seed)
 
   const map = new Map(json)
-  const fog = new Fog('rgba(255, 255, 255, 0.8)')
+  const fog = new Fog('white')
 
   map.mount(config.DOM.mapWrapper)
   fog.mount(config.DOM.mapWrapper)

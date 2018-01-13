@@ -25,8 +25,9 @@ export default class Map extends Canvas {
     store.set('width', this.width)
     store.set('height', this.height)
 
+    this.addClass('map')
     this.context.imageSmoothingEnabled = false
-    // this.draw_debug()
+    this.draw_debug()
     this.draw_biomePatterns()
   }
 
