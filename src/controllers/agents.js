@@ -24,16 +24,16 @@ function setup () {
     .filter(biome => !biome.isBoundary && !config.forbidden.includes(biome.type))
     .map(biome => biome.site)
 
-  ws.on('agent.add', add)
-  ws.on('agent.remove', remove)
+  ws.on('agent.add', ({ id }) => { add(id) })
+  ws.on('agent.remove', ({ id }) => { remove(id) })
   ws.on('agent.move', ({ id, direction }) => {
-  // store.watch('debug.agent.move', ({ id, direction }) => {
     const agent = agents[id] || add(id)
     agent.move(direction || [0, 0])
   })
 }
 
 function add (id) {
+  if (!id) return
   if (agents[id]) return
 
   const start = toWorld(startingPoints[Object.keys(agents).length % startingPoints.length])
@@ -43,6 +43,7 @@ function add (id) {
 }
 
 function remove (id) {
+  if (!id) return
   if (!agents[id]) return
 
   agents[id].destroy()

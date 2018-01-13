@@ -32,11 +32,15 @@ export default class Agent extends DomComponent {
     return el
   }
 
-  didMount() {
+  didMount () {
     super.didMount()
     this.bindFuncs(['update'])
     this.applyPosition(this.x, this.y)
     raf.add(this.update)
+  }
+
+  willUnmount () {
+    raf.remove(this.update)
   }
 
   update () {

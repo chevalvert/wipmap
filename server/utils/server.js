@@ -8,6 +8,7 @@ const express = require('express')
 const Emitter = require('tiny-emitter')
 const cors = require('cors')
 const findFirstAvailableAddress = require('./find-first-available-address')
+const table = require('console.table')
 
 const defaultOpts = {
   port: 8888,
@@ -27,6 +28,7 @@ module.exports = function WebServer (opts) {
 
   let server
   let wss
+  let address
   const events = new Emitter()
 
   const api = {
@@ -35,12 +37,26 @@ module.exports = function WebServer (opts) {
     off: events.off.bind(events),
 
     get server () { return server },
+    get clients () { return wss.clients },
     get wss () { return wss },
+
+    print: () => {
+      process.stdout.write('\x1B[2J\x1B[0f')
+      const rows = []
+      wss.clients.forEach(c => {
+        rows.push({
+          'IP': c.ip,
+          'UID': c.uid,
+          'Client type': c.type
+        })
+      })
+      console.table(`Clients connected to ws://${address}:${opts.port}`, rows)
+    },
 
     start: () => {
       return new Promise((resolve, reject) => {
         server = app.listen(opts.port, () => {
-          const address = findFirstAvailableAddress()
+          address = findFirstAvailableAddress()
 
           resolve({
             url: `http://${address}:${opts.port}`,
@@ -83,8 +99,9 @@ module.exports = function WebServer (opts) {
 
   return api
 
-  function broadcast (event, data) {
-    wss.clients.forEach(client => { sendToClient(event, data, client) })
+  function broadcast (event, data, clients) {
+    clients = clients || wss.clients
+    clients.forEach(client => { sendToClient(event, data, client) })
   }
 
   function sendToClient (event, data, client) {

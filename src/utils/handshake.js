@@ -8,6 +8,9 @@ export default function handshake (type) {
     ws.once('handshake', () => {
       ws.send('handshake', { type })
       resolve()
+
+      // NOTE: resend handshake when reconnecting after connlost
+      ws.on('open', () => { ws.send('handshake', { type }) })
     })
   })
 }

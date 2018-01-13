@@ -15,6 +15,11 @@ const server = Server({
   page: 'index.html'
 })
 
+const remotes = {}
+const viewers = []
+
+const availableRemoteColors = ['blue', 'red', 'green']
+
 const opts = {
   distortion: 1,
   gradient: 0,
@@ -32,7 +37,6 @@ const opts = {
 
 // RESTful routing, available at /api/endpoint
 
-server.route('something/else', () => {})
 server.route('/map/:x/:y/:force?*', (req, res) => {
   const file = path.join(__dirname, 'data', `${req.params.x}_${req.params.y}.json`)
   const mapExists = fs.pathExistsSync(file)
@@ -54,34 +58,31 @@ server.start().then(data => {
 
 // Websocket routing
 
-const availableRemoteColors = ['blue', 'red', 'green']
-const remotes = {}
-const viewers = []
-
 server.on('client', client => { server.send('handshake', null, client) })
 server.on('handshake', ({ type }, client) => {
-  console.log(client.ip, client.uid, type)
+  client.type = type
+
+  server.print()
+
   if (type === 'viewer') viewers.push(client)
   if (type === 'remote') {
     const remote = availableRemoteColors.shift()
     if (remote) remotes[client.uid] = remote
-    server.send('setcolor', {
-      color: remote
-    }, client)
+    server.send('setcolor', { color: remote }, client)
+    server.broadcast('agent.add', { id: remote }, viewers)
   }
 })
 
 server.on('client.quit', client => {
+  server.print()
   if (~viewers.indexOf(client)) viewers.splice(viewers.indexOf(client), 1)
-
   if (remotes[client.uid]) {
+    server.broadcast('agent.remove', { id: remotes[client.uid] }, viewers)
     availableRemoteColors.push(remotes[client.uid])
     delete remotes[client.uid]
   }
 })
 
 server.on('agent.move', data => {
-  viewers.forEach(client => {
-    server.send('agent.move', data, client)
-  })
+  server.broadcast('agent.move', data, viewers)
 })
