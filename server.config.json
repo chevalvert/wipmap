@@ -1,0 +1,18 @@
+{
+  "remotes": ["blue", "red", "green"],
+
+  "wipmap": {
+    "distortion": 1,
+    "gradient": 0,
+    "poissonDensity": 0.3,
+    "probablities": {
+      "water": 0.03,
+      "forest": 0.02
+    },
+    "biomesMap": [
+      ["TAIGA", "JUNGLE", "SWAMP"],
+      ["TUNDRA", "PLAINS", "PLAINS"],
+      ["TUNDRA", "PLAINS", "DESERT"]
+    ]
+  }
+}

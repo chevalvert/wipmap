@@ -10,6 +10,8 @@ const wipmap = require('wipmap-generate')
 const args = require(__dirname + '/utils/config')
 const Server = require(__dirname + '/utils/server')
 
+const config = require(__dirname + '/../server.config.json')
+
 const server = Server({
   public: path.join(__dirname, '..', 'build'),
   page: 'index.html'
@@ -17,23 +19,7 @@ const server = Server({
 
 const remotes = {}
 const viewers = []
-
-const availableRemotes = ['blue', 'red', 'green']
-
-const opts = {
-  distortion: 1,
-  gradient: 0,
-  poissonDensity: 0.3,
-  probablities: {
-    water: 0.03,
-    forest: 0.02
-  },
-  biomesMap: [
-    ['TAIGA', 'JUNGLE', 'SWAMP'],
-    ['TUNDRA', 'PLAINS', 'PLAINS'],
-    ['TUNDRA', 'PLAINS', 'DESERT']
-  ]
-}
+const availableRemotes = [...config.remotes]
 
 // RESTful routing, available at /api/endpoint
 
@@ -43,7 +29,7 @@ server.route('/map/:x/:y/:force?*', (req, res) => {
 
   if (mapExists && !req.params.force) res.json(fs.readJsonSync(file))
   else {
-    const map = wipmap(req.params.x, req.params.y, opts)
+    const map = wipmap(req.params.x, req.params.y, config.wipmap)
     fs.outputJson(file, map, err => {
       if (err) throw err
       else res.json(map)
