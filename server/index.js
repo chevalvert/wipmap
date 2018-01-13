@@ -18,7 +18,7 @@ const server = Server({
 const remotes = {}
 const viewers = []
 
-const availableRemoteColors = ['blue', 'red', 'green']
+const availableRemotes = ['blue', 'red', 'green']
 
 const opts = {
   distortion: 1,
@@ -66,8 +66,8 @@ server.on('handshake', ({ type }, client) => {
 
   if (type === 'viewer') viewers.push(client)
   if (type === 'remote') {
-    const remote = availableRemoteColors.shift()
-    if (remote) remotes[client.uid] = remote
+    const remote = remotes[client.ip] || availableRemotes.shift()
+    if (remote) remotes[client.ip] = remote
     server.send('setcolor', { color: remote }, client)
     server.broadcast('agent.add', { id: remote }, viewers)
   }
@@ -76,10 +76,10 @@ server.on('handshake', ({ type }, client) => {
 server.on('client.quit', client => {
   server.print()
   if (~viewers.indexOf(client)) viewers.splice(viewers.indexOf(client), 1)
-  if (remotes[client.uid]) {
-    server.broadcast('agent.remove', { id: remotes[client.uid] }, viewers)
-    availableRemoteColors.push(remotes[client.uid])
-    delete remotes[client.uid]
+  if (remotes[client.ip]) {
+    server.broadcast('agent.remove', { id: remotes[client.ip] }, viewers)
+    availableRemotes.push(remotes[client.ip])
+    delete remotes[client.ip]
   }
 })
 

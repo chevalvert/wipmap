@@ -19,6 +19,7 @@ const config = {
   },
 
   agent: {
+    speed: 100,
     inertia: {
       interpolation: 'linear',
       rigidity: 0.1,
