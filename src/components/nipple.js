@@ -30,7 +30,8 @@ export default class Nipple extends DomComponent {
       color: this.color,
       size: 200,
       mode: 'static',
-      position: {top: '50%', left: '50%'}
+      restOpacity: 0.7,
+      position: { top: '50%', left: '50%' }
     })
 
     this.joystick.on('start', () => { raf.add(this.onMove) })

@@ -1,0 +1,12 @@
+$nipple-radius: 200px;
+
+.nipple-component {
+  z-index: 1;
+  position: absolute;
+  width: $nipple-radius;
+  height: $nipple-radius;
+
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
