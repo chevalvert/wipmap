@@ -33,7 +33,10 @@ function setup () {
     const f = getUrlParam('force')
     return loader.loadMap(x, y, f)
   })
-  .then(map => start(map))
+  .then(map => {
+    store.set('landmarks', map.landmarks)
+    start(map)
+  })
   .then(() => loading.destroy())
   .catch(err => {
     console.error(err)

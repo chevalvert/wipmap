@@ -34,6 +34,12 @@ function setup (color) {
     const error = new LogScreen('Error', err, 'error')
     error.mount(document.body)
   })
+
+
+  ws.on('remote.landmark.found', landmark => {
+    const found = new LogScreen('landmark!', `${landmark[2]} (${landmark[3]})`, 'success')
+    found.mount(document.body)
+  })
 }
 
 function start (color) {

@@ -1,8 +1,9 @@
 'use strict'
 
+import store from 'utils/store'
+
 import bel from 'bel'
 import DomComponent from 'abstractions/DomComponent'
-import store from 'utils/store'
 
 export default class MessageScreen extends DomComponent {
   constructor (title, message = '', className = '') {

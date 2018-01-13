@@ -25,7 +25,7 @@ export default class Fog extends Canvas {
     this.context.imageSmoothingEnabled = false
     this.context.globalCompositeOperation = 'destination-out'
 
-    events.on('agent.move', ({ id, position }) => this.clear(position))
+    events.on('fog.clear', ({ position }) => this.clear(position))
   }
 
   clear ([x, y]) {

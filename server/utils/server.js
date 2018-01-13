@@ -86,9 +86,10 @@ module.exports = function WebServer (opts) {
       })
     },
 
-    route: (endpoint, cb) => {
-      router.get(endpoint, cb)
-    },
+    route: (endpoint, cb) => { router.get(endpoint, cb) },
+
+    findClientByIp: ip => Array.from(wss.clients).find(client => client.ip === ip),
+    findClientByUid: uid => Array.from(wss.clients).find(client => client.uid === uid),
 
     broadcast,
     send: (event, data = {}, client = null) => {

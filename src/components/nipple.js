@@ -38,7 +38,6 @@ export default class Nipple extends DomComponent {
     this.joystick.on('start', () => { raf.add(this.onMove) })
     this.joystick.on('end', () => { raf.remove(this.onMove) })
     this.joystick.on('move', (_, data) => {
-      // TODO: limit max speed
       const speed = Math.min(data.force, 1) * config.agent.speed
       this.dir = [
         Math.cos(data.angle.radian) * speed,

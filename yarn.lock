@@ -6659,8 +6659,8 @@ window-size@^0.2.0:
   resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.2.0.tgz#b4315bb4214a3d7058ebeee892e13fa24d98b075"
 
 "wipmap-generate@github:chevalvert/wipmap-generate":
-  version "0.6.0"
-  resolved "https://codeload.github.com/chevalvert/wipmap-generate/tar.gz/e03fae3f026bea2e732a404313e4b1d6ddb088ad"
+  version "0.8.0"
+  resolved "https://codeload.github.com/chevalvert/wipmap-generate/tar.gz/d3a1608c5b55a107dce4b3b30282877df4acf2ea"
   dependencies:
     fast-random "^2.0.4"
     fs-extra "^5.0.0"

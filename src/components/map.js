@@ -29,6 +29,7 @@ export default class Map extends Canvas {
     this.context.imageSmoothingEnabled = false
     // this.draw_debug()
     this.draw_biomePatterns()
+    this.draw_debug_landmarks(true)
   }
 
   draw_biomePatterns () {
@@ -80,6 +81,14 @@ export default class Map extends Canvas {
     this.wipmap.biomes.forEach(({ site, type }) => {
       const [x, y] = toWorld(site)
       this.context.fillRect(x - 4, y - 4, 8, 8)
+    })
+  }
+
+  draw_debug_landmarks () {
+    this.context.fillStyle = 'red'
+    this.wipmap.landmarks.forEach(([i, j, name, biome]) => {
+      const [x, y] = toWorld([i, j])
+      this.context.fillRect(x - 10, y - 10, 20, 20)
     })
   }
 }

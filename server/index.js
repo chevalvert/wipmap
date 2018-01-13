@@ -19,7 +19,10 @@ const server = Server({
 
 const remotes = {}
 const viewers = []
-const availableRemotes = [...config.remotes]
+const availableRemoteColors = [...config.remotes]
+
+const findRemoteByColor = color => Object.values(remotes).find(r => r.color === color)
+const attributeColorToRemoteByIP = ip => remotes.hasOwnProperty(ip) ? remotes[ip].color : availableRemoteColors.shift()
 
 // RESTful routing, available at /api/endpoint
 
@@ -47,15 +50,15 @@ server.start().then(data => {
 server.on('client', client => { server.send('handshake', null, client) })
 server.on('handshake', ({ type }, client) => {
   client.type = type
-
   server.print()
 
   if (type === 'viewer') viewers.push(client)
   if (type === 'remote') {
-    const remote = remotes[client.ip] || availableRemotes.shift()
-    if (remote) remotes[client.ip] = remote
-    server.send('setcolor', { color: remote }, client)
-    server.broadcast('agent.add', { id: remote }, viewers)
+    const color = attributeColorToRemoteByIP(client.ip)
+    if (color) remotes[client.ip] = { color, client: client }
+
+    server.send('setcolor', { color }, client)
+    server.broadcast('agent.add', { id: color }, viewers)
   }
 })
 
@@ -63,12 +66,21 @@ server.on('client.quit', client => {
   server.print()
   if (~viewers.indexOf(client)) viewers.splice(viewers.indexOf(client), 1)
   if (remotes[client.ip]) {
-    server.broadcast('agent.remove', { id: remotes[client.ip] }, viewers)
-    availableRemotes.push(remotes[client.ip])
+    const color = remotes[client.ip].color
+    server.broadcast('agent.remove', { id: color }, viewers)
+    availableRemoteColors.push(color)
     delete remotes[client.ip]
   }
 })
 
-server.on('agent.move', data => {
-  server.broadcast('agent.move', data, viewers)
+server.on('agent.move', data => { server.broadcast('agent.move', data, viewers) })
+
+server.on('agent.landmark.found', data => {
+  const remote = findRemoteByColor(data.id)
+  if (!remote) return
+  server.send('remote.landmark.found', data.landmark, remote.client)
+})
+
+server.on('remote.landmark.description', description => {
+  console.log(description)
 })

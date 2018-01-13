@@ -20,6 +20,7 @@ const config = {
 
   agent: {
     speed: 100,
+    fov: 100,
     inertia: {
       interpolation: 'linear',
       rigidity: 0.1,
@@ -33,7 +34,10 @@ const config = {
     'tree': { src: 'spritesheets/tree.png', resolution: 40, length: 7 },
     'water': { src: 'spritesheets/water.png', resolution: 20 },
     'dune': { src: 'spritesheets/dune.png', resolution: 20 },
-    'brush': { src: 'brush.png' }
+
+    'brush': { src: 'brush.png' },
+    'house' : {src: 'spritesheets/house.png', resolution: 20 },
+    'rock' : {src: 'spritesheets/rock.png', resolution: 20 }
   },
 
   biomes: {
