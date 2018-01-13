@@ -1,17 +1,16 @@
 'use strict'
 
 import ws from 'utils/websocket'
-import hs from 'utils/handshake'
 
 import loader from 'controllers/loader'
 
 import LogScreen from 'components/log-screen'
 import Nipple from 'components/nipple'
+import Describer from 'components/describer'
 
-function handshake () {
-  hs('remote').then(() => {
-    ws.once('setcolor', data => { setup(data.color) })
-  })
+
+function waitForSlot () {
+  ws.once('setcolor', data => { setup(data.color) })
 }
 
 function setup (color) {
@@ -48,4 +47,4 @@ function start (color) {
   nipple.watch(data => { ws.send('agent.move', data) })
 }
 
-export default { setup, handshake }
+export default { setup, waitForSlot }

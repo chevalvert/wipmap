@@ -3,7 +3,6 @@
 import config from 'config'
 import store from 'utils/store'
 import ws from 'utils/websocket'
-import hs from 'utils/handshake'
 
 import loader from 'controllers/loader'
 import LogScreen from 'components/log-screen'
@@ -15,10 +14,6 @@ import Fog from 'components/fog'
 import prng from 'utils/prng'
 import getUrlParam from 'utils/get-url-param'
 import fps from 'fps-indicator'
-
-function handshake () {
-  hs('viewer').then(() => { setup() })
-}
 
 function setup () {
   const loading = new LogScreen('chargement')
@@ -61,4 +56,4 @@ function start (json) {
 }
 
 
-export default { setup, handshake }
+export default { setup }
