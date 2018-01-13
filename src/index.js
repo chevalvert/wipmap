@@ -10,7 +10,7 @@ import remote from 'pages/remote'
 
 const router = new Navigo(null, false)
 router.on({
-  '/': viewer.setup,
+  '/': viewer.handshake,
   '/remote': remote.handshake,
   '/remote.html': remote.handshake
-}).resolve();
+}).resolve()

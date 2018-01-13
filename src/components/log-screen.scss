@@ -1,0 +1,34 @@
+.log-screen {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $black;
+
+  color: $white;
+  &.error .log-screen-title { color: $red }
+  &.warning .log-screen-title { color: $yellow }
+  &.success .log-screen-title { color: $green }
+
+  .log-screen-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    text-align: center;
+  }
+
+  .log-screen-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 5rem;
+  }
+
+  .log-screen-message {
+    font-style: italic;
+    font-size: 2rem;
+    margin-top: 1rem;
+  }
+}

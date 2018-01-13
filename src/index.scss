@@ -2,10 +2,14 @@
 @import 'sass/reset';
 @import 'sass/helpers';
 
-$black: #262626;
-$white: #FFFFFF;
+$black:  #262626;
+$white:  #FFFFFF;
+$green:  #56E271;
+$yellow: #F9D43A;
+$red:    #FF6464;
+
 
 @import 'sass/base';
-@import 'components/message-screen';
+@import 'components/log-screen';
 @import 'components/canvas';
 @import 'components/agent';
