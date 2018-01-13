@@ -46,12 +46,9 @@ export default class Agent extends DomComponent {
   update () {
     this.ix.update()
     this.iy.update()
-    this.applyPosition(this.ix.value, this.iy.value)
-  }
-
-  forbid (cells) {
-    this.forbiddenCells = cells
-    return this
+    if (!this.ix.stopped || !this.iy.stopped) {
+      this.applyPosition(this.ix.value, this.iy.value)
+    }
   }
 
   move ([dx, dy]) {
@@ -86,5 +83,10 @@ export default class Agent extends DomComponent {
   inForbiddenCell (x, y) {
     const pos = toMap([x, y])
     return !!this.forbiddenCells.find(cell => inPolygon(pos, cell))
+  }
+
+  forbid (cells) {
+    this.forbiddenCells = cells
+    return this
   }
 }
