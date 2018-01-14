@@ -2,16 +2,14 @@
 
 import ws from 'utils/websocket'
 
+import error from 'utils/error'
 import loader from 'controllers/loader'
 
 import LogScreen from 'components/log-screen'
 import Nipple from 'components/nipple'
-import Describer from 'components/describer'
+import Describer from 'controllers/describer'
 
-
-function waitForSlot () {
-  ws.once('setcolor', data => { setup(data.color) })
-}
+let nipple
 
 function setup (color) {
   if (!color) {
@@ -30,21 +28,22 @@ function setup (color) {
   .catch(err => {
     console.error(err)
     loading.destroy()
-    const error = new LogScreen('Error', err, 'error')
-    error.mount(document.body)
-  })
-
-
-  ws.on('remote.landmark.found', landmark => {
-    const found = new LogScreen('landmark!', `${landmark[2]} (${landmark[3]})`, 'success')
-    found.mount(document.body)
+    error(err)
   })
 }
 
 function start (color) {
-  const nipple = new Nipple(color)
+  nipple = new Nipple(color)
   nipple.mount(document.querySelector('.nipple-wrapper'))
   nipple.watch(data => { ws.send('agent.move', data) })
+
+  ws.on('remote.landmark.found', data => {
+    const describer = new Describer(data.landmark, data.describer)
+    nipple.disable()
+  })
 }
 
-export default { setup, waitForSlot }
+export default {
+  setup,
+  waitForSlot: ws.once('setcolor', data => { setup(data.color) })
+}

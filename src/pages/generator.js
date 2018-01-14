@@ -1,39 +1,37 @@
 'use strict'
 
 import config from 'config'
-import store from 'utils/store'
-import ws from 'utils/websocket'
 
 import error from 'utils/error'
 import loader from 'controllers/loader'
 import LogScreen from 'components/log-screen'
 
-import agents from 'controllers/agents'
-import Map from 'components/map'
-import Fog from 'components/fog'
-
 import prng from 'utils/prng'
-import getUrlParam from 'utils/get-url-param'
-import fps from 'fps-indicator'
+import { validateJsonResponse } from 'utils/fetch-json'
+
+import Map from 'components/map'
 
 function setup () {
   const loading = new LogScreen('chargement')
+
+  const url = `http://${config.server.address}:${config.server.port}/api/generate/0/0`
+  const data = {
+    width: 2,
+    heigth: 2
+  }
+
   Promise.resolve()
   .then(() => loading.mount(document.body))
   .then(() => loading.say('sprites'))
   .then(() => loader.loadSprites())
-  .then(() => loading.say('map'))
-  .then(() => {
-    const x = getUrlParam('x') || 0
-    const y = getUrlParam('y') || 0
-    const f = getUrlParam('force')
-    return loader.loadMap(x, y, f)
-  })
-  .then(map => {
-    store.set('landmarks', map.landmarks)
-    start(map)
-  })
   .then(() => loading.destroy())
+  .then(() => fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: new Headers({ 'Content-Type': 'application/json' })
+  }))
+  .then(validateJsonResponse)
+  .then(start)
   .catch(err => {
     console.error(err)
     loading.destroy()
@@ -45,14 +43,7 @@ function start (json) {
   prng.setSeed(json.seed)
 
   const map = new Map(json)
-  const fog = new Fog('white')
-
   map.mount(config.DOM.mapWrapper)
-  fog.mount(config.DOM.mapWrapper)
-
-  agents.setup()
-
-  fps()
 }
 
 

@@ -8,6 +8,7 @@ function validateJsonResponse (response) {
   throw new TypeError(`Oops, we haven't got JSON!`)
 }
 
+export { validateJsonResponse }
 export default (url) => new Promise((resolve, reject) => {
   fetch(url)
   .then(response => validateJsonResponse(response))

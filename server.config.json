@@ -2,17 +2,36 @@
   "remotes": ["blue", "red", "green"],
 
   "wipmap": {
+    "width": 8,
+    "height": 6,
+    "decimals": 3,
+
+    "jitter": 0.4,
     "distortion": 1,
     "gradient": 0,
     "poissonDensity": 0.3,
+
     "probablities": {
       "water": 0.03,
       "forest": 0.02
     },
+
     "biomesMap": [
       ["TAIGA", "JUNGLE", "SWAMP"],
       ["TUNDRA", "PLAINS", "PLAINS"],
       ["TUNDRA", "PLAINS", "DESERT"]
-    ]
+    ],
+
+    "landmarks": {
+      "house": {
+        "length": 10,
+        "biomes": ["PLAINS"],
+        "describer": {
+          "x": ["SMALL", "AVERAGE", "BIG"],
+          "y": ["LIGHT", "AVERAGE", "HEAVY"],
+          "z": ["FUN1", "FUN2", "FUN3"]
+        }
+      }
+    }
   }
 }

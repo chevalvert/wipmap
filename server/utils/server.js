@@ -20,9 +20,11 @@ module.exports = function WebServer (opts) {
   opts = Object.assign({}, defaultOpts, opts || {})
 
   const app = express()
-  app.use(express.static(opts.public, { extensions: ['html'] }))
-
   const router = express.Router()
+
+  app.use(express.static(opts.public, { extensions: ['html'] }))
+  // app.use(express.bodyParser())
+  app.use(express.json())
   app.use(cors({ credentials: true, origin: true }))
   app.use('/api', router)
 
@@ -86,7 +88,11 @@ module.exports = function WebServer (opts) {
       })
     },
 
-    route: (endpoint, cb) => { router.get(endpoint, cb) },
+    route: (endpoint, cb, method = 'GET') => {
+      if (method === 'GET') router.get(endpoint, cb)
+      if (method === 'POST') router.post(endpoint, cb)
+      else router.all(endpoint, cb)
+    },
 
     findClientByIp: ip => Array.from(wss.clients).find(client => client.ip === ip),
     findClientByUid: uid => Array.from(wss.clients).find(client => client.uid === uid),
