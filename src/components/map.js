@@ -17,15 +17,18 @@ export default class Map extends Canvas {
 
   didMount () {
     super.didMount()
+    this.addClass('map')
+    this.onresize()
+  }
+
+  onresize () {
+    super.onresize()
+    store.set('width', this.width)
+    store.set('height', this.height)
     this.update()
   }
 
   update () {
-    super.update()
-    store.set('width', this.width)
-    store.set('height', this.height)
-
-    this.addClass('map')
     this.context.imageSmoothingEnabled = false
     // this.draw_debug()
     this.draw_biomePatterns()

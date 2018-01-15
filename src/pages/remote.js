@@ -1,13 +1,14 @@
 'use strict'
 
+import config from 'config'
 import ws from 'utils/websocket'
 
 import error from 'utils/error'
 import loader from 'controllers/loader'
 
 import LogScreen from 'components/log-screen'
+import Describer from 'components/describer'
 import Nipple from 'components/nipple'
-import Describer from 'controllers/describer'
 
 let nipple
 
@@ -37,10 +38,25 @@ function start (color) {
   nipple.mount(document.querySelector('.nipple-wrapper'))
   nipple.watch(data => { ws.send('agent.move', data) })
 
-  ws.on('remote.landmark.found', data => {
-    const describer = new Describer(data.landmark, data.describer)
+  // WIP
+  const data = {
+    landmark: ["8.432", "3.509", "house", "PLAINS", "FUN1"],
+    describer : {
+      x: ["SMALL", "AVERAGE", "BIG"],
+      y: ["LIGHT", "AVERAGE", "HEAVY"]
+    },
+    sentences: [
+      'Nous sommes dans %biome,\nje vois une %type %x et %y.',
+      'Elle est aussi %z.'
+    ]
+  }
+
+  // ws.on('remote.landmark.found', data => {
     nipple.disable()
-  })
+
+    const describer = new Describer(data)
+    describer.mount(config.DOM.describerWrapper)
+  // })
 }
 
 export default {

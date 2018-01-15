@@ -1,0 +1,7 @@
+button.button {
+  @include reset-Button();
+
+  color: $white;
+  background-color: $green;
+  padding: 1.5rem 2rem;
+}

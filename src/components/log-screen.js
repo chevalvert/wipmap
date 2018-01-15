@@ -1,7 +1,5 @@
 'use strict'
 
-import store from 'utils/store'
-
 import bel from 'bel'
 import DomComponent from 'abstractions/DomComponent'
 

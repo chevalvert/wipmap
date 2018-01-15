@@ -91,7 +91,8 @@ server.on('agent.landmark.found', data => {
   const confLandmark = config.wipmap.landmarks[data.landmark[2]]
   if (confLandmark) server.send('remote.landmark.found', {
     landmark: data.landmark,
-    describer: confLandmark.describer
+    describer: confLandmark.describer,
+    sentences: config.sentences[Math.floor(Math.random() * config.sentences.length)]
   },
   remote.client)
 })

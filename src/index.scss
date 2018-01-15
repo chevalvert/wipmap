@@ -8,11 +8,15 @@ $green:  #56E271;
 $yellow: #F9D43A;
 $red:    #FF6464;
 
-
 @import 'sass/base';
+
 @import 'components/agent';
+@import 'components/button';
 @import 'components/canvas';
+@import 'components/describer';
+@import 'components/drawer';
 @import 'components/fog';
 @import 'components/log-screen';
 @import 'components/map';
 @import 'components/nipple';
+@import 'components/selectable-word';

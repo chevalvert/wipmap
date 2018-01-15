@@ -1,0 +1,8 @@
+button.selectable-word {
+  @include reset-Button();
+  display: inline-block;
+
+  &.is-disabled {
+    pointer-events: none;
+  }
+}

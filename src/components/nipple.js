@@ -26,6 +26,7 @@ export default class Nipple extends DomComponent {
 
   didMount () {
     this.bindFuncs(['onMove'])
+
     this.joystick = nipple.create({
       zone: this.refs.base,
       color: this.color,
@@ -35,7 +36,9 @@ export default class Nipple extends DomComponent {
       position: { top: '50%', left: '50%' }
     })
 
-    this.joystick.on('start', () => { raf.add(this.onMove) })
+    this.enable()
+
+    this.joystick.on('start', () => { !this.disabled && raf.add(this.onMove) })
     this.joystick.on('end', () => { raf.remove(this.onMove) })
     this.joystick.on('move', (_, data) => {
       const speed = Math.min(data.force, 1) * config.agent.speed
@@ -49,6 +52,17 @@ export default class Nipple extends DomComponent {
   watch (cb) { this.events.on('move', cb) }
   watchOnce (k, cb) { this.events.once('move', cb) }
   unwatch (cb) { this.events.off('move', cb) }
+
+  enable () {
+    this.disabled = false
+    this.removeClass('is-hidden')
+  }
+
+  disable () {
+    this.disabled = true
+    raf.remove(this.onMove)
+    this.addClass('is-hidden')
+  }
 
   onMove () {
     this.events.emit('move', {

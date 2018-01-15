@@ -22,13 +22,17 @@ export default class Canvas extends DomComponent {
 
   didMount () {
     this.context = this.refs.base.getContext('2d')
-    this.bindFuncs(['update'])
-    window.addEventListener('resize', this.update)
+    this.bindFuncs(['onresize'])
+    window.addEventListener('resize', this.onresize)
   }
 
-  update () {
-    this.width = window.innerWidth * this.scale
-    this.height = window.innerHeight * this.scale
+  onresize () {
+    this.resize([window.innerWidth * this.scale, window.innerHeight * this.scale])
+  }
+
+  resize ([width, height]) {
+    this.width = width
+    this.height = height
     this.refs.base.width = this.width
     this.refs.base.height = this.height
     this.refs.base.style.width = this.width + 'px'
@@ -37,5 +41,13 @@ export default class Canvas extends DomComponent {
 
   drawSprite (...args) {
     drawSprite(this.context, ...args)
+  }
+
+  toDataURL () {
+    return this.refs.base.toDataURL()
+  }
+
+  clear () {
+    this.context.clearRect(0, 0, this.width, this.height)
   }
 }

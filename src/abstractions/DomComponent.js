@@ -7,7 +7,15 @@ export default class DomComponent {
     // Add your animejs animation to this.anims
     this.anims = {}
     this.timers = []
+    this.subcomponents = []
     this.didInit(props)
+  }
+
+  // Add subComponent to this component
+  registerComponent (Component, ...props) {
+    const c = new Component(...props)
+    this.subcomponents.push(c)
+    return c
   }
 
   // Use it if you want to create DOM from the JS and use mount instead of hydrate
@@ -29,13 +37,26 @@ export default class DomComponent {
   // Called just before the component is removed from the DOM
   willUnmount () {}
 
+  callWillMount() {
+    if (!this.refs.base) return
+    this.willMount(this.refs.base)
+    this.subcomponents.forEach(c => c.callWillMount())
+  }
+
+  callDidMount () {
+    if (!this.refs.base) return
+    this.mounted = true
+    this.didMount(this.refs.base)
+    this.subcomponents.forEach(c => c.callDidMount())
+  }
+
   // Use a already existing DOM element as base for the component
   hydrate (el) {
     if (!el || this.mounted) return
-    this.willMount(el)
+    this.callWillMount(el)
     this.refs.base = el
     this.mounted = true
-    this.didMount(el)
+    this.callDidMount()
   }
 
   // Render DOM from the render() function into an existing DOM element
@@ -44,11 +65,19 @@ export default class DomComponent {
     if (!parent || this.mounted) return
     const el = this.render()
     if (!el) return
-    this.willMount(el)
+    this.callWillMount(el)
     sibling ? parent.insertBefore(el, sibling) : parent.appendChild(el)
     this.refs.base = el
     this.mounted = true
-    this.didMount(el)
+    this.callDidMount()
+  }
+
+  // Render DOM from the render() function and return the raw object
+  raw () {
+    if (this.mounted || this.refs.base) return this.refs.base
+    const el = this.render()
+    this.refs.base = el
+    return el
   }
 
   bindFuncs (funcs) {
@@ -75,6 +104,7 @@ export default class DomComponent {
   destroy () {
     if (!this.mounted) return
     this.willUnmount(this.refs.base)
+    this.subcomponents.forEach(c => c.destroy())
     this.refs.base && this.refs.base.parentNode && this.refs.base.parentNode.removeChild(this.refs.base)
     for (let k in this.refs) delete this.refs[k]
     for (let k in this.anims) {
@@ -90,12 +120,14 @@ export default class DomComponent {
   }
 
   addClass (className) {
-    if (this.refs.base && this.refs.base.classList)
+    if (this.refs.base && this.refs.base.classList) {
       this.refs.base.classList.add(className)
+    }
   }
 
   removeClass (className) {
-    if (this.refs.base && this.refs.base.classList)
+    if (this.refs.base && this.refs.base.classList) {
       this.refs.base.classList.contains(className) && this.el.classList.remove(className)
+    }
   }
 }

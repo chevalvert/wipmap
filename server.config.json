@@ -33,5 +33,9 @@
         }
       }
     }
-  }
+  },
+
+  "sentences": [
+    ["Nous sommes dans %biome, je vois une %type %x et %y.", "Elle est aussi %z."]
+  ]
 }

@@ -9,6 +9,7 @@ function loadSprites () {
   const spritesheets = Object.entries(config.spritesheets).map(([name, opts]) => new Promise((resolve, reject) => {
     const spritesheet = new Image()
     spritesheet.onload = function () {
+      this.name = name
       this.resolution = opts.resolution
       this.length = opts.length || (this.width * this.height) / (opts.resolution ** 2)
       store.set(`spritesheet_${name}`, this)
