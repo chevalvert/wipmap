@@ -1,24 +1,27 @@
 'use strict'
 
+import prng from 'utils/prng'
 import distSq from 'utils/distance-squared'
 import { toWorld } from 'utils/map-to-world'
 
 let landmarks = {}
 
-const createLandmarkObject = (seed, [x, y, biome, type], index) => ({
-  index,
-  seed,
-  type,
+const createLandmarkObject = (instance, [x, y, biome, type, seed], index) => ({
+  instance,
+  position: [x, y],
   biome,
-  position: [x, y]
+  type,
+  seed,
+  index
 })
 
 function set (wipmap) {
   let i = 0
-  Object.entries(wipmap.landmarks).forEach(([seed, instances]) => {
-    const type = seed.split('-').shift()
-    instances.forEach(instance => {
-      landmarks[++i] = createLandmarkObject(seed, [...instance, type], i)
+  Object.entries(wipmap.landmarks).forEach(([instance, instances]) => {
+    const type = instance.split('-').shift()
+    const seed = prng.random()
+    instances.forEach(landmark => {
+      landmarks[++i] = createLandmarkObject(instance, [...landmark, type, seed], i)
     })
   })
 }

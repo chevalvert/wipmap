@@ -4,6 +4,7 @@ import L from 'loc'
 import config from 'config'
 import store from 'utils/store'
 import events from 'utils/events'
+
 import error from 'utils/error'
 
 import bel from 'bel'
@@ -23,8 +24,7 @@ export default class Describer extends DomComponent {
     this.wordsmap = Object.assign({}, wordsmap, {
       type: L('landmark.' + landmark.type),
       biome: L('biome.' + landmark.biome),
-      // TODO: assign Z server side, based on wipmap-generate landmark instance ID
-      z: wordsmap.z[Math.floor(Math.random() * wordsmap.z.length)]
+      z: wordsmap.z[Math.floor(landmark.seed * wordsmap.z.length)]
     })
 
     this.sentences = sentences

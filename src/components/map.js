@@ -109,7 +109,7 @@ export default class Map extends Canvas {
   }
 
   draw_debug_landmarks () {
-    const seeds = groupBy(Object.values(landmarks.all), 'seed')
+    const seeds = groupBy(Object.values(landmarks.all), 'instance')
     Object.values(seeds).forEach(landmarks => {
       this.context.fillStyle = `rgb(${prng.randomInt(0, 255)}, ${prng.randomInt(0, 255)}, ${prng.randomInt(0, 255)})`
       landmarks.filter(l => !l.found).forEach((landmark, index) => {
