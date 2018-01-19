@@ -53,11 +53,18 @@ function markAsFound ({ index, seed, dataurl }) {
   })
 }
 
+// This is used to solve conflicts, see controllers/agents.add
+function remove ({ index }) {
+  if (!index) return
+  delete landmarks[index]
+}
+
 export default {
   get all () { return landmarks },
   set,
   find,
   markAsFound,
+  remove,
   filter: cb => Object.values(landmarks).filter(cb),
   forEach: cb => Object.entries(landmarks).forEach(([key, value]) => cb(value, parseInt(key)))
 }

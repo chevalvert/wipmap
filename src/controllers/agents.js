@@ -6,6 +6,8 @@ import ws from 'utils/websocket'
 import { toWorld } from 'utils/map-to-world'
 import shuffle from 'utils/shuffle-array'
 
+import landmarks from 'controllers/landmarks'
+
 import Agent from 'components/agent'
 
 let agents = []
@@ -36,7 +38,13 @@ function add (id) {
   if (!id) return
   if (agents[id]) return
 
-  const start = toWorld(startingPoints[Object.keys(agents).length % startingPoints.length])
+  let start = toWorld(startingPoints[Object.keys(agents).length % startingPoints.length])
+
+  // If an agent spawn in reach of an unfound landmark, destroy this landmark
+  // NOTE: this may not work if several landmarks are in reach
+  const landmark = landmarks.find(start, config.agent.fov / 2)
+  landmark && landmarks.remove(landmark)
+
   agents[id] = new Agent(id, start).forbid(forbiddenCells)
   agents[id].mount(config.DOM.agentsWrapper)
   return agents[id]
