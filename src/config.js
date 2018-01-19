@@ -5,14 +5,14 @@ import getUrlParam from 'utils/get-url-param'
 
 const config = {
   server: {
-    address: window.isProduction ? window.location.hostname : '192.168.1.56',
+    address: window.isProduction ? window.location.hostname : '192.168.1.58',
     port: 8888
   },
 
   DOM: {
     mapWrapper: document.querySelector('.map'),
     agentsWrapper: document.querySelector('.agents'),
-    describerWrapper: document.querySelector('.describer')
+    describerWrapper: document.querySelector('.describer-wrapper')
   },
 
   stored: {
@@ -58,6 +58,7 @@ const config = {
 
   drawer: {
     maxHistoryStates: 100,
+    padding: 100
   }
 }
 

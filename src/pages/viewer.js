@@ -9,6 +9,8 @@ import loader from 'controllers/loader'
 import LogScreen from 'components/log-screen'
 
 import agents from 'controllers/agents'
+import landmarks from 'controllers/landmarks'
+
 import Map from 'components/map'
 import Fog from 'components/fog'
 
@@ -30,7 +32,7 @@ function setup () {
     return loader.loadMap(x, y, f)
   })
   .then(map => {
-    store.set('landmarks', map.landmarks)
+    landmarks.set(map.landmarks)
     start(map)
   })
   .then(() => loading.destroy())
@@ -48,11 +50,21 @@ function start (json) {
   const fog = new Fog('white')
 
   map.mount(config.DOM.mapWrapper)
-  fog.mount(config.DOM.mapWrapper)
+  // fog.mount(config.DOM.mapWrapper)
 
   agents.setup()
 
   fps()
+
+  ws.on('landmark.add', ({ agentID, landmark }) => {
+    landmarks.markAsFound(landmark.index)
+
+    // WIP: draw landmark to the map
+    // TODO: improve perf by redrawing only revelant map area
+    map.update()
+
+    agents.resume(agentID)
+  })
 }
 
 

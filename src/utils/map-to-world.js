@@ -11,6 +11,7 @@ store.watch('map.json', wipmap => { mapSize = [wipmap.width, wipmap.height] })
 store.watch('width', w => { width = w })
 store.watch('height', h => { height = h })
 
+// Convert from normalized wipmap-generate coords to window coords
 export function toWorld ([x, y]) {
   return [
     map(x, 0, mapSize[0], 0, width),
@@ -18,6 +19,7 @@ export function toWorld ([x, y]) {
   ]
 }
 
+// Convert from window coords to normalized wipmap-generate coords
 export function toMap ([x, y]) {
   return [
     map(x, 0, width, 0, mapSize[0]),

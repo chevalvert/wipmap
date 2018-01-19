@@ -3,11 +3,14 @@
 import config from 'config'
 import store from 'utils/store'
 
+import bel from 'bel'
+
 import raf from 'raf'
 import Canvas from 'components/canvas'
 
+import DomComponent from 'abstractions/DomComponent'
 
-export default class Drawer extends Canvas {
+export default class Drawer extends DomComponent {
   constructor () {
     super()
     this.x = 0
@@ -18,11 +21,30 @@ export default class Drawer extends Canvas {
     this.history = []
   }
 
+  render () {
+    this.refs.canvas = this.registerComponent(Canvas)
+    this.refs.canvas.onresize = () => {
+      this.rect = this.refs.canvas.refs.base.getBoundingClientRect()
+    }
+
+    this.refs.spriteHolder = this.registerComponent(Canvas)
+    this.refs.spriteHolder.onresize = function () {}
+
+    return bel`
+      <div class='drawer-wrapper'>
+        ${this.refs.spriteHolder.raw()}
+        ${this.refs.canvas.raw()}
+      </div>
+    `
+  }
+
   didMount () {
     super.didMount()
-    this.addClass('drawer')
+    this.refs.canvas.addClass('drawer')
+    this.refs.spriteHolder.addClass('drawer-spriteholder')
     this.bindFuncs(['update', 'beginDraw', 'endDraw', 'draw'])
 
+    this.context = this.refs.canvas.context
     this.context.imageSmoothingEnabled = false
 
     this.refs.base.addEventListener('mousedown', this.beginDraw, false)
@@ -42,30 +64,25 @@ export default class Drawer extends Canvas {
     raf.remove(this.update)
   }
 
-  onresize () {
-    this.rect = this.refs.base.getBoundingClientRect()
-  }
-
   pixelate ([x, y]) {
     return [
-      Math.floor(x / this.scale) * this.scale,
-      Math.floor(y / this.scale) * this.scale
+      Math.floor((x + this.scale / 2) / this.scale) * this.scale,
+      Math.floor((y + this.scale / 2) / this.scale) * this.scale
     ]
   }
 
   setSprite (name, scale, spriteIndex) {
-    // WIP
     this.scale = scale
     this.sprite = store.get(`spritesheet_${name}`)
 
     const [w, h] = this.pixelate([this.sprite.resolution * scale, this.sprite.resolution * scale])
 
-    this.resize([w, h])
+    this.refs.spriteHolder.resize([w, h])
+    this.refs.canvas.resize([w, h])
     this.context.imageSmoothingEnabled = false
+    this.refs.spriteHolder.context.imageSmoothingEnabled = false
 
-    this.context.globalAlpha = 0.1
-    this.drawSprite(name, w / 2, w / 2, scale, spriteIndex)
-    this.context.globalAlpha = 1
+    this.refs.spriteHolder.drawSprite(name, w / 2, w / 2, scale, spriteIndex)
 
   }
 
@@ -94,7 +111,19 @@ export default class Drawer extends Canvas {
 
   pushHistoryState () {
     if (this.history.length >= config.drawer.maxHistoryStates) this.history.shift()
-    this.history.push(this.toDataURL())
+    this.history.push(this.refs.canvas.toDataURL())
+  }
+
+  getDataURL () {
+    return new Promise ((resolve, reject) => {
+      const spriteHolder = this.refs.spriteHolder
+      const img = new Image
+      img.onload = function () {
+        spriteHolder.context.drawImage(this, 0, 0)
+        resolve(spriteHolder.toDataURL())
+      }
+      img.src = this.refs.canvas.toDataURL()
+    })
   }
 
   undo () {
@@ -103,7 +132,7 @@ export default class Drawer extends Canvas {
     const img = new Image
     img.src = this.history.pop()
 
-    this.clear()
+    this.refs.canvas.clear()
     const ctx = this.context
     img.onload = function () {
       ctx.drawImage(this, 0, 0)
@@ -111,14 +140,14 @@ export default class Drawer extends Canvas {
   }
 
   getTouchPos (e) {
-    const rect = this.rect || this.refs.base.getBoundingClientRect()
+    const rect = this.rect || this.refs.canvas.refs.base.getBoundingClientRect()
     return e.touches
       ? this.pixelate([e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top])
       : this.pixelate([e.offsetX, e.offsetY])
   }
 
   stopPropagation (e) {
-    e.target == this.refs.base && e.preventDefault()
+    e.target == this.refs.canvas.refs.base && e.preventDefault()
   }
 
   update () {

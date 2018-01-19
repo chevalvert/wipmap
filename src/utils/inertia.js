@@ -111,6 +111,8 @@ export default class Inertia {
     this.stopped = true
   }
 
+  cancel () { this.to(this.value) }
+
   destroy () {
     this.stop()
     this.interpolationFn = null

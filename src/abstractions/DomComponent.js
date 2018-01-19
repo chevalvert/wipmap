@@ -46,8 +46,8 @@ export default class DomComponent {
   callDidMount () {
     if (!this.refs.base) return
     this.mounted = true
-    this.didMount(this.refs.base)
     this.subcomponents.forEach(c => c.callDidMount())
+    this.didMount(this.refs.base)
   }
 
   // Use a already existing DOM element as base for the component
@@ -127,7 +127,7 @@ export default class DomComponent {
 
   removeClass (className) {
     if (this.refs.base && this.refs.base.classList) {
-      this.refs.base.classList.contains(className) && this.el.classList.remove(className)
+      this.refs.base.classList.contains(className) && this.refs.base.classList.remove(className)
     }
   }
 }

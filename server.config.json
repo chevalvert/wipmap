@@ -26,7 +26,7 @@
       "house": {
         "length": 10,
         "biomes": ["PLAINS"],
-        "describer": {
+        "wordsmap": {
           "x": ["SMALL", "AVERAGE", "BIG"],
           "y": ["LIGHT", "AVERAGE", "HEAVY"],
           "z": ["FUN1", "FUN2", "FUN3"]

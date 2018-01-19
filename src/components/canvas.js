@@ -26,6 +26,10 @@ export default class Canvas extends DomComponent {
     window.addEventListener('resize', this.onresize)
   }
 
+  willUnmount () {
+    window.removeEventListener('resize', this.onresize)
+  }
+
   onresize () {
     this.resize([window.innerWidth * this.scale, window.innerHeight * this.scale])
   }

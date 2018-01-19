@@ -2,6 +2,8 @@
 
 import config from 'config'
 import ws from 'utils/websocket'
+import store from 'utils/store'
+import events from 'utils/events'
 
 import error from 'utils/error'
 import loader from 'controllers/loader'
@@ -34,29 +36,30 @@ function setup (color) {
 }
 
 function start (color) {
+  store.set('remote.id', color)
   nipple = new Nipple(color)
   nipple.mount(document.querySelector('.nipple-wrapper'))
   nipple.watch(data => { ws.send('agent.move', data) })
 
-  // WIP
-  const data = {
-    landmark: ["8.432", "3.509", "house", "PLAINS", "FUN1"],
-    describer : {
-      x: ["SMALL", "AVERAGE", "BIG"],
-      y: ["LIGHT", "AVERAGE", "HEAVY"]
-    },
-    sentences: [
-      'Nous sommes dans %biome,\nje vois une %type %x et %y.',
-      'Elle est aussi %z.'
-    ]
-  }
-
-  // ws.on('remote.landmark.found', data => {
+  ws.on('remote.landmark.found', ({ landmark, wordsmap, sentences }) => {
     nipple.disable()
 
-    const describer = new Describer(data)
+    const describer = new Describer(landmark, wordsmap, sentences)
     describer.mount(config.DOM.describerWrapper)
-  // })
+
+    events.once('describer.validate', ({ dataurl, landmark, words, sentences }) => {
+      ws.send('remote.landmark.described', {
+        agentID: store.get('remote.id'),
+        landmark,
+        words,
+        sentences
+      })
+
+      // TODO: wait for server confirmation of the 'describer.validate' reception
+      describer.destroy()
+      nipple.enable()
+    })
+  })
 }
 
 export default {

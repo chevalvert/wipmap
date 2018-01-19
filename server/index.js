@@ -85,22 +85,18 @@ server.on('client.quit', client => {
 
 server.on('agent.move', data => { server.broadcast('agent.move', data, viewers) })
 
-server.on('agent.landmark.found', data => {
-  const remote = findRemoteByColor(data.id)
-  if (!remote) return
-  const confLandmark = config.wipmap.landmarks[data.landmark[2]]
-  if (confLandmark) server.send('remote.landmark.found', {
-    landmark: data.landmark,
-    describer: confLandmark.describer,
-    sentences: config.sentences[Math.floor(Math.random() * config.sentences.length)]
-  },
-  remote.client)
+server.on('agent.landmark.found', ({ agentID, landmark }) => {
+  const remote = findRemoteByColor(agentID)
+  const cfg = config.wipmap.landmarks[landmark.type]
+  if (remote && cfg) {
+    server.send('remote.landmark.found', {
+      landmark,
+      wordsmap: cfg.wordsmap,
+      sentences: config.sentences[Math.floor(Math.random() * config.sentences.length)]
+    }, remote.client)
+  }
 })
 
-server.on('remote.landmark.description', description => {
-  console.log(description)
-  // TODO: select sprite based on descrption
-  // TODO: create sprite based on drawing
-  // TODO: send sprite informations to /viewers
-  // TODO: send agent.resume to /viewers
+server.on('remote.landmark.described', ({ agentID, landmark, words, sentences }) => {
+  server.broadcast('landmark.add', { agentID, landmark }, viewers)
 })

@@ -7,8 +7,8 @@ import ws from 'utils/websocket'
 
 import Inertia from 'utils/inertia'
 import inPolygon from 'point-in-polygon'
-import distSq from 'utils/distance-squared'
-import { toWorld, toMap } from 'utils/map-to-world'
+import { toMap } from 'utils/map-to-world'
+import landmarks from 'controllers/landmarks'
 
 import raf from 'raf'
 import bel from 'bel'
@@ -45,6 +45,19 @@ export default class Agent extends DomComponent {
     raf.remove(this.update)
   }
 
+  onfound (landmark) {
+    this.pause()
+    ws.send('agent.landmark.found', { agentID: this.id, landmark })
+  }
+
+  pause () { this.paused = true }
+
+  resume () {
+    this.paused = false
+    this.ix.cancel()
+    this.iy.cancel()
+  }
+
   update () {
     if (this.paused) return
 
@@ -52,11 +65,8 @@ export default class Agent extends DomComponent {
     this.iy.update()
     if (!this.ix.stopped || !this.iy.stopped) {
       this.applyPosition(this.ix.value, this.iy.value)
-      const landmark = this.findLandmark()
-      if (landmark) {
-        this.paused = true
-        ws.send('agent.landmark.found', { id: this.id, landmark })
-      }
+      const landmark = landmarks.find([this.x, this.y], config.agent.fov / 2)
+      if (landmark) this.onfound(landmark)
     }
   }
 
@@ -92,14 +102,5 @@ export default class Agent extends DomComponent {
   forbid (cells) {
     this.forbiddenCells = cells
     return this
-  }
-
-  findLandmark () {
-    const found = store.get('landmarks').find(p => {
-      const pos = toWorld(p)
-      return distSq([this.x, this.y], pos) < (config.agent.fov / 2) ** 2
-    })
-
-    return found
   }
 }

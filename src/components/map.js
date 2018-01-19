@@ -6,12 +6,14 @@ import store from 'utils/store'
 import prng from 'utils/prng'
 import { toWorld } from 'utils/map-to-world'
 
+import landmarks from 'controllers/landmarks'
 import Canvas from 'components/canvas'
 
 export default class Map extends Canvas {
   constructor (json) {
     super()
     this.wipmap = json
+    this.seed = json.seed
     store.set('map.json', json)
   }
 
@@ -29,6 +31,8 @@ export default class Map extends Canvas {
   }
 
   update () {
+    prng.setSeed(this.seed)
+    this.clear()
     this.context.imageSmoothingEnabled = false
     // this.draw_debug()
     this.draw_biomePatterns()
@@ -89,8 +93,8 @@ export default class Map extends Canvas {
 
   draw_debug_landmarks () {
     this.context.fillStyle = 'red'
-    this.wipmap.landmarks.forEach(([i, j, name, biome]) => {
-      const [x, y] = toWorld([i, j])
+    landmarks.filter(l => !l.found).forEach((landmark, index) => {
+      const [x, y] = toWorld(landmark.position)
       this.context.fillRect(x - 10, y - 10, 20, 20)
     })
   }

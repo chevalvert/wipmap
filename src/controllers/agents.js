@@ -50,8 +50,15 @@ function remove (id) {
   delete agents[id]
 }
 
+function resume (id) {
+  if (!id) return
+  if (!agents[id]) return
+  agents[id].resume()
+}
+
 export default {
   setup,
   add,
-  remove
+  remove,
+  resume
 }
