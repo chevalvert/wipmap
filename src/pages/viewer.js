@@ -10,6 +10,7 @@ import LogScreen from 'components/log-screen'
 
 import agents from 'controllers/agents'
 import landmarks from 'controllers/landmarks'
+import isGameOver from 'controllers/is-game-over'
 
 import Map from 'components/map'
 import Fog from 'components/fog'
@@ -48,7 +49,7 @@ function start (json) {
   const fog = new Fog('white')
 
   map.mount(config.DOM.mapWrapper)
-  // fog.mount(config.DOM.mapWrapper)
+  fog.mount(config.DOM.mapWrapper)
 
   agents.setup()
   fps()
@@ -59,7 +60,18 @@ function start (json) {
 
     // TODO: improve perf by redrawing only revelant map area
     map.update()
+
+    isGameOver() && end()
   })
+}
+
+function end () {
+  const endScreen = new LogScreen('game over')
+  endScreen.mount(document.body)
+
+  ws.off('landmark.add')
+
+  // TODO: RESTful call for new map
 }
 
 

@@ -61,6 +61,7 @@ function remove ({ index }) {
 
 export default {
   get all () { return landmarks },
+  get length () { return Object.entries(landmarks).length },
   set,
   find,
   markAsFound,

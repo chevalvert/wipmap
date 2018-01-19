@@ -59,7 +59,9 @@ const config = {
   drawer: {
     maxHistoryStates: 100,
     padding: 100
-  }
+  },
+
+  gameover: 0.9
 }
 
 Object.entries(config.stored)

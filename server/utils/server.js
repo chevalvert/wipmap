@@ -112,10 +112,7 @@ module.exports = function WebServer (opts) {
   }
 
   function sendToClient (event, data, client) {
-    if (client.readyState !== websocket.OPEN) {
-      console.log(`WebSocket is not open, ${event} won't be send`)
-      return
-    }
+    if (client.readyState !== websocket.OPEN) return
     client.send(JSON.stringify({ event, data }))
   }
 }
