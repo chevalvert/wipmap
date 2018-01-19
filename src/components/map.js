@@ -67,11 +67,14 @@ export default class Map extends Canvas {
     .filter(l => l.hasOwnProperty('dataurl'))
     .forEach(landmark => {
       const [x, y] = toWorld(landmark.position)
-      const img = new Image
-      img.onload = () => {
-        this.context.drawImage(img, Math.floor(x - img.width / 2), Math.floor(y - img.height / 2))
-      }
-      img.src = landmark.dataurl
+      if (!landmark.img) {
+        const img = new Image
+        img.onload = () => {
+          landmark.img = img
+          this.context.drawImage(img, Math.floor(x - img.width / 2), Math.floor(y - img.height / 2))
+        }
+        img.src = landmark.dataurl
+      } else this.context.drawImage(landmark.img, Math.floor(x - landmark.img.width / 2), Math.floor(y - landmark.img.height / 2))
     })
   }
 
