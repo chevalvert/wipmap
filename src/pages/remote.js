@@ -79,14 +79,16 @@ function send ({ landmark, words, sentences })  {
     sentences
   }
 
-  ws.send('remote.landmark.described', data)
-
-  // TODO: use RESTful API and resolve on reception validation
-  // fetch(`http://${config.server.address}:${config.server.port}/api/landmark`, {
-  //   method: 'POST',
-  //   body: JSON.stringify(data),
-  //   headers: new Headers({ 'Content-Type': 'application/json' })
-  // }))
+  return new Promise ((resolve, reject) => {
+    fetch(`http://${config.server.address}:${config.server.port}/api/landmark`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: new Headers({ 'Content-Type': 'application/json' })
+    }).then(res => {
+      if (res.ok) resolve(res)
+      else reject(res.statusText)
+    })
+  })
 }
 
 export default {

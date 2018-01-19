@@ -55,6 +55,19 @@ server.start().then(data => {
   args.open && opn(data.url + data.page, { app: ['google chrome', args.fullscreen ? '--kiosk' : '']} )
 })
 
+server.route('/landmark', (req, res) => {
+  // TODO: send eror
+  if (!req.body) return
+
+  // TODO: write landmark.dataurl in a png file
+  server.broadcast('landmark.add', {
+    agentID: req.body.agentID,
+    landmark: req.body.landmark
+  }, viewers)
+
+  res.json(null)
+}, 'POST')
+
 // Websocket routing
 
 server.on('client', client => { server.send('handshake', null, client) })
@@ -95,8 +108,4 @@ server.on('agent.landmark.found', ({ agentID, landmark }) => {
       sentences: config.sentences[Math.floor(Math.random() * config.sentences.length)]
     }, remote.client)
   }
-})
-
-server.on('remote.landmark.described', ({ agentID, landmark, words, sentences }) => {
-  server.broadcast('landmark.add', { agentID, landmark }, viewers)
 })
