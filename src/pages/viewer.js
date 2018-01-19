@@ -32,7 +32,7 @@ function setup () {
     return loader.loadMap(x, y, f)
   })
   .then(map => {
-    landmarks.set(map.landmarks)
+    landmarks.set(map)
     start(map)
   })
   .then(() => loading.destroy())
@@ -51,17 +51,14 @@ function start (json) {
   // fog.mount(config.DOM.mapWrapper)
 
   agents.setup()
-
   fps()
 
   ws.on('landmark.add', ({ agentID, landmark }) => {
     landmarks.markAsFound(landmark)
+    agents.resume(agentID)
 
-    // WIP: draw landmark to the map
     // TODO: improve perf by redrawing only revelant map area
     map.update()
-
-    agents.resume(agentID)
   })
 }
 

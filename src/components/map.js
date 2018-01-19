@@ -5,6 +5,7 @@ import store from 'utils/store'
 
 import prng from 'utils/prng'
 import { toWorld } from 'utils/map-to-world'
+import groupBy from 'utils/group-by'
 
 import landmarks from 'controllers/landmarks'
 import Canvas from 'components/canvas'
@@ -108,10 +109,13 @@ export default class Map extends Canvas {
   }
 
   draw_debug_landmarks () {
-    this.context.fillStyle = 'red'
-    landmarks.filter(l => !l.found).forEach((landmark, index) => {
-      const [x, y] = toWorld(landmark.position)
-      this.context.fillRect(x - 10, y - 10, 20, 20)
+    const seeds = groupBy(Object.values(landmarks.all), 'seed')
+    Object.values(seeds).forEach(landmarks => {
+      this.context.fillStyle = `rgb(${prng.randomInt(0, 255)}, ${prng.randomInt(0, 255)}, ${prng.randomInt(0, 255)})`
+      landmarks.filter(l => !l.found).forEach((landmark, index) => {
+        const [x, y] = toWorld(landmark.position)
+        this.context.fillRect(x - 10, y - 10, 20, 20)
+      })
     })
   }
 }

@@ -17,12 +17,13 @@ export default class Fog extends Canvas {
     super.didMount()
     this.bindFuncs(['clear'])
 
+    this.resize([window.innerWidth, window.innerHeight])
     this.addClass('fog')
 
     this.context.fillStyle = this.color
     this.context.fillRect(0, 0, this.width, this.height)
 
-    this.context.imageSmoothingEnabled = false
+    this.smooth(false)
     this.context.globalCompositeOperation = 'destination-out'
 
     events.on('fog.clear', ({ position }) => this.clear(position))
