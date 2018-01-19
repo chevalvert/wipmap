@@ -7,6 +7,8 @@ import loader from 'controllers/loader'
 import LogScreen from 'components/log-screen'
 
 import prng from 'utils/prng'
+
+import 'whatwg-fetch'
 import { validateJsonResponse } from 'utils/fetch-json'
 
 import Map from 'components/map'

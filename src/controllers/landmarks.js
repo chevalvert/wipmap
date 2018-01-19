@@ -25,9 +25,15 @@ function find (position, searchRadius) {
   })
 }
 
-function markAsFound (index) {
+function markAsFound ({ index, dataurl }) {
+  if (!index) return
   if (!landmarks[index]) return
   landmarks[index].found = true
+
+  // NOTE: possible perf bottleneck with manipulating landmarks
+  // when a lot of them have dataurl. If so, use utils/store for dataurl
+  // and reference an index in the landmark object
+  landmarks[index].dataurl = dataurl
 }
 
 export default {

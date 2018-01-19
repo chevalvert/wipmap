@@ -44,8 +44,6 @@ function setup () {
 }
 
 function start (json) {
-  prng.setSeed(json.seed)
-
   const map = new Map(json)
   const fog = new Fog('white')
 
@@ -57,7 +55,7 @@ function start (json) {
   fps()
 
   ws.on('landmark.add', ({ agentID, landmark }) => {
-    landmarks.markAsFound(landmark.index)
+    landmarks.markAsFound(landmark)
 
     // WIP: draw landmark to the map
     // TODO: improve perf by redrawing only revelant map area
