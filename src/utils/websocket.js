@@ -39,5 +39,10 @@ export default {
   send: (event, data) => {
     if (connected) ws.send(JSON.stringify({ event, data }))
     else console.warn(`WS: cannot send('${event}'). Not connected`)
-  }
+  },
+
+  // Used for control flow in promises chain
+  waitFor: event => new Promise ((resolve, reject) => {
+    events.once(event, resolve)
+  })
 }

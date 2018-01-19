@@ -13,6 +13,8 @@ import Describer from 'components/describer'
 import Nipple from 'components/nipple'
 
 let nipple
+let describer
+let loading
 
 function setup (color) {
   if (!color) {
@@ -21,7 +23,8 @@ function setup (color) {
     return
   }
 
-  const loading = new LogScreen('chargement', '')
+  loading = new LogScreen('chargement')
+
   Promise.resolve()
   .then(() => loading.mount(document.body))
   .then(() => loading.say('sprites'))
@@ -41,28 +44,53 @@ function start (color) {
   nipple.mount(document.querySelector('.nipple-wrapper'))
   nipple.watch(data => { ws.send('agent.move', data) })
 
-  ws.on('remote.landmark.found', ({ landmark, wordsmap, sentences }) => {
+  ws.on('remote.landmark.found', describe)
+}
+
+function describe ({ landmark, wordsmap, sentences }) {
+  Promise.resolve()
+  .then(() => {
     nipple.disable()
-
-    const describer = new Describer(landmark, wordsmap, sentences)
+    describer = new Describer(landmark, wordsmap, sentences)
     describer.mount(config.DOM.describerWrapper)
-
-    events.once('describer.validate', ({ dataurl, landmark, words, sentences }) => {
-      ws.send('remote.landmark.described', {
-        agentID: store.get('remote.id'),
-        landmark,
-        words,
-        sentences
-      })
-
-      // TODO: wait for server confirmation of the 'describer.validate' reception
-      describer.destroy()
-      nipple.enable()
-    })
   })
+  .then(() => events.waitFor('describer.validate'))
+  .then(send)
+  .then(() => {
+    describer.destroy()
+    nipple.enable()
+    loading.destroy()
+  })
+  .catch(err => {
+    console.error(err)
+    loading.destroy()
+    error(err)
+  })
+}
+
+function send ({ landmark, words, sentences })  {
+  loading = new LogScreen('envoi')
+  loading.mount(document.body)
+
+  const data = {
+    agentID: store.get('remote.id'),
+    landmark,
+    words,
+    sentences
+  }
+
+  ws.send('remote.landmark.described', data)
+
+  // TODO: use RESTful API and resolve on reception validation
+  // fetch(`http://${config.server.address}:${config.server.port}/api/landmark`, {
+  //   method: 'POST',
+  //   body: JSON.stringify(data),
+  //   headers: new Headers({ 'Content-Type': 'application/json' })
+  // }))
 }
 
 export default {
   setup,
   waitForSlot: ws.once('setcolor', data => { setup(data.color) })
 }
+
