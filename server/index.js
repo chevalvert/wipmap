@@ -13,8 +13,7 @@ const Server = require(__dirname + '/utils/server')
 const config = require(__dirname + '/../server.config.json')
 
 const server = Server({
-  public: path.join(__dirname, '..', 'build'),
-  page: 'index.html'
+  public: path.join(__dirname, '..', 'build')
 })
 
 const remotes = {}
@@ -49,11 +48,6 @@ server.route('/generate/:x/:y', (req, res) => {
   const map = wipmap(req.params.x, req.params.y, opts)
   res.json(map)
 }, 'POST')
-
-server.start().then(data => {
-  console.log(`Server is listenning on ${data.url}`)
-  args.open && opn(data.url + data.page, { app: ['google chrome', args.fullscreen ? '--kiosk' : '']} )
-})
 
 server.route('/landmark', (req, res) => {
   // TODO: send eror
@@ -109,3 +103,14 @@ server.on('agent.landmark.found', ({ agentID, landmark }) => {
     }, remote.client)
   }
 })
+
+// Starting server
+
+server
+.start()
+.then(url => {
+  console.log(`Server is listenning on ${url}`)
+  if (args.open || args.fullscreen) {
+    opn(url, { app: ['google chrome', args.fullscreen ? '--kiosk' : '']} )
+  }
+}).catch(err => console.log(err))

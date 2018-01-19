@@ -12,8 +12,7 @@ const table = require('console.table')
 
 const defaultOpts = {
   port: 8888,
-  public: path.join(process.cwd(), 'public'),
-  page: ''
+  public: path.join(process.cwd(), 'public')
 }
 
 module.exports = function WebServer (opts) {
@@ -60,10 +59,7 @@ module.exports = function WebServer (opts) {
         server = app.listen(opts.port, () => {
           address = findFirstAvailableAddress()
 
-          resolve({
-            url: `http://${address}:${opts.port}`,
-            page: opts.page
-          })
+          resolve(`http://${address}:${opts.port}`)
         })
 
         wss = new websocket.Server({ server })
