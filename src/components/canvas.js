@@ -10,19 +10,14 @@ import DomComponent from 'abstractions/DomComponent'
 export default class Canvas extends DomComponent {
   render () {
     this.scale = store.get('scale')
-    this.width = window.innerWidth * this.scale
-    this.height = window.innerHeight * this.scale
-
-    const el = bel`<canvas width='${this.width}' height='${this.height}'/>`
-    el.style.width = this.width + 'px'
-    el.style.height = this.height + 'px'
-
+    const el = bel`<canvas></canvas>`
     return el
   }
 
   didMount () {
-    this.context = this.refs.base.getContext('2d')
     this.bindFuncs(['onresize'])
+    this.context = this.refs.base.getContext('2d')
+    this.onresize()
     window.addEventListener('resize', this.onresize)
   }
 
@@ -30,21 +25,25 @@ export default class Canvas extends DomComponent {
     window.removeEventListener('resize', this.onresize)
   }
 
-  onresize () {
-    this.resize([window.innerWidth * this.scale, window.innerHeight * this.scale])
-  }
+  onresize () {}
 
-  resize ([width, height]) {
+  resize ([width, height], css = true) {
     this.width = width
     this.height = height
     this.refs.base.width = this.width
     this.refs.base.height = this.height
-    this.refs.base.style.width = this.width + 'px'
-    this.refs.base.style.height = this.height + 'px'
+    if (css) {
+      this.refs.base.style.width = this.width + 'px'
+      this.refs.base.style.height = this.height + 'px'
+    }
   }
 
   drawSprite (...args) {
     drawSprite(this.context, ...args)
+  }
+
+  smooth (v = true) {
+    this.imageSmoothingEnabled = v
   }
 
   toDataURL () {

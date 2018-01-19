@@ -89,8 +89,8 @@ export default class Describer extends DomComponent {
   }
 
   calcSpriteIndex (sprite) {
-    // NOTE: landmarks spritesheets need to be composed on a
-    // carthesian grid with XY [0, 0] at the LEFT TOP
+    // NOTE: landmarks spritesheets need to be composed on
+    // a carthesian grid with XY [0, 0] at the LEFT TOP
     return this.refs.words.x.index + this.refs.words.y.index * (sprite.width / sprite.resolution)
   }
 
@@ -98,8 +98,8 @@ export default class Describer extends DomComponent {
     const spritesheet = store.get(`spritesheet_${this.landmark.type}`)
     if (!spritesheet) error(`describer.js: No spritesheet found for '${this.landmark.type}'`)
 
-    const scale = (Math.min(window.innerWidth, window.innerHeight) - config.drawer.padding) / spritesheet.resolution
-    this.refs.drawer.setSprite(spritesheet.name, scale, this.calcSpriteIndex(spritesheet))
+    const spriteIndex = this.calcSpriteIndex(spritesheet)
+    this.refs.drawer.setSprite(spritesheet, spriteIndex)
     this.showStep(1)
   }
 

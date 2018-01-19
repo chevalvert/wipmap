@@ -3,8 +3,8 @@
 import config from 'config'
 import store from 'utils/store'
 
+import { map } from 'missing-math'
 import bel from 'bel'
-
 import raf from 'raf'
 import Canvas from 'components/canvas'
 
@@ -44,14 +44,10 @@ export default class Drawer extends DomComponent {
     this.refs.spriteHolder.addClass('drawer-spriteholder')
     this.bindFuncs(['update', 'beginDraw', 'endDraw', 'draw'])
 
-    this.context = this.refs.canvas.context
-    this.context.imageSmoothingEnabled = false
-
     this.refs.base.addEventListener('mousedown', this.beginDraw, false)
     this.refs.base.addEventListener('mouseup', this.endDraw, false)
     this.refs.base.addEventListener('mousemove', this.draw, false)
     this.refs.base.addEventListener('mouseleave', this.endDraw)
-
     this.refs.base.addEventListener('touchstart', this.beginDraw, false)
     this.refs.base.addEventListener('touchend', this.endDraw, false)
     this.refs.base.addEventListener('touchmove', this.draw, false)
@@ -62,33 +58,30 @@ export default class Drawer extends DomComponent {
   willUnmount () {
     super.willUnmount()
     raf.remove(this.update)
+
+    this.refs.base.removeEventListener('mousedown', this.beginDraw, false)
+    this.refs.base.removeEventListener('mouseup', this.endDraw, false)
+    this.refs.base.removeEventListener('mousemove', this.draw, false)
+    this.refs.base.removeEventListener('mouseleave', this.endDraw)
+    this.refs.base.removeEventListener('touchstart', this.beginDraw, false)
+    this.refs.base.removeEventListener('touchend', this.endDraw, false)
+    this.refs.base.removeEventListener('touchmove', this.draw, false)
   }
 
-  pixelate ([x, y]) {
-    return [
-      Math.floor((x + this.scale / 2) / this.scale) * this.scale,
-      Math.floor((y + this.scale / 2) / this.scale) * this.scale
-    ]
-  }
+  setSprite (spritesheet, spriteIndex) {
+    this.resolution = spritesheet.resolution
 
-  setSprite (name, scale, spriteIndex) {
-    this.scale = scale
-    this.sprite = store.get(`spritesheet_${name}`)
+    this.refs.canvas.resize([this.resolution, this.resolution], false)
+    this.refs.spriteHolder.resize([this.resolution, this.resolution], false)
 
-    const [w, h] = this.pixelate([this.sprite.resolution * scale, this.sprite.resolution * scale])
-
-    this.refs.spriteHolder.resize([w, h])
-    this.refs.canvas.resize([w, h])
-    this.context.imageSmoothingEnabled = false
-    this.refs.spriteHolder.context.imageSmoothingEnabled = false
-
-    this.refs.spriteHolder.drawSprite(name, w / 2, w / 2, scale, spriteIndex)
-
+    this.refs.canvas.smooth(false)
+    this.refs.spriteHolder.smooth(false)
+    this.refs.spriteHolder.drawSprite(spritesheet.name, this.resolution / 2, this.resolution / 2, 1, spriteIndex)
   }
 
   beginDraw (e) {
     this.stopPropagation(e)
-    const [x, y] = this.getTouchPos(e)
+    const [x, y] = this.getPosition(e)
     this.x = x
     this.y = y
     this.isDrawing = true
@@ -104,7 +97,7 @@ export default class Drawer extends DomComponent {
 
   draw (e) {
     this.stopPropagation(e)
-    const [x, y] = this.getTouchPos(e)
+    const [x, y] = this.getPosition(e)
     this.x = x
     this.y = y
   }
@@ -116,11 +109,10 @@ export default class Drawer extends DomComponent {
 
   getDataURL () {
     return new Promise ((resolve, reject) => {
-      const spriteHolder = this.refs.spriteHolder
       const img = new Image
-      img.onload = function () {
-        spriteHolder.context.drawImage(this, 0, 0)
-        resolve(spriteHolder.toDataURL())
+      img.onload = () => {
+        this.refs.spriteHolder.context.drawImage(img, 0, 0)
+        resolve(this.refs.spriteHolder.toDataURL())
       }
       img.src = this.refs.canvas.toDataURL()
     })
@@ -130,20 +122,22 @@ export default class Drawer extends DomComponent {
     if (!this.history.length) return
 
     const img = new Image
-    img.src = this.history.pop()
-
-    this.refs.canvas.clear()
-    const ctx = this.context
-    img.onload = function () {
-      ctx.drawImage(this, 0, 0)
+    img.onload = () => {
+      this.refs.canvas.clear()
+      this.refs.canvas.context.drawImage(img, 0, 0)
     }
+    img.src = this.history.pop()
   }
 
-  getTouchPos (e) {
+  getPosition (e) {
     const rect = this.rect || this.refs.canvas.refs.base.getBoundingClientRect()
-    return e.touches
-      ? this.pixelate([e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top])
-      : this.pixelate([e.offsetX, e.offsetY])
+    const x = e.touches ? e.touches[0].clientX - rect.left : e.offsetX
+    const y = e.touches ? e.touches[0].clientY - rect.top  : e.offsetY
+
+    return [
+      map(x, 0, rect.width, 0, this.resolution),
+      map(y, 0, rect.height, 0, this.resolution)
+    ].map(Math.floor)
   }
 
   stopPropagation (e) {
@@ -153,8 +147,9 @@ export default class Drawer extends DomComponent {
   update () {
     if (!this.isDrawing) return
     if (this.x === this.px && this.y === this.py) return
+    if (this.x < 0 || this.y < 0 || this.x > this.resolution || this.y > this.resolution) return
 
     // TODO?: lerp from [px, py] to [x, y] to draw plain lines
-    this.context.fillRect(this.x, this.y, this.scale, this.scale)
+    this.refs.canvas.context.fillRect(this.x, this.y, 1, 1)
   }
 }

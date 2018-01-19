@@ -20,13 +20,13 @@ export default class Map extends Canvas {
   didMount () {
     super.didMount()
     this.addClass('map')
-    this.onresize()
   }
 
   onresize () {
-    super.onresize()
+    this.resize([window.innerWidth * this.scale, window.innerHeight * this.scale])
     store.set('width', this.width)
     store.set('height', this.height)
+
     this.update()
   }
 
@@ -34,13 +34,16 @@ export default class Map extends Canvas {
     prng.setSeed(this.seed)
     this.clear()
     this.context.imageSmoothingEnabled = false
+
     // this.draw_debug()
     this.draw_biomePatterns()
+    this.draw_landmarks()
+
     this.draw_debug_landmarks(true)
   }
 
   draw_biomePatterns () {
-    Object.entries(this.wipmap.points).forEach(([type, points]) => {
+    Object.entries(this.wipmap.points).forEach(( [type, points] ) => {
       points.forEach(point => {
         const [x, y] = toWorld(point)
 
@@ -58,6 +61,19 @@ export default class Map extends Canvas {
     })
   }
 
+  draw_landmarks () {
+    landmarks
+    .filter(l => l.hasOwnProperty('dataurl'))
+    .forEach(landmark => {
+      const [x, y] = toWorld(landmark.position)
+      const img = new Image
+      img.onload = () => {
+        this.context.drawImage(img, Math.floor(x - img.width / 2), Math.floor(y - img.height / 2))
+      }
+      img.src = landmark.dataurl
+    })
+  }
+
   draw_debug (fill = false) {
     const colors = {
       'TAIGA' : '#66CCFF',
@@ -71,7 +87,7 @@ export default class Map extends Canvas {
     }
 
     this.context.strokeStyle = 'red'
-    this.wipmap.biomes.forEach(({cell, type}) => {
+    this.wipmap.biomes.forEach(( {cell, type} ) => {
       this.context.fillStyle = colors[type]
       this.context.beginPath()
       cell.forEach((point, index) => {
