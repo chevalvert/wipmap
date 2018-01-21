@@ -1,5 +1,6 @@
 'use strict'
 
+import L from 'loc'
 import config from 'config'
 import store from 'utils/store'
 import ws from 'utils/websocket'
@@ -10,13 +11,22 @@ import viewer from 'pages/viewer'
 import remote from 'pages/remote'
 import generator from 'pages/generator'
 
+import LogScreen from 'components/log-screen'
+
+const loading = new LogScreen(L`loading`, L`loading.connection`)
+const hs = name => handshake(name).then(() => loading.destroy())
+
+loading.mount(document.body)
+
 const router = new Navigo(null, false)
-router.on({
-  '/': () => handshake('viewer').then(viewer.setup),
+const routes = {
+  '/': () => hs('viewer').then(viewer.setup),
+  '/remote': () => hs('remote').then(remote.waitForSlot),
+  '/generator': () => hs('generator').then(generator.setup)
+}
 
-  '/remote': () => handshake('remote').then(remote.waitForSlot),
-  '/remote.html': () => handshake('remote').then(remote.waitForSlot),
+Object.entries(routes).forEach(([endpoint, callback]) => {
+  routes[endpoint + '.html'] = callback
+})
 
-  '/generator': () => handshake('generator').then(generator.setup),
-  '/generator.html': () => handshake('generator').then(generator.setup)
-}).resolve()
+router.on(routes).resolve()

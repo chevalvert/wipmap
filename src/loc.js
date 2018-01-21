@@ -3,6 +3,7 @@
 const locales = { fr: {}, en: {} }
 
 locales.fr['loading'] = 'chargement'
+locales.fr['loading.connection'] = 'en attente de connection'
 locales.fr['loading.sprites'] = 'images'
 locales.fr['loading.map'] = 'carte'
 locales.fr['loading.sendingLandmark'] = 'envoi en cours'

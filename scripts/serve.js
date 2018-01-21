@@ -60,9 +60,6 @@ function init () {
   bs.init({
     server: {
       baseDir: paths.static,
-      serveStaticOptions: {
-        extensions: ['html']
-      }
     },
     open: false,
     reloadOnRestart: true,

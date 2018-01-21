@@ -23,7 +23,7 @@ function gracefulError (res, err) {
 
 function getPageFromRoute (route) {
   for (let i = 0; i < pages.length; i++) {
-    if (pages[i].output === route) return pages[i]
+    if (pages[i].output.replace('.html', '') === route.replace('.html', '')) return pages[i]
   }
   return false
 }
