@@ -1,21 +1,35 @@
 'use strict'
 
-const loc = { fr: {}, en: {} }
+const locales = { fr: {}, en: {} }
 
-loc.fr['landmark.house'] = 'une maison'
+locales.fr['loading'] = 'chargement'
+locales.fr['loading.sprites'] = 'images'
+locales.fr['loading.map'] = 'carte'
+locales.fr['loading.sendingLandmark'] = 'envoi en cours'
 
-loc.fr['biome.plains'] = ['la plaine', 'une plaine']
-loc.fr['biome.desert'] = 'le désert'
-loc.fr['biome.taiga']  = 'la taïga'
-loc.fr['biome.tundra'] = 'la tundra'
-loc.fr['biome.swamp']  = 'un marais'
-loc.fr['biome.forest'] = 'la forêt'
-loc.fr['biome.water']  = ['la mer', 'un lac', 'un étang']
+locales.fr['error'] = 'Erreur'
+locales.fr['error.noslot'] = 'Plus de place disponible'
 
-export default (str, lang = 'fr') => {
-  if (!str) return
-  const l = loc[lang][str.toLowerCase()]
-  return Array.isArray(l)
-    ? l[Math.floor(Math.random() * l.length)]
-    : l
+locales.fr['gameover'] = 'game over'
+
+locales.fr['landmark.house'] = 'une maison'
+
+locales.fr['biome.plains'] = ['la plaine', 'une plaine']
+locales.fr['biome.desert'] = 'le désert'
+locales.fr['biome.taiga']  = 'la taïga'
+locales.fr['biome.tundra'] = 'la tundra'
+locales.fr['biome.swamp']  = 'un marais'
+locales.fr['biome.forest'] = 'la forêt'
+locales.fr['biome.water']  = ['la mer', 'un lac', 'un étang']
+
+export default (key, LANG = 'fr') => {
+  if (!key) return
+  if (Array.isArray(key)) key = key[0]
+
+  const locale = locales[LANG][key.toLowerCase()]
+  return locale
+    ? Array.isArray(locale)
+      ? locale[Math.floor(Math.random() * locale.length)]
+      : locale
+    : key
 }

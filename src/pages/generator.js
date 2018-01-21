@@ -1,5 +1,6 @@
 'use strict'
 
+import L from 'loc'
 import config from 'config'
 
 import error from 'utils/error'
@@ -14,7 +15,7 @@ import { validateJsonResponse } from 'utils/fetch-json'
 import Map from 'components/map'
 
 function setup () {
-  const loading = new LogScreen('chargement')
+  const loading = new LogScreen( L`error` )
 
   const url = `http://${config.server.address}:${config.server.port}/api/generate/0/0`
   const data = {
@@ -24,7 +25,7 @@ function setup () {
 
   Promise.resolve()
   .then(() => loading.mount(document.body))
-  .then(() => loading.say('sprites'))
+  .then(() => loading.say( L`loading.sprites` ))
   .then(() => loader.loadSprites())
   .then(() => loading.destroy())
   .then(() => fetch(url, {

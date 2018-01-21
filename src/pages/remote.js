@@ -1,5 +1,6 @@
 'use strict'
 
+import L from 'loc'
 import config from 'config'
 import ws from 'utils/websocket'
 import store from 'utils/store'
@@ -18,16 +19,16 @@ let loading
 
 function setup (color) {
   if (!color) {
-    const error = new LogScreen('Error', 'no slot available', 'error')
+    const error = new LogScreen(L`error`, L`error.noslot`, 'error')
     error.mount(document.body)
     return
   }
 
-  loading = new LogScreen('chargement')
+  loading = new LogScreen( L`loading` )
 
   Promise.resolve()
   .then(() => loading.mount(document.body))
-  .then(() => loading.say('sprites'))
+  .then(() => loading.say( L`loading.sprites` ))
   .then(() => loader.loadSprites())
   .then(() => start(color))
   .then(() => loading.destroy())
@@ -42,7 +43,7 @@ function start (color) {
   store.set('remote.id', color)
   nipple = new Nipple(color)
   nipple.mount(document.querySelector('.nipple-wrapper'))
-  nipple.watch(data => { ws.send('agent.move', data) })
+  nipple.watch(data => ws.send('agent.move', data))
 
   ws.on('remote.landmark.found', describe)
 }
@@ -69,7 +70,7 @@ function describe ({ landmark, wordsmap, sentences }) {
 }
 
 function send ({ landmark, words, sentences })  {
-  loading = new LogScreen('envoi')
+  loading = new LogScreen( L`loading.sendingLandmark` )
   loading.mount(document.body)
 
   const data = {

@@ -1,5 +1,6 @@
 'use strict'
 
+import L from 'loc'
 import config from 'config'
 import store from 'utils/store'
 import ws from 'utils/websocket'
@@ -20,12 +21,12 @@ import getUrlParam from 'utils/get-url-param'
 import fps from 'fps-indicator'
 
 function setup () {
-  const loading = new LogScreen('chargement')
+  const loading = new LogScreen( L`loading` )
   Promise.resolve()
   .then(() => loading.mount(document.body))
-  .then(() => loading.say('sprites'))
+  .then(() => loading.say( L`loading.sprites` ))
   .then(() => loader.loadSprites())
-  .then(() => loading.say('map'))
+  .then(() => loading.say( L`loading.map` ))
   .then(() => {
     const x = getUrlParam('x') || 0
     const y = getUrlParam('y') || 0
@@ -66,7 +67,7 @@ function start (json) {
 }
 
 function end () {
-  const endScreen = new LogScreen('game over')
+  const endScreen = new LogScreen( L`gameover` )
   endScreen.mount(document.body)
 
   ws.off('landmark.add')
