@@ -26,7 +26,7 @@ const attributeColorToRemoteByIP = ip => remotes.hasOwnProperty(ip) ? remotes[ip
 // RESTful routing, available at /api/endpoint
 
 server.route('/map/:x/:y/:force?*', (req, res) => {
-  const file = path.join(__dirname, 'data', `${req.params.x}_${req.params.y}.json`)
+  const file = path.join(__dirname, 'data', 'maps', `${req.params.x}_${req.params.y}.json`)
   const mapExists = fs.pathExistsSync(file)
 
   if (mapExists && !req.params.force) res.json(fs.readJsonSync(file))
@@ -53,13 +53,19 @@ server.route('/landmark', (req, res) => {
   // TODO: send eror
   if (!req.body) return
 
-  // TODO: write landmark.dataurl in a png file
-  server.broadcast('landmark.add', {
-    agentID: req.body.agentID,
-    landmark: req.body.landmark
-  }, viewers)
-
-  res.json(null)
+  // TODO: add landmark informations in filename
+  const file = path.join(__dirname, 'data', 'landmarks', req.body.landmark.type, (+new Date()) + '.png')
+  const b64 = req.body.landmark.dataurl.replace(/^data:image\/png;base64,/, '')
+  fs.outputFile(file, b64, 'base64', err => {
+    if (err) res.json(err)
+    else {
+      server.broadcast('landmark.add', {
+        agentID: req.body.agentID,
+        landmark: req.body.landmark
+      }, viewers)
+      res.json(null)
+    }
+  })
 }, 'POST')
 
 // Websocket routing

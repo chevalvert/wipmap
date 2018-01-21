@@ -1,4 +1,5 @@
 build/*
+server/data/*
 
 ####### NODE ########
 .tmp
@@ -60,4 +61,3 @@ Temporary Items
 # *.sublime-project
 # sftp configuration file
 sftp-config.json
-server/data/*.json
