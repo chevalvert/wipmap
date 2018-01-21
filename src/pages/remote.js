@@ -6,6 +6,8 @@ import ws from 'utils/websocket'
 import store from 'utils/store'
 import events from 'utils/events'
 
+import post from 'utils/post'
+
 import error from 'utils/error'
 import loader from 'controllers/loader'
 
@@ -81,11 +83,8 @@ function send ({ landmark, words, sentences })  {
   }
 
   return new Promise ((resolve, reject) => {
-    fetch(`http://${config.server.address}:${config.server.port}/api/landmark`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: new Headers({ 'Content-Type': 'application/json' })
-    }).then(res => {
+    post(`http://${config.server.address}:${config.server.port}/api/landmark`, data)
+    .then(res => {
       if (res.ok) resolve(res)
       else reject(res.statusText)
     })

@@ -9,7 +9,7 @@ import LogScreen from 'components/log-screen'
 
 import prng from 'utils/prng'
 
-import 'whatwg-fetch'
+import post from 'utils/post'
 import { validateJsonResponse } from 'utils/fetch-json'
 
 import Map from 'components/map'
@@ -28,11 +28,7 @@ function setup () {
   .then(() => loading.say( L`loading.sprites` ))
   .then(() => loader.loadSprites())
   .then(() => loading.destroy())
-  .then(() => fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: new Headers({ 'Content-Type': 'application/json' })
-  }))
+  .then(() => post(url, data))
   .then(validateJsonResponse)
   .then(start)
   .catch(err => {
