@@ -26,7 +26,8 @@ const config = {
       interpolation: 'linear',
       rigidity: 0.1,
       friction: 10
-    }
+    },
+    forbidden: ['WATER']
   },
 
   spritesheets: {
@@ -53,8 +54,6 @@ const config = {
     'FOREST': [['tree', 0.1]],
     'WATER': [['water', 0.5]]
   },
-
-  forbidden: ['WATER'],
 
   drawer: {
     maxHistoryStates: 100,

@@ -19,11 +19,11 @@ function setup () {
   if (!wipmap) throw Error('map.json is undefined or null.')
 
   forbiddenCells = wipmap.biomes
-    .filter(biome => config.forbidden.includes(biome.type))
+    .filter(biome => config.agent.forbidden.includes(biome.type))
     .map(biome => biome.cell)
 
   startingPoints = shuffle(wipmap.biomes)
-    .filter(biome => !biome.isBoundary && !config.forbidden.includes(biome.type))
+    .filter(biome => !biome.isBoundary && !config.agent.forbidden.includes(biome.type))
     .map(biome => biome.site)
 
   ws.on('agent.add', ({ id }) => { add(id) })
