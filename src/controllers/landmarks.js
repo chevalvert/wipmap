@@ -15,7 +15,13 @@ const createLandmarkObject = (instance, [x, y, biome, type, seed], index) => ({
   index
 })
 
-function set (wipmap) {
+function reset () {
+  landmarks = {}
+}
+
+function set (wipmap, clear = false) {
+  clear && reset()
+
   let i = 0
   Object.entries(wipmap.landmarks).forEach(([instance, instances]) => {
     const type = instance.split('-').shift()
@@ -62,6 +68,7 @@ function remove ({ index }) {
 export default {
   get all () { return landmarks },
   get length () { return Object.entries(landmarks).length },
+  reset,
   set,
   find,
   markAsFound,

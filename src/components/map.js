@@ -10,9 +10,14 @@ import groupBy from 'utils/group-by'
 import landmarks from 'controllers/landmarks'
 import Canvas from 'components/canvas'
 
+const defaultOpts = {
+  voronoi: false,
+}
+
 export default class Map extends Canvas {
-  constructor (json) {
+  constructor (json, opts) {
     super()
+    this.opts = Object.assign({}, defaultOpts, opts || {})
     this.wipmap = json
     this.seed = json.seed
     store.set('map.json', json)
@@ -36,7 +41,7 @@ export default class Map extends Canvas {
     this.clear()
     this.context.imageSmoothingEnabled = false
 
-    // this.draw_debug()
+    this.opts.voronoi && this.draw_debug()
     this.draw_biomePatterns()
     this.draw_landmarks()
 
@@ -67,14 +72,22 @@ export default class Map extends Canvas {
     .filter(l => l.hasOwnProperty('dataurl'))
     .forEach(landmark => {
       const [x, y] = toWorld(landmark.position)
-      if (!landmark.img) {
-        const img = new Image
-        img.onload = () => {
-          landmark.img = img
-          this.context.drawImage(img, Math.floor(x - img.width / 2), Math.floor(y - img.height / 2))
-        }
-        img.src = landmark.dataurl
-      } else this.context.drawImage(landmark.img, Math.floor(x - landmark.img.width / 2), Math.floor(y - landmark.img.height / 2))
+
+      if (landmark.dataurl) {
+        // landmark get a dataurl from /remote drawer
+        if (!landmark.img) {
+          const img = new Image
+          img.onload = () => {
+            landmark.img = img
+            this.context.drawImage(img, Math.floor(x - img.width / 2), Math.floor(y - img.height / 2))
+          }
+          img.src = landmark.dataurl
+        } else this.context.drawImage(landmark.img, Math.floor(x - landmark.img.width / 2), Math.floor(y - landmark.img.height / 2))
+      }
+      else if (landmark.sprite) {
+        // landmark get a sprite from /generator
+        this.drawSprite(landmark.sprite.name, x, y, this.scale, landmark.sprite.index)
+      }
     })
   }
 

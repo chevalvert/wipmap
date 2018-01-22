@@ -6,6 +6,7 @@ import store from 'utils/store'
 import events from 'utils/events'
 
 import error from 'utils/error'
+import getSpriteIndex from 'utils/get-sprite-index'
 
 import bel from 'bel'
 import raw from 'bel/raw'
@@ -88,17 +89,11 @@ export default class Describer extends DomComponent {
     })
   }
 
-  calcSpriteIndex (sprite) {
-    // NOTE: landmarks spritesheets need to be composed on
-    // a carthesian grid with XY [0, 0] at the LEFT TOP
-    return this.refs.words.x.index + this.refs.words.y.index * (sprite.width / sprite.resolution)
-  }
-
   showDrawer () {
     const spritesheet = store.get(`spritesheet_${this.landmark.type}`)
     if (!spritesheet) error(`describer.js: No spritesheet found for '${this.landmark.type}'`)
 
-    const spriteIndex = this.calcSpriteIndex(spritesheet)
+    const spriteIndex = getSpriteIndex(spritesheet, [this.refs.words.x.index, this.refs.words.y.index])
     this.refs.drawer.setSprite(spritesheet, spriteIndex)
     this.showStep(1)
   }

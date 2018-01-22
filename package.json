@@ -76,6 +76,7 @@
     "navigo": "^7.0.0",
     "nipplejs": "^0.6.8",
     "opn": "^5.1.0",
+    "ouioui": "^0.0.22",
     "point-in-polygon": "^1.0.1",
     "raf": "github:pqml/raf",
     "reconnectingwebsocket": "^1.0.0",
