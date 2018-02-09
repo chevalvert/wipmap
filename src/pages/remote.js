@@ -19,20 +19,22 @@ let nipple
 let describer
 let loading
 
-function setup (color) {
-  if (!color) {
+function setup ({ id, color }) {
+  if (!id) {
     const error = new LogScreen(L`error`, L`error.noslot`, 'error')
     error.mount(document.body)
     return
   }
 
+  store.set('remote.id', id)
+  store.set('remote.color', color)
   loading = new LogScreen( L`loading` )
 
   Promise.resolve()
   .then(() => loading.mount(document.body))
   .then(() => loading.say( L`loading.sprites` ))
   .then(() => loader.loadSprites())
-  .then(() => start(color))
+  .then(() => start({ id, color }))
   .then(() => loading.destroy())
   .catch(err => {
     console.error(err)
@@ -41,11 +43,10 @@ function setup (color) {
   })
 }
 
-function start (color) {
-  store.set('remote.id', color)
+function start ({ id, color }) {
   nipple = new Nipple(color)
   nipple.mount(document.querySelector('.nipple-wrapper'))
-  nipple.watch(data => ws.send('agent.move', data))
+  nipple.watch(data => ws.send('agent.move', { direction: data.direction, id, color}))
 
   ws.on('remote.landmark.found', describe)
 }
@@ -93,6 +94,6 @@ function send ({ landmark, words, sentences })  {
 
 export default {
   setup,
-  waitForSlot: ws.once('setcolor', data => { setup(data.color) })
+  waitForSlot: ws.once('remote.slot.attributed', data => { setup(data) })
 }
 

@@ -15,22 +15,22 @@ import bel from 'bel'
 import DomComponent from 'abstractions/DomComponent'
 
 export default class Agent extends DomComponent {
-  constructor (id, [x, y]) {
+  constructor (id, color, [x, y]) {
     super()
     this.id = id
-    this.color = id
+    this.color = color
     this.x = x
     this.y = y
 
     this.ix = new Inertia(Object.assign({}, { value: this.x }, config.agent.inertia || {}))
     this.iy = new Inertia(Object.assign({}, { value: this.y }, config.agent.inertia || {}))
 
-    console.log(`#agent-${this.id} was created`)
+    console.log(`#agent-${this.id} has been created.`)
   }
 
   render () {
     const el = bel`
-    <div class='agent agent-${this.color}' id='agent-${this.id}'/>`
+    <div class='agent' id='agent-${this.id}' style="--agent-color: ${this.color}"/>`
     return el
   }
 

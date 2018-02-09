@@ -1,5 +1,8 @@
 {
-  "remotes": ["blue", "red", "green"],
+  "remotes": {
+    "max": 2,
+    "colors": ["red", "green", "blue"]
+  },
 
   "wipmap": {
     "width": 8,

@@ -26,26 +26,28 @@ function setup () {
     .filter(biome => !biome.isBoundary && !config.agent.forbidden.includes(biome.type))
     .map(biome => biome.site)
 
-  ws.on('agent.add', ({ id }) => { add(id) })
+  ws.on('agent.add', ({ id, color }) => { add(id, color) })
   ws.on('agent.remove', ({ id }) => { remove(id) })
-  ws.on('agent.move', ({ id, direction }) => {
-    const agent = agents[id] || add(id)
+  ws.on('agent.move', ({ id, color, direction }) => {
+    const agent = agents[id] || add(id, color)
     agent.move(direction || [0, 0])
   })
 }
 
-function add (id) {
+function add (id, color = 'black') {
   if (!id) return
   if (agents[id]) return
 
-  let start = toWorld(startingPoints[Object.keys(agents).length % startingPoints.length])
+  console.log(id, color)
+
+  const start = toWorld(startingPoints[Object.keys(agents).length % startingPoints.length])
 
   // If an agent spawn in reach of an unfound landmark, destroy this landmark
   // NOTE: this may not work if several landmarks are in reach
   const landmark = landmarks.find(start, config.agent.fov / 2)
   landmark && landmarks.remove(landmark)
 
-  agents[id] = new Agent(id, start).forbid(forbiddenCells)
+  agents[id] = new Agent(id, color, start).forbid(forbiddenCells)
   agents[id].mount(config.DOM.agentsWrapper)
   return agents[id]
 }

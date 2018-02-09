@@ -18,10 +18,6 @@ const server = Server({
 
 const remotes = {}
 const viewers = []
-const availableRemoteColors = [...config.remotes]
-
-const findRemoteByColor = color => Object.values(remotes).find(r => r.color === color)
-const attributeColorToRemoteByIP = ip => remotes.hasOwnProperty(ip) ? remotes[ip].color : availableRemoteColors.shift()
 
 // RESTful routing, available at /api/endpoint
 
@@ -77,38 +73,28 @@ server.on('handshake', ({ type }, client) => {
 
   if (type === 'viewer') viewers.push(client)
   if (type === 'remote') {
-    const color = attributeColorToRemoteByIP(client.ip)
-    if (color) remotes[client.ip] = { color, client: client }
+    if (Object.keys(remotes).length >= config.remotes.max) {
+      server.send('remote.slot.attributed', {}, client)
+      return
+    }
 
-    server.send('setcolor', { color }, client)
-    server.broadcast('agent.add', { id: color }, viewers)
+    remotes[client.uid] = client
+    const color = config.remotes.colors[Math.floor(Math.random() * config.remotes.colors.length)]
+    server.send('remote.slot.attributed', { id: client.uid, color }, client)
+    server.broadcast('agent.add', { id: client.uid, color }, viewers)
   }
 })
 
 server.on('client.quit', client => {
   server.print()
   if (~viewers.indexOf(client)) viewers.splice(viewers.indexOf(client), 1)
-  if (remotes[client.ip]) {
-    const color = remotes[client.ip].color
-    server.broadcast('agent.remove', { id: color }, viewers)
-    availableRemoteColors.push(color)
-    delete remotes[client.ip]
+  if (remotes[client.uid]) {
+    server.broadcast('agent.remove', { id: client.uid }, viewers)
+    delete remotes[client.uid]
   }
 })
 
 server.on('agent.move', data => { server.broadcast('agent.move', data, viewers) })
-
-server.on('agent.landmark.found', ({ agentID, landmark }) => {
-  const remote = findRemoteByColor(agentID)
-  const cfg = config.wipmap.landmarks[landmark.type]
-  if (remote && cfg) {
-    server.send('remote.landmark.found', {
-      landmark,
-      wordsmap: cfg.wordsmap,
-      sentences: config.sentences[Math.floor(Math.random() * config.sentences.length)]
-    }, remote.client)
-  }
-})
 
 // Starting server
 

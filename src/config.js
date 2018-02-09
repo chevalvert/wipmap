@@ -5,7 +5,7 @@ import getUrlParam from 'utils/get-url-param'
 
 const config = {
   server: {
-    address: window.isProduction ? window.location.hostname : '192.168.1.58',
+    address: window.isProduction ? window.location.hostname : '192.168.1.69',
     port: 8888
   },
 
@@ -27,7 +27,7 @@ const config = {
       rigidity: 0.1,
       friction: 10
     },
-    forbidden: ['WATER']
+    forbidden: []
   },
 
   spritesheets: {

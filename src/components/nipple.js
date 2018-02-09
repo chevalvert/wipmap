@@ -65,9 +65,6 @@ export default class Nipple extends DomComponent {
   }
 
   onMove () {
-    this.events.emit('move', {
-      id: this.color,
-      direction: this.dir
-    })
+    this.events.emit('move', { direction: this.dir })
   }
 }
