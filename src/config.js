@@ -9,12 +9,6 @@ const config = {
     port: 8888
   },
 
-  DOM: {
-    mapWrapper: document.querySelector('.map'),
-    agentsWrapper: document.querySelector('.agents'),
-    describerWrapper: document.querySelector('.describer-wrapper')
-  },
-
   stored: {
     scale: getUrlParam('scale') || 1
   },
@@ -55,12 +49,24 @@ const config = {
     'WATER': [['water', 0.5]]
   },
 
-  drawer: {
-    maxHistoryStates: 100,
-    padding: 100
+  landmarks: {
+    house: {
+      biomes: ['PLAINS', 'FOREST'],
+      variables: [
+        ['small', 'big'],
+        ['light', 'heavy']
+      ]
+    },
+    tree: {
+      biomes: ['PLAINS', 'FOREST', 'JUNGLE'],
+      variables: [
+        ['touffu', 'pas touffu'],
+        ['vert', 'bleu']
+      ]
+    }
   },
 
-  gameover: 0.9
+  gameover: 300
 }
 
 Object.entries(config.stored)

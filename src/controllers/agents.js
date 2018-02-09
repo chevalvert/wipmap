@@ -6,8 +6,6 @@ import ws from 'utils/websocket'
 import { toWorld } from 'utils/map-to-world'
 import shuffle from 'utils/shuffle-array'
 
-import landmarks from 'controllers/landmarks'
-
 import Agent from 'components/agent'
 
 let agents = []
@@ -26,29 +24,23 @@ function setup () {
     .filter(biome => !biome.isBoundary && !config.agent.forbidden.includes(biome.type))
     .map(biome => biome.site)
 
-  ws.on('agent.add', ({ id, color }) => { add(id, color) })
-  ws.on('agent.remove', ({ id }) => { remove(id) })
+  ws.on('agent.add', ({ id, color }) => add(id, color))
+  ws.on('agent.remove', ({ id }) => remove(id))
   ws.on('agent.move', ({ id, color, direction }) => {
     const agent = agents[id] || add(id, color)
     agent.move(direction || [0, 0])
   })
+
+  ws.on('agent.get', ({ id }) => ws.send('agent.get.response', agents[id] && agents[id].props))
 }
 
 function add (id, color = 'black') {
   if (!id) return
   if (agents[id]) return
 
-  console.log(id, color)
-
   const start = toWorld(startingPoints[Object.keys(agents).length % startingPoints.length])
-
-  // If an agent spawn in reach of an unfound landmark, destroy this landmark
-  // NOTE: this may not work if several landmarks are in reach
-  const landmark = landmarks.find(start, config.agent.fov / 2)
-  landmark && landmarks.remove(landmark)
-
   agents[id] = new Agent(id, color, start).forbid(forbiddenCells)
-  agents[id].mount(config.DOM.agentsWrapper)
+  agents[id].mount(document.querySelector('.agents'))
   return agents[id]
 }
 

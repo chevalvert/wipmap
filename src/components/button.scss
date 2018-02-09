@@ -4,4 +4,8 @@ button.button {
   color: $white;
   background-color: $green;
   padding: 1.5rem 2rem;
+
+  &.is-disabled {
+    background-color: $gray;
+  }
 }

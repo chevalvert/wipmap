@@ -28,6 +28,15 @@ export default class Agent extends DomComponent {
     console.log(`#agent-${this.id} has been created.`)
   }
 
+  get props () {
+    return {
+      id: this.id,
+      position: [this.x, this.y],
+      normalizedPosition: toMap([this.x, this.y]),
+      currentBiome: this.currentBiome()
+    }
+  }
+
   render () {
     const el = bel`
     <div class='agent' id='agent-${this.id}' style="--agent-color: ${this.color}"/>`
@@ -45,11 +54,6 @@ export default class Agent extends DomComponent {
     raf.remove(this.update)
   }
 
-  onfound (landmark) {
-    this.pause()
-    ws.send('agent.landmark.found', { agentID: this.id, landmark })
-  }
-
   pause () { this.paused = true }
 
   resume () {
@@ -65,8 +69,6 @@ export default class Agent extends DomComponent {
     this.iy.update()
     if (!this.ix.stopped || !this.iy.stopped) {
       this.applyPosition(this.ix.value, this.iy.value)
-      const landmark = landmarks.find([this.x, this.y], config.agent.fov / 2)
-      if (landmark) this.onfound(landmark)
     }
   }
 
@@ -94,7 +96,18 @@ export default class Agent extends DomComponent {
       && !this.inForbiddenCell(x, y)
   }
 
+  // This method is perf heavy, and should only use in async calls
+  currentBiome () {
+    const pos = toMap([this.x, this.y])
+    const map = store.get('map.json')
+    return map && map.biomes.find(biome => inPolygon(pos, biome.cell))
+  }
+
+  // This is faster than testing this.forbiddenCells.indexOf(this.currentBiome),
+  // and can be used in raf calls
   inForbiddenCell (x, y) {
+    if (!this.forbiddenCells || !this.forbiddenCells.length) return false
+
     const pos = toMap([x, y])
     return !!this.forbiddenCells.find(cell => inPolygon(pos, cell))
   }

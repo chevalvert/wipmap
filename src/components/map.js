@@ -8,7 +8,7 @@ import { toWorld } from 'utils/map-to-world'
 import groupBy from 'utils/group-by'
 
 import landmarks from 'controllers/landmarks'
-import Canvas from 'components/canvas'
+import Canvas from 'abstractions/Canvas'
 
 const defaultOpts = {
   voronoi: false,
@@ -44,8 +44,6 @@ export default class Map extends Canvas {
     this.opts.voronoi && this.draw_debug()
     this.draw_biomePatterns()
     this.draw_landmarks()
-
-    this.draw_debug_landmarks(true)
   }
 
   draw_biomePatterns () {
@@ -68,26 +66,10 @@ export default class Map extends Canvas {
   }
 
   draw_landmarks () {
-    landmarks
-    .filter(l => l.hasOwnProperty('dataurl'))
+    landmarks.all
     .forEach(landmark => {
-      const [x, y] = toWorld(landmark.position)
-
-      if (landmark.dataurl) {
-        // landmark get a dataurl from /remote drawer
-        if (!landmark.img) {
-          const img = new Image
-          img.onload = () => {
-            landmark.img = img
-            this.context.drawImage(img, Math.floor(x - img.width / 2), Math.floor(y - img.height / 2))
-          }
-          img.src = landmark.dataurl
-        } else this.context.drawImage(landmark.img, Math.floor(x - landmark.img.width / 2), Math.floor(y - landmark.img.height / 2))
-      }
-      else if (landmark.sprite) {
-        // landmark get a sprite from /generator
-        this.drawSprite(landmark.sprite.name, x, y, this.scale, landmark.sprite.index)
-      }
+      const [x, y] = landmark.position
+      this.drawSprite(landmark.sprite.name, x, y, this.scale, landmark.sprite.index)
     })
   }
 
@@ -121,17 +103,6 @@ export default class Map extends Canvas {
     this.wipmap.biomes.forEach(({ site, type }) => {
       const [x, y] = toWorld(site)
       this.context.fillRect(x - 4, y - 4, 8, 8)
-    })
-  }
-
-  draw_debug_landmarks () {
-    const seeds = groupBy(Object.values(landmarks.all), 'instance')
-    Object.values(seeds).forEach(landmarks => {
-      this.context.fillStyle = `rgb(${prng.randomInt(0, 255)}, ${prng.randomInt(0, 255)}, ${prng.randomInt(0, 255)})`
-      landmarks.filter(l => !l.found).forEach((landmark, index) => {
-        const [x, y] = toWorld(landmark.position)
-        this.context.fillRect(x - 10, y - 10, 20, 20)
-      })
     })
   }
 }

@@ -1,0 +1,27 @@
+.landmark-generator {
+  background: $white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .selectable-word {
+    color: $green;
+    text-transform: uppercase;
+
+    &:not(:last-child)::after {
+      content: '/';
+      margin: 0 1ch;
+    }
+
+    &.is-constant { color: $red; }
+  }
+
+  .sprite-previewer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 2rem;
+  }
+}

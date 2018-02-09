@@ -4,20 +4,24 @@
 
 $black:  #262626;
 $white:  #FFFFFF;
+$gray:   #555555;
 $green:  #56E271;
 $yellow: #F9D43A;
 $red:    #FF6464;
 
 @import 'sass/base';
 
+@import 'pages/generator';
+@import 'pages/remote';
+@import 'pages/viewer';
+
 @import 'components/agent';
 @import 'components/button';
-@import 'components/canvas';
-@import 'components/describer';
-@import 'components/drawer';
 @import 'components/fog';
+@import 'components/landmark-generator';
 @import 'components/log-screen';
 @import 'components/map';
 @import 'components/nipple';
 @import 'components/oui';
 @import 'components/selectable-word';
+@import 'components/sprite-previewer';

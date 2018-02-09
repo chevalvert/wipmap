@@ -4,13 +4,19 @@ import bel from 'bel'
 import DomComponent from 'abstractions/DomComponent'
 
 export default class SelectableWord extends DomComponent {
-  constructor (words) {
+  constructor (words, onchange = function () {} ) {
     super()
-    this.words = [].concat(words)
-    this.length = this.words.length
-    this.index = 0
+    this.words = words
+    this.onchange = onchange
   }
 
+  set words (words) {
+    this._words = [].concat(words)
+    this.length = this.words.length
+    this.setIndex(0)
+  }
+
+  get words () { return this._words }
   get word () { return this.words[this.index] }
 
   render () {
@@ -19,7 +25,10 @@ export default class SelectableWord extends DomComponent {
 
   setIndex (i) {
     this.index = i
-    this.refs.base.innerHTML = this.words[this.index]
+    if (this.mounted) {
+      this.refs.base.innerHTML = this.words[this.index]
+      this.onchange(this.word)
+    }
   }
 
   random () {
@@ -28,7 +37,7 @@ export default class SelectableWord extends DomComponent {
 
   didMount () {
     if (this.length === 1) {
-      this.addClass('is-disabled')
+      this.addClass('is-constant')
       return
     }
 

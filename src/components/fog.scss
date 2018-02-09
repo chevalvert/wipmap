@@ -1,4 +1,5 @@
 canvas.fog {
+  position: absolute;
   @include easing(opacity, 300ms);
 }
 

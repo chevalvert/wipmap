@@ -6,18 +6,21 @@ import ws from 'utils/websocket'
 import store from 'utils/store'
 import events from 'utils/events'
 
+import fetchJSON from 'utils/fetch-json'
 import post from 'utils/post'
+import objectIsEmpty from 'utils/object-is-empty'
 
 import error from 'utils/error'
 import loader from 'controllers/loader'
 
 import LogScreen from 'components/log-screen'
-import Describer from 'components/describer'
+import LandmarkGenerator from 'components/landmark-generator'
 import Nipple from 'components/nipple'
+import Button from 'components/button'
 
 let nipple
-let describer
-let loading
+let btnGenerate
+let generator
 
 function setup ({ id, color }) {
   if (!id) {
@@ -28,11 +31,11 @@ function setup ({ id, color }) {
 
   store.set('remote.id', id)
   store.set('remote.color', color)
-  loading = new LogScreen( L`loading` )
+
+  const loading = new LogScreen(L`loading`,  L`loading.sprites`)
 
   Promise.resolve()
   .then(() => loading.mount(document.body))
-  .then(() => loading.say( L`loading.sprites` ))
   .then(() => loader.loadSprites())
   .then(() => start({ id, color }))
   .then(() => loading.destroy())
@@ -44,27 +47,39 @@ function setup ({ id, color }) {
 }
 
 function start ({ id, color }) {
-  nipple = new Nipple(color)
-  nipple.mount(document.querySelector('.nipple-wrapper'))
-  nipple.watch(data => ws.send('agent.move', { direction: data.direction, id, color}))
+  btnGenerate = new Button(L`remote.buttons.generate`, () => generate(id))
 
-  ws.on('remote.landmark.found', describe)
+  nipple = new Nipple(color)
+  nipple.mount(document.querySelector('.controls'))
+  nipple.watch(data => {
+    !btnGenerate.mounted && btnGenerate.mount(document.querySelector('.controls'))
+    ws.send('agent.move', { direction: data.direction, id, color})
+  })
 }
 
-function describe ({ landmark, wordsmap, sentences }) {
+function generate (id) {
+  nipple.disable()
+  btnGenerate.disable()
+
+  const loading = new LogScreen(L`loading`, L`landmark-generator.getting`)
+
   Promise.resolve()
-  .then(() => {
-    nipple.disable()
-    describer = new Describer(landmark, wordsmap, sentences)
-    describer.mount(config.DOM.describerWrapper)
-  })
-  .then(() => events.waitFor('describer.validate'))
-  .then(send)
-  .then(() => {
-    describer.destroy()
-    nipple.enable()
+  .then(() => loading.mount(document.body))
+  .then(() => fetchJSON(`http://${config.server.address}:${config.server.port}/api/agent/${id}/`))
+  .then(agent => {
+    const landmarks = LandmarkGenerator.findAvailable(agent.currentBiome)
+    if (objectIsEmpty(landmarks)) {
+      // WIP
+      // btnGenerate.shake()
+      // return Promise.resolve()
+    }
+
+    generator = new LandmarkGenerator(agent, landmarks)
+    generator.mount(document.querySelector('.landmark-generator-wrapper'))
     loading.destroy()
+    return events.waitFor('landmark-generator.validate')
   })
+  .then(send)
   .catch(err => {
     console.error(err)
     loading.destroy()
@@ -72,24 +87,32 @@ function describe ({ landmark, wordsmap, sentences }) {
   })
 }
 
-function send ({ landmark, words, sentences })  {
-  loading = new LogScreen( L`loading.sendingLandmark` )
-  loading.mount(document.body)
+function send (data) {
+  const loading = new LogScreen(L`loading`, L`landmark-generator.sending`)
 
-  const data = {
-    agentID: store.get('remote.id'),
-    landmark,
-    words,
-    sentences
-  }
-
-  return new Promise ((resolve, reject) => {
-    post(`http://${config.server.address}:${config.server.port}/api/landmark`, data)
-    .then(res => {
-      if (res.ok) resolve(res)
-      else reject(res.statusText)
+  Promise.resolve()
+  .then(() => loading.mount(document.body))
+  .then(() => {
+    return new Promise ((resolve, reject) => {
+      post(`http://${config.server.address}:${config.server.port}/api/landmark`, data)
+      .then(res => {
+        if (res.ok) resolve(res)
+        else reject(res.statusText)
+      })
     })
   })
+  .then(() => {
+    nipple.enable()
+    btnGenerate.enable()
+  })
+  .then(() => loading.destroy())
+  .catch(err => {
+    console.error(err)
+    loading.destroy()
+    error(err)
+  })
+
+  generator.destroy()
 }
 
 export default {

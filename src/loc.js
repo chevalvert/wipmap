@@ -40,6 +40,8 @@ locales.fr['generator.panel.water'] = 'eau'
 locales.fr['generator.panel.forest'] = 'forêts'
 locales.fr['generator.panel.houses'] = 'habitations'
 
+locales.fr['remote.buttons.generate'] = 'révéler un lieu'
+
 export default (key, LANG = 'fr') => {
   if (!key) return
   if (Array.isArray(key)) key = key[0]

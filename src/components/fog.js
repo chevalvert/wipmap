@@ -4,7 +4,7 @@ import config from 'config'
 import store from 'utils/store'
 import events from 'utils/events'
 
-import Canvas from 'components/canvas'
+import Canvas from 'abstractions/Canvas'
 
 export default class Fog extends Canvas {
   constructor (color) {

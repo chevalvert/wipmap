@@ -2,7 +2,7 @@ button.selectable-word {
   @include reset-Button();
   display: inline-block;
 
-  &.is-disabled {
+  &.is-constant {
     pointer-events: none;
   }
 }

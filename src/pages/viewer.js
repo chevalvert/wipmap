@@ -1,7 +1,6 @@
 'use strict'
 
 import L from 'loc'
-import config from 'config'
 import store from 'utils/store'
 import ws from 'utils/websocket'
 
@@ -33,10 +32,7 @@ function setup () {
     const f = getUrlParam('force')
     return loader.loadMap(x, y, f)
   })
-  .then(map => {
-    landmarks.set(map)
-    start(map)
-  })
+  .then(start)
   .then(() => loading.destroy())
   .catch(err => {
     console.error(err)
@@ -49,15 +45,18 @@ function start (json) {
   const map = new Map(json)
   const fog = new Fog('white')
 
-  map.mount(config.DOM.mapWrapper)
-  fog.mount(config.DOM.mapWrapper)
+  map.mount(document.querySelector('.map'))
+  fog.mount(document.querySelector('.map'))
 
   agents.setup()
   fps()
 
-  ws.on('landmark.add', ({ agentID, landmark }) => {
-    landmarks.markAsFound(landmark)
-    agents.resume(agentID)
+  ws.on('landmark.add', ({ sprite, agent }) => {
+    landmarks.add({
+      sprite,
+      position: agent.position,
+    })
+    agents.resume(agent.id)
 
     // TODO: improve perf by redrawing only revelant map area
     map.update()

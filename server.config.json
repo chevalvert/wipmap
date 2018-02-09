@@ -23,22 +23,6 @@
       ["TAIGA", "JUNGLE", "SWAMP"],
       ["TUNDRA", "PLAINS", "PLAINS"],
       ["TUNDRA", "PLAINS", "DESERT"]
-    ],
-
-    "landmarks": {
-      "house": {
-        "length": [3, 5, 1],
-        "biomes": ["PLAINS"],
-        "wordsmap": {
-          "x": ["SMALL", "AVERAGE", "BIG"],
-          "y": ["LIGHT", "AVERAGE", "HEAVY"],
-          "z": ["FUN1", "FUN2", "FUN3"]
-        }
-      }
-    }
-  },
-
-  "sentences": [
-    ["Nous sommes dans %biome, je vois une %type %x et %y.", "Elle est aussi %z."]
-  ]
+    ]
+  }
 }

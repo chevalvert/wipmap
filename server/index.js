@@ -36,6 +36,12 @@ server.route('/map/:x/:y/:force?*', (req, res) => {
   }
 }, 'GET')
 
+
+server.route('/agent/:id', (req, res) => {
+  server.once('agent.get.response', agent => res.json(agent || {}))
+  server.broadcast('agent.get', { id : req.params.id }, viewers)
+}, 'GET')
+
 server.route('/generate/:x/:y', (req, res) => {
   // TODO: send error
   if (!req.body) return
@@ -49,19 +55,8 @@ server.route('/landmark', (req, res) => {
   // TODO: send eror
   if (!req.body) return
 
-  // TODO: add landmark informations in filename
-  const file = path.join(__dirname, 'data', 'landmarks', req.body.landmark.type, (+new Date()) + '.png')
-  const b64 = req.body.landmark.dataurl.replace(/^data:image\/png;base64,/, '')
-  fs.outputFile(file, b64, 'base64', err => {
-    if (err) res.json(err)
-    else {
-      server.broadcast('landmark.add', {
-        agentID: req.body.agentID,
-        landmark: req.body.landmark
-      }, viewers)
-      res.json(null)
-    }
-  })
+  server.broadcast('landmark.add', req.body, viewers)
+  res.json(null)
 }, 'POST')
 
 // Websocket routing
