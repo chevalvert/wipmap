@@ -26,9 +26,9 @@ function setup () {
 
   ws.on('agent.add', ({ id, color }) => add(id, color))
   ws.on('agent.remove', ({ id }) => remove(id))
-  ws.on('agent.move', ({ id, color, direction }) => {
+  ws.on('agent.move', ([dx, dy, id, color]) => {
     const agent = agents[id] || add(id, color)
-    agent.move(direction || [0, 0])
+    agent.move([dx, dy] || [0, 0])
   })
 
   ws.on('agent.get', ({ id }) => ws.send('agent.get.response', agents[id] && agents[id].props))

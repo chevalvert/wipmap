@@ -53,7 +53,13 @@ function start ({ id, color }) {
   nipple.mount(document.querySelector('.controls'))
   nipple.watch(data => {
     !btnGenerate.mounted && btnGenerate.mount(document.querySelector('.controls'))
-    ws.send('agent.move', { direction: data.direction, id, color})
+
+    if (!data.direction) return
+
+    // Trying to compress data to reduce transport payload
+    const dx = Math.trunc(data.direction[0])
+    const dy = Math.trunc(data.direction[1])
+    ws.send('agent.move', [dx, dy, id, color])
   })
 }
 
