@@ -17,6 +17,6 @@ module.exports = [
     output: 'generator.html',
     content: { title: title + ' — generator' },
     layout: 'pages/generator.hbs'
-  },
+  }
 
 ]

@@ -1,9 +1,6 @@
 'use strict'
 
 import L from 'loc'
-import config from 'config'
-import store from 'utils/store'
-import ws from 'utils/websocket'
 import handshake from 'utils/handshake'
 
 import Navigo from 'navigo'

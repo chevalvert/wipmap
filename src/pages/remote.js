@@ -32,7 +32,7 @@ function setup ({ id, color }) {
   store.set('remote.id', id)
   store.set('remote.color', color)
 
-  const loading = new LogScreen(L`loading`,  L`loading.sprites`)
+  const loading = new LogScreen(L`loading`, L`loading.sprites`)
 
   Promise.resolve()
   .then(() => loading.mount(document.body))
@@ -99,7 +99,7 @@ function send (data) {
   Promise.resolve()
   .then(() => loading.mount(document.body))
   .then(() => {
-    return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       post(`http://${config.server.address}:${config.server.port}/api/landmark`, data)
       .then(res => {
         if (res.ok) resolve(res)
@@ -125,4 +125,3 @@ export default {
   setup,
   waitForSlot: ws.once('remote.slot.attributed', data => { setup(data) })
 }
-

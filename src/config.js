@@ -5,12 +5,12 @@ import getUrlParam from 'utils/get-url-param'
 
 const config = {
   server: {
-    address: window.isProduction ? window.location.hostname : '192.168.1.69',
+    address: window.isProduction ? window.location.hostname : '192.168.0.16',
     port: 8888
   },
 
   stored: {
-    scale: getUrlParam('scale') || 1
+    scale: getUrlParam('scale') || 1
   },
 
   agent: {
@@ -25,15 +25,15 @@ const config = {
   },
 
   spritesheets: {
-    'grass': { src:'spritesheets/grass.png', resolution: 10 },
+    'grass': { src: 'spritesheets/grass.png', resolution: 10 },
     'sand': { src: 'spritesheets/sand.png', resolution: 10 },
     'tree': { src: 'spritesheets/tree.png', resolution: 40, length: 7 },
     'water': { src: 'spritesheets/water.png', resolution: 20 },
     'dune': { src: 'spritesheets/dune.png', resolution: 20 },
 
     'brush': { src: 'brush.png' },
-    'house' : {src: 'spritesheets/house.png', resolution: 20 },
-    'rock' : {src: 'spritesheets/rock.png', resolution: 20 }
+    'house': { src: 'spritesheets/house.png', resolution: 20 },
+    'rock': { src: 'spritesheets/rock.png', resolution: 20 }
   },
 
   biomes: {

@@ -1,7 +1,6 @@
 'use strict'
 
 import L from 'loc'
-import store from 'utils/store'
 import ws from 'utils/websocket'
 
 import error from 'utils/error'
@@ -15,20 +14,19 @@ import isGameOver from 'controllers/is-game-over'
 import Map from 'components/map'
 import Fog from 'components/fog'
 
-import prng from 'utils/prng'
 import getUrlParam from 'utils/get-url-param'
 import fps from 'fps-indicator'
 
 function setup () {
-  const loading = new LogScreen( L`loading` )
+  const loading = new LogScreen(L`loading`)
   Promise.resolve()
   .then(() => loading.mount(document.body))
-  .then(() => loading.say( L`loading.sprites` ))
+  .then(() => loading.say(L`loading.sprites`))
   .then(() => loader.loadSprites())
-  .then(() => loading.say( L`loading.map` ))
+  .then(() => loading.say(L`loading.map`))
   .then(() => {
-    const x = getUrlParam('x') || 0
-    const y = getUrlParam('y') || 0
+    const x = getUrlParam('x') || 0
+    const y = getUrlParam('y') || 0
     const f = getUrlParam('force')
     return loader.loadMap(x, y, f)
   })
@@ -54,7 +52,7 @@ function start (json) {
   ws.on('landmark.add', ({ sprite, agent }) => {
     landmarks.add({
       sprite,
-      position: agent.position,
+      position: agent.position
     })
     agents.resume(agent.id)
 
@@ -66,13 +64,12 @@ function start (json) {
 }
 
 function end () {
-  const endScreen = new LogScreen( L`gameover` )
+  const endScreen = new LogScreen(L`gameover`)
   endScreen.mount(document.body)
 
   ws.off('landmark.add')
 
   // TODO: RESTful call for new map
 }
-
 
 export default { setup }

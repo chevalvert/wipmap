@@ -19,11 +19,11 @@ locales.fr['landmark.house'] = 'une maison'
 
 locales.fr['biome.plains'] = ['la plaine', 'une plaine']
 locales.fr['biome.desert'] = 'le désert'
-locales.fr['biome.taiga']  = 'la taïga'
+locales.fr['biome.taiga'] = 'la taïga'
 locales.fr['biome.tundra'] = 'la tundra'
-locales.fr['biome.swamp']  = 'un marais'
+locales.fr['biome.swamp'] = 'un marais'
 locales.fr['biome.forest'] = 'la forêt'
-locales.fr['biome.water']  = ['la mer', 'un lac', 'un étang']
+locales.fr['biome.water'] = ['la mer', 'un lac', 'un étang']
 
 locales.fr['generator.panel.title'] = 'Options'
 locales.fr['generator.panel.map'] = 'carte'

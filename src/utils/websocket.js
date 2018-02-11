@@ -42,7 +42,7 @@ export default {
   },
 
   // Used for control flow in promises chain
-  waitFor: event => new Promise ((resolve, reject) => {
+  waitFor: event => new Promise((resolve, reject) => {
     events.once(event, resolve)
   })
 }
