@@ -1,5 +1,6 @@
 'use strict'
 
+import L from 'loc'
 import config from 'config'
 import store from 'utils/store'
 import events from 'utils/events'
@@ -9,14 +10,15 @@ import getSpriteIndex from 'utils/get-sprite-index'
 import bel from 'bel'
 
 import Button from 'components/button'
-import SelectableWord from 'components/selectable-word'
+import InputWord from 'components/input-word'
+import InputNumber from 'components/input-number'
 import SpritePreviewer from 'components/sprite-previewer'
 import DomComponent from 'abstractions/DomComponent'
 
 export default class LandmarkGenerator extends DomComponent {
   static findAvailable (biome) {
+    if (!biome) return
     let landmarks = {}
-
     Object.entries(config.landmarks).forEach(([category, landmark]) => {
       if (!landmark.biomes.includes(biome.type)) return
       landmarks[category] = landmark
@@ -27,54 +29,86 @@ export default class LandmarkGenerator extends DomComponent {
   constructor (agent, landmarks) {
     super()
     this.agent = agent
-    this.landmarks = landmarks || this.findAvailable(agent.currentBiome)
+    this.landmarks = landmarks || this.findAvailable(agent.currentBiome)
   }
 
   render () {
+    const color = store.get('remote.color')
+
     this.refs.words = {
-      category: this.registerComponent(SelectableWord, Object.keys(this.landmarks), () => this.update()),
+      category: this.registerComponent(InputWord, { words: Object.keys(this.landmarks), color, loc: 'landmark.' }, () => this.update()),
       variables: [
         // Those words will be populated in this.update on didMount call
-        this.registerComponent(SelectableWord, [], () => this.preview()),
-        this.registerComponent(SelectableWord, [], () => this.preview())
+        this.registerComponent(InputWord, { color }, () => this.preview()),
+        this.registerComponent(InputWord, { color }, () => this.preview())
       ]
     }
 
+    this.refs.modifiers = {
+      length: this.registerComponent(InputNumber, { range: [1, 10], step: 1, color }, () => this.preview()),
+      density: this.registerComponent(InputNumber, { value: 50, range: [0, 100], step: 10, color, prefix: '%' }, () => this.preview()),
+      order: this.registerComponent(InputNumber, { value: 50, range: [0, 100], step: 25, color, prefix: '%' }, () => this.preview())
+    }
+
     this.refs.buttons = {
-      random: this.registerComponent(Button, 'random', () => this.randomize()),
-      validate: this.registerComponent(Button, 'validate', () => this.validate())
+      random: this.registerComponent(Button, { value: 'random', color }, () => this.randomize()),
+      validate: this.registerComponent(Button, { value: 'validate', color }, () => this.validate())
     }
 
     this.refs.preview = this.registerComponent(SpritePreviewer)
 
-    return bel`<div class="landmark-generator">
-      <h1>${this.agent.currentBiome.type}</h1>
-      <div class="landmark-generator-sentence">
-        ${[this.refs.words.category, ...this.refs.words.variables].map(w => w.raw())}
-      </div>
-      <div class="landmark-generator-buttons">
+    const sentence = {
+      context: L('biome.' + this.agent.currentBiome.type.toLowerCase()),
+      type: this.refs.words.category.raw(),
+      variable: this.refs.words.variables.map(v => v.raw()),
+      'modifier-length': this.refs.modifiers.length.raw(),
+      'modifier-density': this.refs.modifiers.density.raw(),
+      'modifier-order': this.refs.modifiers.order.raw()
+    }
+
+    return bel`<div class='landmark-generator'>
+      <ul class='landmark-generator-sentence'>
+        ${
+          Object.entries(sentence).map(([key, els]) => [].concat(els).map(el => {
+            return bel`
+            <li class='landmark-generator-sentence-word' data-name=${L(`remote.landmark-generator.prefix.${key}`)}>
+              ${el}
+            </li>`
+          }))
+        }
+      </ul>
+
+      <div class='landmark-generator-buttons'>
         ${Object.values(this.refs.buttons).map(btn => btn.raw())}
       </div>
-      <div class="landmark-generator-preview">
+
+      <div class='landmark-generator-preview'>
         ${this.refs.preview.raw()}
       </div>
     </div>`
   }
 
-  didMount () {
-    this.update()
-  }
+  didMount () { this.update() }
 
   update () {
-    this.landmarks[this.refs.words.category.word].variables.forEach((words, index) => {
-      this.refs.words.variables[index].words = words
+    window.requestAnimationFrame(() => {
+      const type = this.refs.words.category.word
+      if (!type) return
+      this.landmarks[type].variables.forEach((words, index) => {
+        this.refs.words.variables[index].loc = `landmark.${type}.`
+        this.refs.words.variables[index].words = words || ['undefined']
+      })
+      this.preview()
     })
-    this.preview()
   }
 
   preview () {
     const sprite = this.getSprite()
-    this.refs.preview.setSprite(sprite.spritesheet, sprite.index)
+    const modifiers = {}
+    Object.entries(this.refs.modifiers).forEach(([key, modifier]) => {
+      modifiers[key] = modifier.value
+    })
+    this.refs.preview.setSprite(sprite.spritesheet, sprite.index, modifiers)
   }
 
   getSprite () {
@@ -88,7 +122,7 @@ export default class LandmarkGenerator extends DomComponent {
   }
 
   randomize () {
-    [this.refs.words.category, ...this.refs.words.variables].forEach(w => w.random())
+    ;[this.refs.words.category, ...this.refs.words.variables, ...Object.values(this.refs.modifiers)].forEach(w => w.random())
   }
 
   get words () {
@@ -98,9 +132,11 @@ export default class LandmarkGenerator extends DomComponent {
   validate () {
     // TODO: handle undefined sprite ?
     const sprite = this.getSprite()
+    const points = this.refs.preview.points
     events.emit('landmark-generator.validate', {
       sprite,
-      agent: this.agent,
+      points,
+      agent: this.agent
     })
   }
 }

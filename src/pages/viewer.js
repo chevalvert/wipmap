@@ -49,11 +49,14 @@ function start (json) {
   agents.setup()
   fps()
 
-  ws.on('landmark.add', ({ sprite, agent }) => {
-    landmarks.add({
-      sprite,
-      position: agent.position
+  ws.on('landmark.add', ({ sprite, agent, points }) => {
+    points.forEach(([x, y]) => {
+      landmarks.add({
+        sprite,
+        position: [agent.position[0] + x, agent.position[1] + y + sprite.spritesheet.resolution / 2]
+      })
     })
+
     agents.resume(agent.id)
 
     // TODO: improve perf by redrawing only revelant map area

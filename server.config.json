@@ -1,6 +1,6 @@
 {
   "remotes": {
-    "max": 2,
+    "max": 10,
     "colors": ["red", "green", "blue"]
   },
 

@@ -47,14 +47,15 @@ function setup ({ id, color }) {
 }
 
 function start ({ id, color }) {
-  btnGenerate = new Button(L`remote.buttons.generate`, () => generate(id))
+  btnGenerate = new Button({ value: L`remote.buttons.generate`, color }, () => generate(id))
 
   nipple = new Nipple(color)
   nipple.mount(document.querySelector('.controls'))
   nipple.watch(data => {
-    !btnGenerate.mounted && btnGenerate.mount(document.querySelector('.controls'))
-
     if (!data.direction) return
+
+    !btnGenerate.mounted && btnGenerate.mount(document.querySelector('.controls'))
+    btnGenerate.enable()
 
     // Trying to compress data to reduce transport payload
     const dx = Math.trunc(data.direction[0])
@@ -64,9 +65,6 @@ function start ({ id, color }) {
 }
 
 function generate (id) {
-  nipple.disable()
-  btnGenerate.disable()
-
   const loading = new LogScreen(L`loading`, L`landmark-generator.getting`)
 
   Promise.resolve()
@@ -74,12 +72,15 @@ function generate (id) {
   .then(() => fetchJSON(`http://${config.server.address}:${config.server.port}/api/agent/${id}/`))
   .then(agent => {
     const landmarks = LandmarkGenerator.findAvailable(agent.currentBiome)
-    if (objectIsEmpty(landmarks)) {
-      // WIP
-      // btnGenerate.shake()
-      // return Promise.resolve()
+    if (!landmarks || objectIsEmpty(landmarks)) {
+      btnGenerate.shake()
+      btnGenerate.disable()
+      loading.destroy()
+      return Promise.resolve()
     }
 
+    nipple.disable()
+    btnGenerate.disable()
     generator = new LandmarkGenerator(agent, landmarks)
     generator.mount(document.querySelector('.landmark-generator-wrapper'))
     loading.destroy()
@@ -94,6 +95,8 @@ function generate (id) {
 }
 
 function send (data) {
+  if (!data) return
+
   const loading = new LogScreen(L`loading`, L`landmark-generator.sending`)
 
   Promise.resolve()
@@ -118,7 +121,7 @@ function send (data) {
     error(err)
   })
 
-  generator.destroy()
+  generator && generator.destroy()
 }
 
 export default {

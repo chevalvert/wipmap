@@ -41,6 +41,12 @@ locales.fr['generator.panel.forest'] = 'forêts'
 locales.fr['generator.panel.houses'] = 'habitations'
 
 locales.fr['remote.buttons.generate'] = 'révéler un lieu'
+locales.fr['remote.landmark-generator.prefix.context'] = 'Contexte = '
+locales.fr['remote.landmark-generator.prefix.type'] = 'MonObjet = '
+locales.fr['remote.landmark-generator.prefix.variable'] = 'MonObjet.'
+locales.fr['remote.landmark-generator.prefix.modifier-length'] = 'MonObjet.nombre = '
+locales.fr['remote.landmark-generator.prefix.modifier-density'] = 'MonObjet.densité = '
+locales.fr['remote.landmark-generator.prefix.modifier-order'] = 'MonObjet.bazar = '
 
 export default (key, LANG = 'fr') => {
   if (!key) return

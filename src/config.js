@@ -5,7 +5,7 @@ import getUrlParam from 'utils/get-url-param'
 
 const config = {
   server: {
-    address: window.isProduction ? window.location.hostname : '192.168.0.16',
+    address: window.isProduction ? window.location.hostname : '192.168.1.69',
     port: 8888
   },
 
@@ -33,7 +33,8 @@ const config = {
 
     'brush': { src: 'brush.png' },
     'house': { src: 'spritesheets/house.png', resolution: 20 },
-    'rock': { src: 'spritesheets/rock.png', resolution: 20 }
+    'rock': { src: 'spritesheets/rock.png', resolution: 20 },
+    'debug': { src: 'debug.png', resolution: 20 }
   },
 
   biomes: {
@@ -50,6 +51,10 @@ const config = {
   },
 
   landmarks: {
+    debug: {
+      biomes: ['PLAINS', 'DESERT', 'TAIGA', 'TUNDRA', 'SWAMP', 'FOREST', 'WATER'],
+      variables: []
+    },
     house: {
       biomes: ['PLAINS', 'FOREST'],
       variables: [
@@ -58,7 +63,7 @@ const config = {
       ]
     },
     tree: {
-      biomes: ['PLAINS', 'FOREST', 'JUNGLE'],
+      biomes: ['PLAINS', 'DESERT', 'TAIGA', 'TUNDRA', 'SWAMP', 'FOREST', 'WATER'],
       variables: [
         ['touffu', 'pas touffu'],
         ['vert', 'bleu']

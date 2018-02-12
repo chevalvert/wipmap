@@ -1,9 +1,5 @@
-.controls {
-  & > * {
-    @include debug();
-  }
-}
+.controls {}
 
 .landmark-generator-wrapper {
-  z-index: 2;
+  .landmark-generator { z-index: 2; }
 }

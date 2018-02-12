@@ -6,8 +6,11 @@
   right: 0;
   bottom: 0;
 
-  .selectable-word {
-    color: $green;
+  .landmark-generator-sentence-word::before {
+    content: attr(data-name);
+  }
+
+  .input-word {
     text-transform: uppercase;
 
     &:not(:last-child)::after {

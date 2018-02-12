@@ -1,9 +1,5 @@
 'use strict'
 
-import prng from 'utils/prng'
-import distSq from 'utils/distance-squared'
-import { toWorld } from 'utils/map-to-world'
-
 let landmarks = []
 
 function reset () {
@@ -11,8 +7,8 @@ function reset () {
 }
 
 function add (landmark) {
-  console.log(landmark)
   landmarks.push(landmark)
+  landmarks.sort((a, b) => a.position[1] - b.position[1])
 }
 
 export default {

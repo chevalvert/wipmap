@@ -1,22 +1,25 @@
 'use strict'
 
 import bel from 'bel'
+import noop from 'utils/noop'
 import DomComponent from 'abstractions/DomComponent'
 
 export default class Button extends DomComponent {
-  constructor (value, onclick = function () {}) {
+  constructor ({ value, color = 'black' }, onclick = noop) {
     super()
     this.value = value
+    this.color = color
     this.onclick = onclick
   }
 
   render () {
     return bel`
-      <button
-      class='button'
-      onclick=${e => !this.disabled && this.onclick(e)}>
-        ${this.value}
-      </button>`
+    <button
+    class='button'
+    style='--color: ${this.color}'
+    onclick=${e => !this.disabled && this.onclick(e)}>
+      ${this.value}
+    </button>`
   }
 
   enable () {
@@ -27,5 +30,11 @@ export default class Button extends DomComponent {
   disable () {
     this.disabled = true
     this.addClass('is-disabled')
+  }
+
+  shake () {
+    this.removeClass('is-shaking')
+    this.repaint()
+    this.addClass('is-shaking')
   }
 }

@@ -5,13 +5,12 @@ import store from 'utils/store'
 
 import prng from 'utils/prng'
 import { toWorld } from 'utils/map-to-world'
-import groupBy from 'utils/group-by'
 
 import landmarks from 'controllers/landmarks'
 import Canvas from 'abstractions/Canvas'
 
 const defaultOpts = {
-  voronoi: false,
+  voronoi: false
 }
 
 export default class Map extends Canvas {
@@ -29,7 +28,7 @@ export default class Map extends Canvas {
   }
 
   onresize () {
-    this.resize([window.innerWidth * this.scale, window.innerHeight * this.scale])
+    this.resize([window.innerWidth, window.innerHeight])
     store.set('width', this.width)
     store.set('height', this.height)
 
@@ -41,13 +40,13 @@ export default class Map extends Canvas {
     this.clear()
     this.context.imageSmoothingEnabled = false
 
-    this.opts.voronoi && this.draw_debug()
-    this.draw_biomePatterns()
-    this.draw_landmarks()
+    this.opts.voronoi && this.drawDebug()
+    this.drawBiomePatterns()
+    this.drawLandmarks()
   }
 
-  draw_biomePatterns () {
-    Object.entries(this.wipmap.points).forEach(( [type, points] ) => {
+  drawBiomePatterns () {
+    Object.entries(this.wipmap.points).forEach(([type, points]) => {
       points.forEach(point => {
         const [x, y] = toWorld(point)
 
@@ -55,9 +54,8 @@ export default class Map extends Canvas {
           // TODO: real density repartition calc instead of simple probability calc
           config.biomes[type].forEach(item => {
             if (prng.random() < item[1]) {
-              const itemScale = item[2] || 1
+              const itemScale = item[2] || 1
               this.drawSprite(item[0], x, y, this.scale * itemScale)
-              return
             }
           })
         }
@@ -65,7 +63,7 @@ export default class Map extends Canvas {
     })
   }
 
-  draw_landmarks () {
+  drawLandmarks () {
     landmarks.all
     .forEach(landmark => {
       const [x, y] = landmark.position
@@ -73,27 +71,27 @@ export default class Map extends Canvas {
     })
   }
 
-  draw_debug (fill = false) {
+  drawDebug (fill = false) {
     const colors = {
-      'TAIGA' : '#66CCFF',
-      'JUNGLE' : '#FF8000',
-      'SWAMP' : '#3C421E',
-      'TUNDRA' : '#800000',
-      'PLAINS' : '#80FF00',
-      'FOREST' : '#008040',
-      'DESERT' : 'yellow',
-      'WATER' : 'blue'
+      'TAIGA': '#66CCFF',
+      'JUNGLE': '#FF8000',
+      'SWAMP': '#3C421E',
+      'TUNDRA': '#800000',
+      'PLAINS': '#80FF00',
+      'FOREST': '#008040',
+      'DESERT': 'yellow',
+      'WATER': 'blue'
     }
 
     this.context.strokeStyle = 'red'
-    this.wipmap.biomes.forEach(( {cell, type} ) => {
+    this.wipmap.biomes.forEach(({ cell, type }) => {
       this.context.fillStyle = colors[type]
       this.context.beginPath()
       cell.forEach((point, index) => {
         const [x, y] = toWorld(point)
         if (index === 0) this.context.moveTo(x, y)
-          else this.context.lineTo(x, y)
-        })
+        else this.context.lineTo(x, y)
+      })
       fill && this.context.closePath()
       fill && this.context.fill()
       this.context.stroke()

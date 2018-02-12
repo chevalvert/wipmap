@@ -1,6 +1,9 @@
-button.selectable-word {
+button.input-word {
+  @include no-select();
   @include reset-Button();
   display: inline-block;
+
+  color: var(--color);
 
   &.is-constant {
     pointer-events: none;

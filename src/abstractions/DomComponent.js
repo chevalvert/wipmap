@@ -37,7 +37,7 @@ export default class DomComponent {
   // Called just before the component is removed from the DOM
   willUnmount () {}
 
-  callWillMount() {
+  callWillMount () {
     if (!this.refs.base) return
     this.willMount(this.refs.base)
     this.subcomponents.forEach(c => c.callWillMount())
@@ -128,6 +128,12 @@ export default class DomComponent {
   removeClass (className) {
     if (this.refs.base && this.refs.base.classList) {
       this.refs.base.classList.contains(className) && this.refs.base.classList.remove(className)
+    }
+  }
+
+  repaint () {
+    if (this.refs.base) {
+      void this.refs.base.offsetHeight
     }
   }
 }
