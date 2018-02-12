@@ -17,7 +17,8 @@ export default function (context, name, x, y, scale = 1, index = undefined) {
   const sw = sprite.resolution
   const sh = sprite.resolution
   const dx = Math.floor(x - (sprite.resolution * scale) / 2)
-  const dy = Math.floor(y - (sprite.resolution * scale) / 2)
+  // Note: drawing the sprite from the bottom of its hitbox
+  const dy = Math.floor(y - (sprite.resolution * scale))
   const dw = Math.floor(sprite.resolution * scale)
   const dh = Math.floor(sprite.resolution * scale)
 
