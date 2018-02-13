@@ -72,7 +72,7 @@ server.on('handshake', ({ type }, client) => {
     setTimeout(() => landmarks.forEach(landmark => server.send('landmark.add', landmark, client)), 1000)
   }
   if (type === 'remote') {
-    if (Object.keys(remotes).length >= config.remotes.max) {
+    if (config.remotes.max > 0 && Object.keys(remotes).length >= config.remotes.max) {
       server.send('remote.slot.attributed', {}, client)
       return
     }
