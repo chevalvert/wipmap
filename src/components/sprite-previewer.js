@@ -2,7 +2,12 @@
 
 import config from 'config'
 import prng from 'utils/prng'
+import { aabb, center } from 'utils/aabb'
+import distanceSquared from 'utils/distance-squared'
+
 import { map } from 'missing-math'
+import Poisson from 'poisson-disk-sampling'
+
 import Canvas from 'abstractions/Canvas'
 
 export default class SpritePreviewer extends Canvas {
@@ -17,7 +22,7 @@ export default class SpritePreviewer extends Canvas {
   }
 
   onresize () {
-    this.resize([window.innerWidth / 2, window.innerHeight])
+    this.resize([window.innerWidth * 0.4, window.innerWidth * 0.4])
     this.update({})
   }
 
@@ -28,37 +33,51 @@ export default class SpritePreviewer extends Canvas {
     this.update()
   }
 
+  generateSpritesPoints () {
+    prng.setSeed(this.seed)
+    const vmin = Math.min(this.width, this.height)
+    this.scale = vmin / config.agent.fov
+
+    const res = this.spritesheet.resolution
+    const radius = config.agent.fov / 2
+    const round = map(this.modifiers.order, 0, 100, res, 1)
+    const minDistance = map(this.modifiers.density, 0, 100, res * 2, res / 2)
+    const maxDistance = minDistance * 2
+
+    const poisson = new Poisson([radius * 2, radius * 2], minDistance, maxDistance, 10, prng.random)
+    this.points = poisson.fill()
+      .slice(0, this.modifiers.length)
+      .filter(p => p)
+
+    const box = aabb(this.points.map(p => [...p, res, res]))
+    this.points = this.points
+      .map(p => center(box)(p))
+      .map(([x, y]) => ([x + res / 2, y + res / 2]))
+      .filter(p => distanceSquared(p, [0, 0]) <= radius ** 2)
+      .map(([x, y]) => {
+        return [
+          Math.ceil(x / round) * round,
+          Math.ceil(y / round) * round
+        ]
+      })
+      .sort((a, b) => a[1] - b[1])
+  }
+
   update () {
     if (!this.spritesheet) return
 
     this.clear()
     this.context.imageSmoothingEnabled = false
 
-    prng.setSeed(this.seed)
-    const vmin = Math.min(this.width, this.height)
-    this.scale = vmin / config.agent.fov
-
-    const radius = map(this.modifiers.density, 0, 100, 0, config.agent.fov / 2)
-    const jitter = map(this.modifiers.order, 0, 100, config.agent.fov / this.spritesheet.resolution, 1)
-
-    this.points = []
-    for (let i = 0; i < this.modifiers.length; i++) {
-      const theta = prng.random() * Math.PI * 2
-      const r = prng.randomFloat(0, radius)
-      const x = Math.floor((Math.cos(-theta) * r) / jitter) * jitter
-      const y = Math.floor((Math.sin(-theta) * r) / jitter) * jitter
-
-      this.points.push([x, y])
-    }
+    this.generateSpritesPoints()
 
     this.points.forEach(([x, y]) => {
       x = this.width / 2 + x * this.scale
       y = this.height / 2 + y * this.scale
+
+      // Note: drawing the sprite from the bottom of its hitbox
       y += (this.spritesheet.resolution / 2) * this.scale
       this.drawSprite(this.spritesheet.name, Math.floor(x), Math.floor(y), this.scale, this.spriteIndex)
     })
-
-    this.context.arc(this.width / 2, this.height / 2, vmin / 2, 0, Math.PI * 2)
-    this.context.stroke()
   }
 }

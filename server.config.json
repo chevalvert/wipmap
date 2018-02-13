@@ -1,7 +1,7 @@
 {
   "remotes": {
     "max": 10,
-    "colors": ["red", "green", "blue"]
+    "colors": ["#56E271", "#F9D43A", "#FF6464"]
   },
 
   "wipmap": {

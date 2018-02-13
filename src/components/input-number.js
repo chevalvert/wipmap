@@ -56,15 +56,24 @@ export default class InputNumber extends DomComponent {
   update () {
     if (this.mounted) {
       this.refs.value.innerHTML = this.value
-      this.refs.btns.forEach((btn, index) => {
-        btn.enable()
-        if (this.value === this.range[index]) btn.disable()
-      })
     }
   }
 
-  decrement () { this.value -= this.step }
-  increment () { this.value += this.step }
+  decrement () {
+    if (this.value - this.step < this.range[0]) {
+      this.refs.btns[0].shake()
+      return
+    }
+    this.value -= this.step
+  }
+
+  increment () {
+    if (this.value + this.step > this.range[1]) {
+      this.refs.btns[1].shake()
+      return
+    }
+    this.value += this.step
+  }
 
   random () { this.value = lerp(this.range[0], this.range[1], Math.random()) }
 }

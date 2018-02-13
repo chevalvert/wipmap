@@ -58,6 +58,9 @@
   -moz-osx-font-smoothing: inherit;
 
   -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 
   &::-moz-focus-inner {
     border: 0;

@@ -13,13 +13,16 @@
   <link rel="stylesheet" href="{{compiler.hash}}.css">
   {{/if}}
 </head>
-<body>
+<body ontouchstart="">
   <main>
-    <section class="controls"></section>
+    <section class="controls">
+      <div class="progress-wrapper"></div>
+      <div class="button-wrapper"></div>
+    </section>
     <section class="landmark-generator-wrapper"></section>
   </main>
   <script type="text/javascript">
-    window.isProduction = {{ compiler.isProduction}}
+    window.isProduction = {{ compiler.isProduction }}
   </script>
   <script src="{{compiler.hash}}.js"></script>
 </body>

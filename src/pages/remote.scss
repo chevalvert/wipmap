@@ -1,4 +1,30 @@
-.controls {}
+@keyframes fallIn {
+  0% { transform: rotate(10deg) scale(0); opacity: 0; }
+  60% { transform: rotate(-10deg) scale(1.2); opacity: 1; }
+  90% { transform: rotate(2deg) scale(0.9); }
+  100% { transform: none; }
+}
+
+.controls {
+  .progress-wrapper {
+    position: fixed;
+    z-index: 3;
+    top: 5rem;
+    left: 5rem;
+  }
+
+  .button-wrapper {
+    z-index: 3;
+    position: fixed;
+    top: 5rem;
+    right: 5rem;
+
+    button {
+      will-change: transform;
+      animation: fallIn 300ms ease-out forwards;
+    }
+  }
+}
 
 .landmark-generator-wrapper {
   .landmark-generator { z-index: 2; }

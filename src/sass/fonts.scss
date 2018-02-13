@@ -1,20 +1,27 @@
 @font-face {
-  font-family: 'Open Sans';
-  src: url('/fonts/OpenSans-Bold.ttf');
+  font-family: 'Friction';
+  src: url('/fonts/Friction-Regular.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Friction';
+  src: url('/fonts/Friction-Bold.otf');
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Open Sans';
-  src: url('/fonts/OpenSans-BoldItalic.ttf');
-  font-weight: bold;
-  font-style: italic;
+  font-family: 'Friction Mono';
+  src: url('/fonts/Friction-Mono.otf');
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-  font-family: 'Open Sans';
-  src: url('/fonts/OpenSans-Italic.ttf');
+  font-family: 'Friction Mono Alt';
+  src: url('/fonts/Friction-MonoAlt.otf');
   font-weight: normal;
-  font-style: italic;
+  font-style: normal;
 }

@@ -1,21 +1,39 @@
 @keyframes shake {
-  10%, 90% { transform: translate3d(-1px, 0, 0); }
-  20%, 80% { transform: translate3d(2px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-  40%, 60% { transform: translate3d(4px, 0, 0); }
+  10%, 90% { transform: rotate(-0.5deg) translate3d(-0.1rem, 0, 0); }
+  20%, 80% { transform: rotate(1deg) translate3d(0.2rem, 0, 0); }
+  30%, 50%, 70% { transform: rotate(-2deg) translate3d(-0.4rem, 0, 0); }
+  40%, 60% { transform: rotate(2deg) translate3d(0.4rem, 0, 0); }
+}
+
+@mixin btn-color ($color) {
+  background-color: $color;
+  box-shadow: 0 0.5rem 0 0 darken($color, 20%);
 }
 
 button.button {
   @include no-select();
   @include reset-Button();
 
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0.8rem 1.5rem 0.5rem;
+  border-radius: 0.3rem;
+
+  will-change: transform;
+
+  &:not(.is-disabled):not(.is-shaking):active {
+    transform: translateY(0.5rem);
+    box-shadow: none;
+  }
+
   color: $white;
   background-color: var(--color);
-  padding: 1.5rem 2rem;
+  box-shadow: 0 0.5rem 0 0 var(--box-color);
 
   &.is-disabled {
-    background-color: $gray;
     pointer-events: none;
+    background-color: $gray;
+    box-shadow: 0 0.5rem 0 0 darken($gray, 10%);
   }
 
   &.is-shaking {

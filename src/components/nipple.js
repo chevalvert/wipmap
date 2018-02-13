@@ -1,7 +1,6 @@
 'use strict'
 
 import config from 'config'
-import store from 'utils/store'
 
 import bel from 'bel'
 import nipple from 'nipplejs'
@@ -32,7 +31,7 @@ export default class Nipple extends DomComponent {
       color: this.color,
       size: 200,
       mode: 'static',
-      restOpacity: 0.7,
+      restOpacity: 1,
       position: { top: '50%', left: '50%' }
     })
 
@@ -44,7 +43,7 @@ export default class Nipple extends DomComponent {
       const speed = Math.min(data.force, 1) * config.agent.speed
       this.dir = [
         Math.cos(data.angle.radian) * speed,
-       -Math.sin(data.angle.radian) * speed
+        -Math.sin(data.angle.radian) * speed
       ]
     })
   }

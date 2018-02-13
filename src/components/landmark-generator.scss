@@ -1,30 +1,68 @@
 .landmark-generator {
   background: $white;
   position: fixed;
-  top: 0;
+  top: 5rem;
   left: 0;
   right: 0;
   bottom: 0;
 
-  .landmark-generator-sentence-word::before {
-    content: attr(data-name);
-  }
+  &-sentence {
+    font-family: 'Friction Mono', sans-serif;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50vw;
+    padding: 5rem;
 
-  .input-word {
-    text-transform: uppercase;
+    font-size: 2.5rem;
+    line-height: 2em;
 
-    &:not(:last-child)::after {
-      content: '/';
-      margin: 0 1ch;
+    &-word{
+      white-space: nowrap;
+
+      &::before {
+        content: attr(data-name);
+        white-space: pre;
+      }
+
+      .input-word {
+        &.is-constant { color: $black; }
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      .input-number {
+        &-buttons {
+          position: absolute;
+          right: 0;
+          line-height: 1em;
+        }
+      }
     }
-
-    &.is-constant { color: $red; }
   }
 
-  .sprite-previewer {
+  &-buttons {
+    z-index: 3;
+    position: absolute;
+    left: 5rem;
+    bottom: 5rem;
+    right: 5rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &-preview {
     position: absolute;
     top: 0;
     right: 0;
-    padding: 2rem;
+    bottom: 5rem;
+    width: 50vw;
+
+    canvas.sprite-previewer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+    }
   }
 }

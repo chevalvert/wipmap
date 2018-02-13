@@ -36,6 +36,7 @@ export default class LandmarkGenerator extends DomComponent {
     const color = store.get('remote.color')
 
     this.refs.words = {
+      context: this.registerComponent(InputWord, { words: this.agent.currentBiome.type, loc: 'biome.' }),
       category: this.registerComponent(InputWord, { words: Object.keys(this.landmarks), color, loc: 'landmark.' }, () => this.update()),
       variables: [
         // Those words will be populated in this.update on didMount call
@@ -45,33 +46,33 @@ export default class LandmarkGenerator extends DomComponent {
     }
 
     this.refs.modifiers = {
-      length: this.registerComponent(InputNumber, { range: [1, 10], step: 1, color }, () => this.preview()),
+      length: this.registerComponent(InputNumber, { range: [1, 100], step: 1, color }, () => this.preview()),
       density: this.registerComponent(InputNumber, { value: 50, range: [0, 100], step: 10, color, prefix: '%' }, () => this.preview()),
-      order: this.registerComponent(InputNumber, { value: 50, range: [0, 100], step: 25, color, prefix: '%' }, () => this.preview())
+      order: this.registerComponent(InputNumber, { value: 50, range: [0, 100], step: 50, color, prefix: '%' }, () => this.preview())
     }
 
     this.refs.buttons = {
-      random: this.registerComponent(Button, { value: 'random', color }, () => this.randomize()),
-      validate: this.registerComponent(Button, { value: 'validate', color }, () => this.validate())
+      random: this.registerComponent(Button, { value: L`remote.buttons.random`, color }, () => this.randomize()),
+      validate: this.registerComponent(Button, { value: L`remote.buttons.validate`, color }, () => this.validate())
     }
 
     this.refs.preview = this.registerComponent(SpritePreviewer)
 
-    const sentence = {
-      context: L('biome.' + this.agent.currentBiome.type.toLowerCase()),
-      type: this.refs.words.category.raw(),
-      variable: this.refs.words.variables.map(v => v.raw()),
-      'modifier-length': this.refs.modifiers.length.raw(),
-      'modifier-density': this.refs.modifiers.density.raw(),
-      'modifier-order': this.refs.modifiers.order.raw()
-    }
-
     return bel`<div class='landmark-generator'>
       <ul class='landmark-generator-sentence'>
         ${
-          Object.entries(sentence).map(([key, els]) => [].concat(els).map(el => {
+          Object.entries({
+            'context': this.refs.words.context.raw(),
+            'type': this.refs.words.category.raw(),
+            'variable': this.refs.words.variables.map(v => v.raw()),
+            'modifier-length': this.refs.modifiers.length.raw(),
+            'modifier-density': this.refs.modifiers.density.raw(),
+            'modifier-order': this.refs.modifiers.order.raw()
+          }).map(([key, els]) => [].concat(els).map(el => {
             return bel`
-            <li class='landmark-generator-sentence-word' data-name=${L(`remote.landmark-generator.prefix.${key}`)}>
+            <li
+            class='landmark-generator-sentence-word'
+            data-name=${L(`remote.landmark-generator.prefix.${key}`)}>
               ${el}
             </li>`
           }))
@@ -96,7 +97,7 @@ export default class LandmarkGenerator extends DomComponent {
       if (!type) return
       this.landmarks[type].variables.forEach((words, index) => {
         this.refs.words.variables[index].loc = `landmark.${type}.`
-        this.refs.words.variables[index].words = words || ['undefined']
+        this.refs.words.variables[index].words = words
       })
       this.preview()
     })
@@ -109,6 +110,12 @@ export default class LandmarkGenerator extends DomComponent {
       modifiers[key] = modifier.value
     })
     this.refs.preview.setSprite(sprite.spritesheet, sprite.index, modifiers)
+
+    // TODO: check if interesting UX wise
+    if (this.refs.modifiers.length.value > this.refs.preview.points.length) {
+      this.refs.modifiers.length.refs.btns[1].shake()
+      this.refs.modifiers.length.value = this.refs.preview.points.length
+    }
   }
 
   getSprite () {

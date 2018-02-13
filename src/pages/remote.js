@@ -15,12 +15,14 @@ import loader from 'controllers/loader'
 
 import LogScreen from 'components/log-screen'
 import LandmarkGenerator from 'components/landmark-generator'
+import Progress from 'components/progress'
 import Nipple from 'components/nipple'
 import Button from 'components/button'
 
 let nipple
 let btnGenerate
 let generator
+let progress
 
 function setup ({ id, color }) {
   if (!id) {
@@ -47,14 +49,17 @@ function setup ({ id, color }) {
 }
 
 function start ({ id, color }) {
-  btnGenerate = new Button({ value: L`remote.buttons.generate`, color }, () => generate(id))
+  progress = new Progress({ color })
+  progress.mount(document.querySelector('.progress-wrapper'))
+  ws.on('landmark.add', ({ landmarksLength }) => { progress.value = landmarksLength })
 
   nipple = new Nipple(color)
   nipple.mount(document.querySelector('.controls'))
   nipple.watch(data => {
     if (!data.direction) return
 
-    !btnGenerate.mounted && btnGenerate.mount(document.querySelector('.controls'))
+    if (!btnGenerate) btnGenerate = new Button({ value: L`remote.buttons.generate`, color }, () => generate(id))
+    !btnGenerate.mounted && btnGenerate.mount(document.querySelector('.button-wrapper'))
     btnGenerate.enable()
 
     // Trying to compress data to reduce transport payload

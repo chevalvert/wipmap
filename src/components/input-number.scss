@@ -1,26 +1,20 @@
 .input-number {
   @include no-select();
-
   display: inline-block;
 
-  button.input-number-value {
+  &-value {
     @include reset-Button();
     display: inline-block;
     pointer-events: none;
     color: var(--color);
 
-    &[data-prefix]:not([data-prefix=''])::after {
-      content: attr(data-prefix);
-    }
+    &[data-prefix]:not([data-prefix=''])::after { content: attr(data-prefix); }
   }
 
-  .input-number-buttons {
+  &-buttons {
     display: inline-block;
-
-    .button {
-      padding: 1rem 1.5rem;
-      margin-left: 1ch;
+    button {
+      margin-left: 1rem;
     }
   }
-
 }

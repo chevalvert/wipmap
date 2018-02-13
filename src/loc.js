@@ -13,11 +13,16 @@ locales.fr['loading.drawing'] = 'dessin de la carte en cours'
 locales.fr['error'] = 'Erreur'
 locales.fr['error.noslot'] = 'Plus de place disponible'
 
+locales.fr['progress'] = 'objets'
 locales.fr['gameover'] = 'game over'
 
 locales.fr['landmark.house'] = 'une maison'
+locales.fr['landmark.house.big'] = 'grande'
+locales.fr['landmark.house.small'] = 'petite'
+locales.fr['landmark.house.light'] = 'légère'
+locales.fr['landmark.house.heavy'] = 'lourde'
 
-locales.fr['biome.plains'] = ['la plaine', 'une plaine']
+locales.fr['biome.plains'] = 'une plaine'
 locales.fr['biome.desert'] = 'le désert'
 locales.fr['biome.taiga'] = 'la taïga'
 locales.fr['biome.tundra'] = 'la tundra'
@@ -41,12 +46,15 @@ locales.fr['generator.panel.forest'] = 'forêts'
 locales.fr['generator.panel.houses'] = 'habitations'
 
 locales.fr['remote.buttons.generate'] = 'révéler un lieu'
-locales.fr['remote.landmark-generator.prefix.context'] = 'Contexte = '
-locales.fr['remote.landmark-generator.prefix.type'] = 'MonObjet = '
-locales.fr['remote.landmark-generator.prefix.variable'] = 'MonObjet.'
-locales.fr['remote.landmark-generator.prefix.modifier-length'] = 'MonObjet.nombre = '
-locales.fr['remote.landmark-generator.prefix.modifier-density'] = 'MonObjet.densité = '
-locales.fr['remote.landmark-generator.prefix.modifier-order'] = 'MonObjet.bazar = '
+locales.fr['remote.buttons.random'] = 'aléatoire'
+locales.fr['remote.buttons.validate'] = 'valider'
+
+locales.fr['remote.landmark-generator.prefix.context'] = 'contexte = '
+locales.fr['remote.landmark-generator.prefix.type'] = 'objet = '
+locales.fr['remote.landmark-generator.prefix.variable'] = '  objet.'
+locales.fr['remote.landmark-generator.prefix.modifier-length'] = 'objet.nombre = '
+locales.fr['remote.landmark-generator.prefix.modifier-density'] = 'objet.densité = '
+locales.fr['remote.landmark-generator.prefix.modifier-order'] = 'objet.chaos = '
 
 export default (key, LANG = 'fr') => {
   if (!key) return

@@ -1,6 +1,6 @@
 'use strict'
 
-export default (points) => {
+function aabb (points) {
   let xmin = Number.POSITIVE_INFINITY
   let ymin = Number.POSITIVE_INFINITY
   let xmax = Number.NEGATIVE_INFINITY
@@ -29,3 +29,8 @@ export default (points) => {
     ]
   }
 }
+
+const center = box => point => point.map((v, i) => v - box.center[i])
+
+export { center, aabb }
+export default aabb

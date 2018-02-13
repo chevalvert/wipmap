@@ -51,10 +51,10 @@ const config = {
   },
 
   landmarks: {
-    debug: {
-      biomes: ['PLAINS', 'DESERT', 'TAIGA', 'TUNDRA', 'SWAMP', 'FOREST', 'WATER'],
-      variables: []
-    },
+    // debug: {
+    //   biomes: ['PLAINS', 'DESERT', 'TAIGA', 'TUNDRA', 'SWAMP', 'FOREST', 'WATER'],
+    //   variables: []
+    // },
     house: {
       biomes: ['PLAINS', 'FOREST'],
       variables: [

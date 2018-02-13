@@ -41,6 +41,9 @@ export default class Map extends Canvas {
     this.context.imageSmoothingEnabled = false
 
     this.opts.voronoi && this.drawDebug()
+
+    // TODO: merge biome & landmark layers to avoid Z-order conflicts
+    // between biome sprites and landmark sprites
     this.drawBiomePatterns()
     this.drawLandmarks()
   }

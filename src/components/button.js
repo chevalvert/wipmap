@@ -2,6 +2,7 @@
 
 import bel from 'bel'
 import noop from 'utils/noop'
+import lightness from 'lightness'
 import DomComponent from 'abstractions/DomComponent'
 
 export default class Button extends DomComponent {
@@ -16,7 +17,7 @@ export default class Button extends DomComponent {
     return bel`
     <button
     class='button'
-    style='--color: ${this.color}'
+    style='--color: ${this.color}; --box-color: ${lightness(this.color, -10)}'
     onclick=${e => !this.disabled && this.onclick(e)}>
       ${this.value}
     </button>`
