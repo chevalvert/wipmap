@@ -7,10 +7,10 @@ const path = require('path')
 const fs = require('fs-extra')
 const opn = require('opn')
 const wipmap = require('wipmap-generate')
-const args = require(__dirname + '/utils/config')
-const Server = require(__dirname + '/utils/server')
+const args = require(path.join(__dirname, 'utils', 'config'))
+const Server = require(path.join(__dirname, 'utils', 'server'))
 
-const config = require(__dirname + '/../server.config.json')
+const config = require(path.join(__dirname, '..', 'server.config.json'))
 
 const server = Server({
   public: path.join(__dirname, '..', 'build')
@@ -18,6 +18,7 @@ const server = Server({
 
 const remotes = {}
 const viewers = []
+let landmarks = []
 
 // RESTful routing, available at /api/endpoint
 
@@ -36,10 +37,9 @@ server.route('/map/:x/:y/:force?*', (req, res) => {
   }
 }, 'GET')
 
-
 server.route('/agent/:id', (req, res) => {
-  server.once('agent.get.response', agent => res.json(agent || {}))
-  server.broadcast('agent.get', { id : req.params.id }, viewers)
+  server.once('agent.get.response', agent => res.json(agent || {}))
+  server.broadcast('agent.get', { id: req.params.id }, viewers)
 }, 'GET')
 
 server.route('/generate/:x/:y', (req, res) => {
@@ -55,7 +55,8 @@ server.route('/landmark', (req, res) => {
   // TODO: send eror
   if (!req.body) return
 
-  server.broadcast('landmark.add', req.body, viewers)
+  landmarks.push(req.body)
+  server.broadcast('landmark.add', { ...req.body, landmarksLength: landmarks.length })
   res.json(null)
 }, 'POST')
 
@@ -66,7 +67,10 @@ server.on('handshake', ({ type }, client) => {
   client.type = type
   server.print()
 
-  if (type === 'viewer') viewers.push(client)
+  if (type === 'viewer') {
+    viewers.push(client)
+    setTimeout(() => landmarks.forEach(landmark => server.send('landmark.add', landmark, client)), 1000)
+  }
   if (type === 'remote') {
     if (Object.keys(remotes).length >= config.remotes.max) {
       server.send('remote.slot.attributed', {}, client)
@@ -76,6 +80,7 @@ server.on('handshake', ({ type }, client) => {
     remotes[client.uid] = client
     const color = config.remotes.colors[Math.floor(Math.random() * config.remotes.colors.length)]
     server.send('remote.slot.attributed', { id: client.uid, color }, client)
+    setTimeout(() => server.send('landmark.add', { landmarksLength: landmarks.length }, client), 1000)
     server.broadcast('agent.add', { id: client.uid, color }, viewers)
   }
 })
@@ -97,7 +102,7 @@ server
 .start()
 .then(url => {
   console.log(`Server is listenning on ${url}`)
-  if (args.open || args.fullscreen) {
-    opn(url, { app: ['google chrome', args.fullscreen ? '--kiosk' : '']} )
+  if (args.open || args.fullscreen) {
+    opn(url, { app: ['google chrome', args.fullscreen ? '--kiosk' : ''] })
   }
 }).catch(err => console.log(err))
