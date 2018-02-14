@@ -10,11 +10,16 @@ const minimistOpts = {
     'help',
     'version'
   ],
+  sring: ['port'],
   alias: {
     help: ['h'],
     open: ['o'],
+    port: ['p'],
     fullscreen: ['f'],
     version: ['v']
+  },
+  default: {
+    port: 8888
   }
 }
 
@@ -39,6 +44,5 @@ Object.keys(minimistOpts.alias).forEach(key => {
     args[key] = argv[key]
   }
 })
-
 
 module.exports = args

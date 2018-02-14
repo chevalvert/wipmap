@@ -1,14 +1,14 @@
 'use strict'
 
-const fs = require('fs')
 const path = require('path')
 const cuid = require('cuid')
 const websocket = require('ws')
 const express = require('express')
 const Emitter = require('tiny-emitter')
 const cors = require('cors')
-const findFirstAvailableAddress = require('./find-first-available-address')
-const table = require('console.table')
+const table = require('console.table') // eslint-disable-line no-unused-vars
+
+const findFirstAvailableAddress = require(path.join(__dirname, 'utils', 'find-first-available-address'))
 
 const defaultOpts = {
   port: 8888,
@@ -22,7 +22,6 @@ module.exports = function WebServer (opts) {
   const router = express.Router()
 
   app.use(express.static(opts.public, { extensions: ['html'] }))
-  // app.use(express.bodyParser())
   app.use(express.json())
   app.use(cors({ credentials: true, origin: true }))
   app.use('/api', router)
@@ -57,7 +56,7 @@ module.exports = function WebServer (opts) {
     start: () => {
       return new Promise((resolve, reject) => {
         server = app.listen(opts.port, () => {
-          address = findFirstAvailableAddress()
+          address = findFirstAvailableAddress() || '127.0.0.1'
 
           resolve(`http://${address}:${opts.port}`)
         })
@@ -88,6 +87,13 @@ module.exports = function WebServer (opts) {
       if (method === 'GET') router.get(endpoint, cb)
       if (method === 'POST') router.post(endpoint, cb)
       else router.all(endpoint, cb)
+      return api
+    },
+
+    watch: (actions = { eventName: function () {} }) => {
+      Object.entries(actions)
+      .forEach(([event, callback]) => events.on(event, callback))
+      return api
     },
 
     findClientByIp: ip => Array.from(wss.clients).find(client => client.ip === ip),

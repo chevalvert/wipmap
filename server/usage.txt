@@ -8,6 +8,7 @@ Usage:
 
 Options:
   -o, --open              Open browser.
+  -p, --port=<PORT>       Run server on custom port (default is 8888).
   -f, --fullscreen        Open browser in kiosk mode.
   -h, --help              Show this screen.
   -v, --version           Print the current version.

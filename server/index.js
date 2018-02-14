@@ -4,101 +4,31 @@
 process.title = 'wipmap-server'
 
 const path = require('path')
-const fs = require('fs-extra')
 const opn = require('opn')
-const wipmap = require('wipmap-generate')
-const args = require(path.join(__dirname, 'utils', 'config'))
-const Server = require(path.join(__dirname, 'utils', 'server'))
-
-const config = require(path.join(__dirname, '..', 'server.config.json'))
+const args = require(path.join(__dirname, 'lib', 'args'))
+const Server = require(path.join(__dirname, 'lib', 'server'))
 
 const server = Server({
-  public: path.join(__dirname, '..', 'build')
+  public: path.join(__dirname, '..', 'build'),
+  port: args.port
 })
 
-const remotes = {}
-const viewers = []
-let landmarks = []
-
-// RESTful routing, available at /api/endpoint
-
-server.route('/map/:x/:y/:force?*', (req, res) => {
-  const file = path.join(__dirname, 'data', 'maps', `${req.params.x}_${req.params.y}.json`)
-  const mapExists = fs.pathExistsSync(file)
-
-  if (mapExists && !req.params.force) res.json(fs.readJsonSync(file))
-  else {
-    const map = wipmap(req.params.x, req.params.y, config.wipmap)
-    fs.outputJson(file, map, err => {
-      // TODO: send error
-      if (err) throw err
-      else res.json(map)
-    })
-  }
-}, 'GET')
-
-server.route('/agent/:id', (req, res) => {
-  server.once('agent.get.response', agent => res.json(agent || {}))
-  server.broadcast('agent.get', { id: req.params.id }, viewers)
-}, 'GET')
-
-server.route('/generate/:x/:y', (req, res) => {
-  // TODO: send error
-  if (!req.body) return
-
-  const opts = Object.assign({}, config.wipmap, req.body || {})
-  const map = wipmap(req.params.x, req.params.y, opts)
-  res.json(map)
-}, 'POST')
-
-server.route('/landmark', (req, res) => {
-  // TODO: send eror
-  if (!req.body) return
-
-  landmarks.push(req.body)
-  server.broadcast('landmark.add', { ...req.body, landmarksLength: landmarks.length })
-  res.json(null)
-}, 'POST')
-
-// Websocket routing
-
-server.on('client', client => { server.send('handshake', null, client) })
-server.on('handshake', ({ type }, client) => {
-  client.type = type
-  server.print()
-
-  if (type === 'viewer') {
-    viewers.push(client)
-    setTimeout(() => landmarks.forEach(landmark => server.send('landmark.add', landmark, client)), 1000)
-  }
-  if (type === 'remote') {
-    if (config.remotes.max > 0 && Object.keys(remotes).length >= config.remotes.max) {
-      server.send('remote.slot.attributed', {}, client)
-      return
-    }
-
-    remotes[client.uid] = client
-    const color = config.remotes.colors[Math.floor(Math.random() * config.remotes.colors.length)]
-    server.send('remote.slot.attributed', { id: client.uid, color }, client)
-    setTimeout(() => server.send('landmark.add', { landmarksLength: landmarks.length }, client), 1000)
-    server.broadcast('agent.add', { id: client.uid, color }, viewers)
-  }
+const app = require(path.join(__dirname, 'app'))(server, {
+  verbose: true
 })
-
-server.on('client.quit', client => {
-  server.print()
-  if (~viewers.indexOf(client)) viewers.splice(viewers.indexOf(client), 1)
-  if (remotes[client.uid]) {
-    server.broadcast('agent.remove', { id: client.uid }, viewers)
-    delete remotes[client.uid]
-  }
-})
-
-server.on('agent.move', data => { server.broadcast('agent.move', data, viewers) })
-
-// Starting server
 
 server
+// WebSocket actions subscription
+.watch({
+  client: client => server.send('handshake', null, client),
+  'client.quit': app.resolveClientQuit,
+  handshake: app.handshake,
+  'agent.move': data => server.broadcast('agent.move', data, app.viewers)
+})
+// RESTful routing, available at /api/endpoint
+.route('/map/:x/:y/:force', app.rest(app.createMap), 'POST')
+.route('/agent/:id', app.rest(app.getAgent), 'GET')
+.route('/landmark', app.rest(app.addLandmark), 'POST')
 .start()
 .then(url => {
   console.log(`Server is listenning on ${url}`)
