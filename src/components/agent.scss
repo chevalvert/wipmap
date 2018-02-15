@@ -1,25 +1,44 @@
-$agent-radius: 20px;
-$agent-pov: 100px;
+$agent-diameter: 20px;
+$agent-eye-diameter: 4px;
+$agent-eye-spacing: 3px;
+$agent-eye-height: -3px;
+$agent-eye-color: $white;
+
+@keyframes blink {
+  90% {
+    transform: none;
+    animation-timing-function: ease-in;
+  }
+  93% { transform: scaleY(0) scaleX(0.9); }
+  100% { animation-timing-function: ease-out; }
+}
 
 .agent {
   position: absolute;
   display: block;
-  width: $agent-radius;
-  height: $agent-radius;
-  margin-left: -($agent-radius / 2);
-  margin-top: -($agent-radius / 2);
+  width: $agent-diameter;
+  height: $agent-diameter;
+  margin-left: -($agent-diameter / 2);
+  margin-top: -($agent-diameter / 2);
 
   background: var(--agent-color, black);
   border-radius: 100%;
 
-  &::after {
-    content: '';
-    border: 1px solid;
-    display: block;
-    width: $agent-pov;
-    height: $agent-pov;
-    transform: translateX(calc(-50% + #{$agent-radius / 2})) translateY(calc(-50% + #{$agent-radius / 2}));
-    border-radius: 100%;
-    border-color: var(--agent-color, black);
-  }
+  // &::after, &::before {
+  //   content: '';
+  //   position: absolute;
+  //   top: $agent-diameter / 2;
+  //   left: $agent-diameter / 2;
+  //   animation: blink 2.4s infinite;
+
+  //   width: $agent-eye-diameter;
+  //   height: $agent-eye-diameter;
+  //   margin-top: -($agent-eye-diameter / 2 - $agent-eye-height);
+  //   background: $agent-eye-color;
+  //   border-radius: 100%;
+  // }
+
+  // &::before { margin-left: -($agent-eye-diameter / 2 + $agent-eye-spacing); }
+  // &::after { margin-left:  -($agent-eye-diameter / 2 - $agent-eye-spacing); }
+
 }
