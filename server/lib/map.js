@@ -36,7 +36,7 @@ function create ([x, y, force = false], opts) {
     if (!+force && map.x === x && map.y === y) resolve(map)
     else {
       map = (!+force && fs.pathExistsSync(filename))
-        ? fs.readJsonSync(filename, () => console.log('foo'))
+        ? fs.readJsonSync(filename)
         : {
           uid: makeUID(),
           ...wipmap(x, y, Object.assign({}, config['wipmap-generate'], opts || {})),

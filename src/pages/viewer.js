@@ -42,6 +42,8 @@ function setup () {
 }
 
 function start (json) {
+  json.landmarks.forEach(landmarks.add)
+
   const map = new Map(json)
   map.mount(document.querySelector('.map'))
 
@@ -51,15 +53,9 @@ function start (json) {
   agents.setup()
   if (!window.isProduction) fps()
 
-  ws.on('landmark.add', ({ sprite, agent, points }) => {
-    agents.resume(agent.id)
-    landmarks.add({
-      sprite,
-      points,
-      position: agent.normalizedPosition
-    })
-
-    // TODO: improve perf by redrawing only revelant map area
+  ws.on('landmark.add', landmark => {
+    landmarks.add(landmark)
+    agents.resume(landmark.agent.id)
     map.update()
     if (isGameOver()) end()
   })

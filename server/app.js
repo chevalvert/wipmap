@@ -25,7 +25,7 @@ module.exports = function (server, opts) {
     handshake: ({ type }, client) => {
       client.type = type
       opts.verbose && server.print()
-      if (type === 'viewer') registerViewer(client)
+      if (type === 'viewer') viewers.push(client)
       if (type === 'remote') {
         if (config.remotes.max > 0 && Object.keys(remotes).length >= config.remotes.max) {
           server.send('remote.slot.attributed', {}, client)
@@ -86,14 +86,6 @@ module.exports = function (server, opts) {
   }
 
   return api
-
-  function registerViewer (client) {
-    viewers.push(client)
-    // TODO: move to own function ? decorator for setTimeout ?
-    setTimeout(() => {
-      map.landmarks.forEach(landmark => server.send('landmark.add', landmark, client))
-    }, 1000)
-  }
 
   function registerRemote (client) {
     remotes[client.uid] = client

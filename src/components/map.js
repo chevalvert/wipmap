@@ -36,18 +36,14 @@ export default class Map extends Canvas {
   }
 
   update (force = false) {
-    console.log('foo')
     prng.setSeed(this.seed)
-    this.clear()
-    this.context.imageSmoothingEnabled = false
-
     if (force) this.updateBiomeSprites()
 
-    const sprites = [...this.biomeSprites]
+    this.sprites = [...this.biomeSprites]
     landmarks.all.forEach(landmark => {
       const [x, y] = toWorld(landmark.position)
       landmark.points.forEach(([offx, offy]) => {
-        sprites.push([
+        this.sprites.push([
           landmark.sprite.name,
           x + offx,
           y + offy + landmark.sprite.spritesheet.resolution / 2,
@@ -57,11 +53,16 @@ export default class Map extends Canvas {
       })
     })
 
-    sprites
-    .sort((a, b) => a[2] - b[2])
-    .forEach(sprite => this.drawSprite(...sprite))
+    this.sprites.sort((a, b) => a[2] - b[2])
+    this.draw()
+  }
 
+  draw () {
+    this.clear()
+    this.context.imageSmoothingEnabled = false
     if (this.opts.voronoi) this.drawVoronoi()
+
+    this.sprites.forEach(sprite => this.drawSprite(...sprite))
   }
 
   updateBiomeSprites () {
@@ -74,7 +75,7 @@ export default class Map extends Canvas {
         const [x, y] = toWorld(point)
         sprites.forEach(([name, probability, scale]) => {
           if (prng.random() < probability) {
-            this.biomeSprites.push([name, x, y, scale || this.scale, prng.random()])
+            this.biomeSprites.push([name, x, y, scale || this.scale, prng.randomInt(0, 100)])
           }
         })
       })
