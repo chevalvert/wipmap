@@ -19,6 +19,7 @@ export default class Map extends Canvas {
     this.wipmap = json
     this.seed = json.seed
     store.set('map.json', json)
+    this.updateBiomeSprites()
   }
 
   didMount () {
@@ -31,52 +32,56 @@ export default class Map extends Canvas {
     store.set('width', this.width)
     store.set('height', this.height)
 
-    this.update()
+    this.update(true)
   }
 
-  update () {
+  update (force = false) {
+    console.log('foo')
     prng.setSeed(this.seed)
     this.clear()
     this.context.imageSmoothingEnabled = false
 
-    this.opts.voronoi && this.drawDebug()
+    if (force) this.updateBiomeSprites()
 
-    // TODO: merge biome & landmark layers to avoid Z-order conflicts
-    // between biome sprites and landmark sprites
-    this.drawBiomePatterns()
-    this.drawLandmarks()
-  }
-
-  drawBiomePatterns () {
-    Object.entries(this.wipmap.points).forEach(([type, points]) => {
-      points.forEach(point => {
-        const [x, y] = toWorld(point)
-
-        if (store.get('config.biomes')[type]) {
-          // TODO: real density repartition calc instead of simple probability calc
-          store.get('config.biomes')[type].forEach(item => {
-            if (prng.random() < item[1]) {
-              const itemScale = item[2] || 1
-              this.drawSprite(item[0], x, y, this.scale * itemScale)
-            }
-          })
-        }
-      })
-    })
-  }
-
-  drawLandmarks () {
-    landmarks.all
-    .forEach(landmark => {
+    const sprites = [...this.biomeSprites]
+    landmarks.all.forEach(landmark => {
       const [x, y] = toWorld(landmark.position)
       landmark.points.forEach(([offx, offy]) => {
-        offy += landmark.sprite.spritesheet.resolution / 2
-        this.drawSprite(landmark.sprite.name, x + offx, y + offy, this.scale, landmark.sprite.index)
+        sprites.push([
+          landmark.sprite.name,
+          x + offx,
+          y + offy + landmark.sprite.spritesheet.resolution / 2,
+          this.scale,
+          landmark.sprite.index
+        ])
+      })
+    })
+
+    sprites
+    .sort((a, b) => a[2] - b[2])
+    .forEach(sprite => this.drawSprite(...sprite))
+
+    if (this.opts.voronoi) this.drawVoronoi()
+  }
+
+  updateBiomeSprites () {
+    this.biomeSprites = []
+    Object.entries(this.wipmap.points).forEach(([type, points]) => {
+      const sprites = store.get('config.biomes')[type]
+      if (!store.get('config.biomes')[type]) return
+
+      points.forEach(point => {
+        const [x, y] = toWorld(point)
+        sprites.forEach(([name, probability, scale]) => {
+          if (prng.random() < probability) {
+            this.biomeSprites.push([name, x, y, scale || this.scale, prng.random()])
+          }
+        })
       })
     })
   }
 
-  drawDebug (fill = false) {
+  drawVoronoi (fill = false) {
     const colors = {
       'TAIGA': '#66CCFF',
       'JUNGLE': '#FF8000',
