@@ -1,11 +1,13 @@
 'use strict'
 
 import L from 'loc'
+import config from 'config'
 import ws from 'utils/websocket'
 
 import error from 'utils/error'
 import loader from 'controllers/loader'
 import LogScreen from 'components/log-screen'
+import SelfDestructingLogScreen from 'components/self-destructing-log-screen'
 
 import agents from 'controllers/agents'
 import landmarks from 'controllers/landmarks'
@@ -15,7 +17,12 @@ import Map from 'components/map'
 import Fog from 'components/fog'
 
 import getUrlParam from 'utils/get-url-param'
+
 import fps from 'fps-indicator'
+
+const x = getUrlParam('x') || '+'
+const y = getUrlParam('y') || '0'
+const f = getUrlParam('force')
 
 function setup () {
   const loading = new LogScreen(L`loading`)
@@ -24,12 +31,7 @@ function setup () {
   .then(() => loading.say(L`loading.sprites`))
   .then(() => loader.loadSprites())
   .then(() => loading.say(L`loading.map`))
-  .then(() => {
-    const x = getUrlParam('x') || 0
-    const y = getUrlParam('y') || 0
-    const f = getUrlParam('force')
-    return loader.loadMap(x, y, f)
-  })
+  .then(() => loader.loadMap([x, y, f]))
   .then(start)
   .then(() => loading.destroy())
   .catch(err => {
@@ -41,38 +43,42 @@ function setup () {
 
 function start (json) {
   const map = new Map(json)
-  const fog = new Fog('white')
-
+  const fog = new Fog(config.fog.color)
   map.mount(document.querySelector('.map'))
   fog.mount(document.querySelector('.map'))
 
   agents.setup()
-  fps()
+  if (!window.isProduction) fps()
 
   ws.on('landmark.add', ({ sprite, agent, points }) => {
-    points.forEach(([x, y]) => {
-      landmarks.add({
-        sprite,
-        position: [agent.position[0] + x, agent.position[1] + y + sprite.spritesheet.resolution / 2]
-      })
-    })
-
     agents.resume(agent.id)
+    landmarks.add({
+      sprite,
+      points,
+      position: agent.normalizedPosition
+    })
 
     // TODO: improve perf by redrawing only revelant map area
     map.update()
-
-    isGameOver() && end()
+    if (isGameOver()) end()
   })
 }
 
 function end () {
-  const endScreen = new LogScreen(L`gameover`)
-  endScreen.mount(document.body)
-
   ws.off('landmark.add')
+  agents.removeAll()
 
-  // TODO: RESTful call for new map
+  const endScreen = new SelfDestructingLogScreen(L`gameover`, L`gameover.message`, config.secondsBeforeReboot, 'game-over-screen')
+
+  Promise.resolve()
+  .then(() => endScreen.mount(document.body))
+  .then(() => endScreen.waitFor('destroy'))
+  .then(setup)
+  .catch(err => {
+    console.log(err)
+    endScreen.destroy()
+    error(err)
+  })
 }
 
 export default { setup }

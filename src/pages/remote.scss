@@ -20,8 +20,24 @@
     right: 5rem;
 
     button {
-      will-change: transform;
       animation: fallIn 300ms ease-out forwards;
+    }
+  }
+
+  .map-infos {
+    z-index: 2;
+    position: fixed;
+    bottom: 5rem;
+    left: 5rem;
+
+    #uid {
+      font-weight: bold;
+      color: var(--color);
+      &::before {
+        content: 'WIPMAP #';
+        color: $black;
+        font-weight: normal;
+      }
     }
   }
 }

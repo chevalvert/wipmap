@@ -13,6 +13,7 @@
 button.button {
   @include no-select();
   @include reset-Button();
+  @include easing(300ms);
 
   display: inline-block;
   margin-top: 0.3rem;
@@ -31,7 +32,6 @@ button.button {
   box-shadow: 0 0.5rem 0 0 var(--box-color);
 
   &.is-disabled {
-    pointer-events: none;
     background-color: $gray;
     box-shadow: 0 0.5rem 0 0 darken($gray, 10%);
   }

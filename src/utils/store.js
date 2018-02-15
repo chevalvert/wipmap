@@ -22,5 +22,6 @@ export default {
   set (k, val) {
     stored[k] = val
     events.emit(NS + k, val)
+    return val
   }
 }

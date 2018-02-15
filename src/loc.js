@@ -15,6 +15,7 @@ locales.fr['error.noslot'] = 'Plus de place disponible'
 
 locales.fr['progress'] = 'objets'
 locales.fr['gameover'] = 'game over'
+locales.fr['gameover.message'] = 'nouvelle carte dans %s...'
 
 locales.fr['landmark.house'] = 'une maison'
 locales.fr['landmark.house.big'] = 'grande'
@@ -49,7 +50,7 @@ locales.fr['remote.buttons.generate'] = 'révéler un lieu'
 locales.fr['remote.buttons.random'] = 'aléatoire'
 locales.fr['remote.buttons.validate'] = 'valider'
 
-locales.fr['remote.landmark-generator.prefix.context'] = 'contexte = '
+locales.fr['remote.landmark-generator.prefix.context'] = 'biome = '
 locales.fr['remote.landmark-generator.prefix.type'] = 'objet = '
 locales.fr['remote.landmark-generator.prefix.variable'] = '  objet.'
 locales.fr['remote.landmark-generator.prefix.modifier-length'] = 'objet.nombre = '

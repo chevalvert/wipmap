@@ -23,23 +23,45 @@ let nipple
 let btnGenerate
 let generator
 let progress
+let gameoverScreen
 
-function setup ({ id, color }) {
-  if (!id) {
-    const error = new LogScreen(L`error`, L`error.noslot`, 'error')
-    error.mount(document.body)
+const SESSION = { id: null, color: null }
+
+function setup ({ id: _id, color: _color }) {
+  if (!_id) {
+    error(L`error.noslot`)
     return
   }
 
-  store.set('remote.id', id)
-  store.set('remote.color', color)
+  SESSION.id = store.set('remote.id', _id)
+  SESSION.color = store.set('remote.color', _color)
 
-  const loading = new LogScreen(L`loading`, L`loading.sprites`)
+  progress = new Progress({ color: SESSION.color })
+  progress.mount(document.querySelector('.progress-wrapper'))
 
+  ws.on('landmark.add', ({ landmarksLength }) => {
+    progress.value = landmarksLength
+    if (progress.value >= config.gameover) {
+      if (gameoverScreen) gameoverScreen.destroy()
+      gameoverScreen = new LogScreen(L`gameover`, L`remote.gameover.message`)
+      gameoverScreen.mount(document.body)
+    }
+  })
+
+  ws.on('UID', ({ UID }) => {
+    const el = document.querySelector('.map-infos > #uid')
+    el.setAttribute('style', `--color: ${SESSION.color}`)
+    el.innerHTML = UID
+    if (gameoverScreen) gameoverScreen.destroy()
+  })
+
+  const loading = new LogScreen(L`loading`, L`remote.waiting-for-server`)
   Promise.resolve()
   .then(() => loading.mount(document.body))
+  .then(() => ws.waitFor('UID'))
+  .then(() => loading.say(L`loading.sprites`))
   .then(() => loader.loadSprites())
-  .then(() => start({ id, color }))
+  .then(start)
   .then(() => loading.destroy())
   .catch(err => {
     console.error(err)
@@ -48,49 +70,51 @@ function setup ({ id, color }) {
   })
 }
 
-function start ({ id, color }) {
-  progress = new Progress({ color })
-  progress.mount(document.querySelector('.progress-wrapper'))
-  ws.on('landmark.add', ({ landmarksLength }) => { progress.value = landmarksLength })
-
-  nipple = new Nipple(color)
+function start () {
+  nipple = nipple || new Nipple(SESSION.color)
   nipple.mount(document.querySelector('.controls'))
+  nipple.enable()
+
+  btnGenerate = btnGenerate || new Button({ value: L`remote.buttons.generate`, color: SESSION.color }, generate)
+  btnGenerate.disable()
+
+  if (generator) generator.destroy()
+
   nipple.watch(data => {
     if (!data.direction) return
 
-    if (!btnGenerate) btnGenerate = new Button({ value: L`remote.buttons.generate`, color }, () => generate(id))
-    !btnGenerate.mounted && btnGenerate.mount(document.querySelector('.button-wrapper'))
+    btnGenerate.mount(document.querySelector('.button-wrapper'))
     btnGenerate.enable()
 
     // Trying to compress data to reduce transport payload
     const dx = Math.trunc(data.direction[0])
     const dy = Math.trunc(data.direction[1])
-    ws.send('agent.move', [dx, dy, id, color])
+    ws.send('agent.move', [dx, dy, SESSION.id, SESSION.color])
   })
 }
 
-function generate (id) {
+function generate () {
   const loading = new LogScreen(L`loading`, L`landmark-generator.getting`)
-
   Promise.resolve()
   .then(() => loading.mount(document.body))
-  .then(() => fetchJSON(`http://${config.server.address}:${config.server.port}/api/agent/${id}/`))
+  .then(() => fetchJSON(`http://${config.server.address}:${config.server.port}/api/agent/${SESSION.id}/`))
   .then(agent => {
     const landmarks = LandmarkGenerator.findAvailable(agent.currentBiome)
     if (!landmarks || objectIsEmpty(landmarks)) {
       btnGenerate.shake()
       btnGenerate.disable()
       loading.destroy()
-      return Promise.resolve()
+      return Promise.resolve(null)
     }
+
+    generator = new LandmarkGenerator(agent, landmarks)
+    generator.mount(document.querySelector('.landmark-generator-wrapper'))
 
     nipple.disable()
     btnGenerate.disable()
-    generator = new LandmarkGenerator(agent, landmarks)
-    generator.mount(document.querySelector('.landmark-generator-wrapper'))
-    loading.destroy()
-    return events.waitFor('landmark-generator.validate')
   })
+  .then(() => loading.destroy())
+  .then(() => events.waitFor('landmark-generator.validate'))
   .then(send)
   .catch(err => {
     console.error(err)
@@ -100,33 +124,27 @@ function generate (id) {
 }
 
 function send (data) {
-  if (!data) return
+  if (!data) return start()
 
   const loading = new LogScreen(L`loading`, L`landmark-generator.sending`)
-
   Promise.resolve()
   .then(() => loading.mount(document.body))
-  .then(() => {
-    return new Promise((resolve, reject) => {
-      post(`http://${config.server.address}:${config.server.port}/api/landmark`, data)
-      .then(res => {
-        if (res.ok) resolve(res)
-        else reject(res.statusText)
-      })
+  .then(() => new Promise((resolve, reject) => {
+    post(`http://${config.server.address}:${config.server.port}/api/landmark`, data)
+    .then(res => {
+      if (res.ok) resolve(res)
+      else reject(res.statusText)
     })
-  })
+  }))
   .then(() => {
-    nipple.enable()
-    btnGenerate.enable()
+    loading.destroy()
+    start()
   })
-  .then(() => loading.destroy())
   .catch(err => {
     console.error(err)
     loading.destroy()
     error(err)
   })
-
-  generator && generator.destroy()
 }
 
 export default {

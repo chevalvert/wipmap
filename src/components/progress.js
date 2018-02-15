@@ -3,11 +3,15 @@
 import L from 'loc'
 import bel from 'bel'
 import config from 'config'
+
+import Emitter from 'tiny-emitter'
 import DomComponent from 'abstractions/DomComponent'
 
 export default class Progress extends DomComponent {
   constructor ({ value = 0, color = 'black' }) {
     super()
+    this.events = new Emitter()
+
     this.value = value
     this.color = color
   }
@@ -27,6 +31,11 @@ export default class Progress extends DomComponent {
   get value () { return this._value }
   set value (v) {
     this._value = v
+    this.events.emit('change', this._value)
     if (this.mounted) this.refs.value.innerHTML = this._value
   }
+
+  watch (cb) { this.events.on('change', cb) }
+  watchOnce (k, cb) { this.events.once('change', cb) }
+  unwatch (cb) { this.events.off('change', cb) }
 }

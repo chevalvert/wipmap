@@ -49,7 +49,7 @@ export default class Nipple extends DomComponent {
   }
 
   watch (cb) { this.events.on('move', cb) }
-  watchOnce (k, cb) { this.events.once('move', cb) }
+  watchOnce (cb) { this.events.once('move', cb) }
   unwatch (cb) { this.events.off('move', cb) }
 
   enable () {

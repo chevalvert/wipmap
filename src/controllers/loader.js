@@ -3,7 +3,10 @@
 import config from 'config'
 import store from 'utils/store'
 
-import fetchJSON from 'utils/fetch-json'
+import post from 'utils/post'
+import { validateJsonResponse } from 'utils/fetch-json'
+
+/* global Image */
 
 function loadSprites () {
   const spritesheets = Object.entries(config.spritesheets).map(([name, opts]) => new Promise((resolve, reject) => {
@@ -22,10 +25,9 @@ function loadSprites () {
   return Promise.all(spritesheets)
 }
 
-function loadMap (x, y, force = false) {
-  const url = `http://${config.server.address}:${config.server.port}/api/map/${x}/${y}/`
-    + (force ? '1' : '')
-  return fetchJSON(url)
+function loadMap ([x, y, force = false], opts = {}) {
+  const url = `http://${config.server.address}:${config.server.port}/api/map/${x}/${y}/${+force}`
+  return post(url, opts).then(validateJsonResponse)
 }
 
 export default {

@@ -69,8 +69,11 @@ export default class Map extends Canvas {
   drawLandmarks () {
     landmarks.all
     .forEach(landmark => {
-      const [x, y] = landmark.position
-      this.drawSprite(landmark.sprite.name, x, y, this.scale, landmark.sprite.index)
+      const [x, y] = toWorld(landmark.position)
+      landmark.points.forEach(([offx, offy]) => {
+        offy += landmark.sprite.spritesheet.resolution / 2
+        this.drawSprite(landmark.sprite.name, x + offx, y + offy, this.scale, landmark.sprite.index)
+      })
     })
   }
 

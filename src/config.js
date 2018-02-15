@@ -5,7 +5,7 @@ import getUrlParam from 'utils/get-url-param'
 
 const config = {
   server: {
-    address: window.isProduction ? window.location.hostname : '192.168.1.69',
+    address: window.isProduction ? window.location.hostname : '192.168.0.16',
     port: 8888
   },
 
@@ -22,6 +22,10 @@ const config = {
       friction: 10
     },
     forbidden: []
+  },
+
+  fog: {
+    color: 'white'
   },
 
   spritesheets: {
@@ -71,7 +75,8 @@ const config = {
     }
   },
 
-  gameover: 300
+  gameover: 3,
+  secondsBeforeReboot: 10
 }
 
 Object.entries(config.stored)

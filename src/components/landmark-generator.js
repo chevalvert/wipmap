@@ -111,7 +111,6 @@ export default class LandmarkGenerator extends DomComponent {
     })
     this.refs.preview.setSprite(sprite.spritesheet, sprite.index, modifiers)
 
-    // TODO: check if interesting UX wise
     if (this.refs.modifiers.length.value > this.refs.preview.points.length) {
       this.refs.modifiers.length.refs.btns[1].shake()
       this.refs.modifiers.length.value = this.refs.preview.points.length
@@ -129,7 +128,11 @@ export default class LandmarkGenerator extends DomComponent {
   }
 
   randomize () {
-    ;[this.refs.words.category, ...this.refs.words.variables, ...Object.values(this.refs.modifiers)].forEach(w => w.random())
+    ;[
+      this.refs.words.category,
+      ...this.refs.words.variables,
+      ...Object.values(this.refs.modifiers)
+    ].forEach(w => w.random())
   }
 
   get words () {

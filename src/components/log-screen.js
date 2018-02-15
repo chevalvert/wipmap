@@ -24,6 +24,6 @@ export default class MessageScreen extends DomComponent {
   }
 
   say (text) {
-    this.refs.message.innerHTML = text
+    if (this.mounted) this.refs.message.innerHTML = text
   }
 }
