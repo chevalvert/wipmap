@@ -1,10 +1,10 @@
 'use strict'
 
-import store from 'utils/store'
+import store from 'store'
 import prng from 'utils/prng'
 
 export default function (context, name, x, y, scale = 1, index = undefined) {
-  const sprite = store.get(`spritesheet_${name}`)
+  const sprite = store.get(`spritesheet.${name}`)
   if (!sprite) return
 
   index = index === undefined

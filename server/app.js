@@ -1,11 +1,15 @@
 'use strict'
 
 const path = require('path')
+const fs = require('fs-extra')
 const map = require(path.join(__dirname, 'lib', 'map'))
-const config = require(path.join(__dirname, '..', 'server.config.json'))
+
+const _CONFIG_ = path.join(__dirname, '..', 'wipmap.config.json')
+const config = require(_CONFIG_)
 
 const defaultOpts = {
-  verbose: true
+  verbose: true,
+  liveReload: false
 }
 
 const remotes = {}
@@ -48,6 +52,11 @@ module.exports = function (server, opts) {
         console.log(error)
         res.json({ error: error.toString() })
       })
+    },
+
+    sendConfig: req => {
+      if (!opts.liveReload) return Promise.resolve(config)
+      return fs.readJson(_CONFIG_)
     },
 
     getAgent: req => new Promise((resolve, reject) => {

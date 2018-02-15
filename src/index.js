@@ -1,6 +1,8 @@
 'use strict'
 
 import L from 'loc'
+
+import loader from 'controllers/loader'
 import handshake from 'utils/handshake'
 
 import Navigo from 'navigo'
@@ -10,8 +12,14 @@ import generator from 'pages/generator'
 
 import LogScreen from 'components/log-screen'
 
-const loading = new LogScreen(L`loading`, L`loading.connection`)
-const hs = name => handshake(name).then(() => loading.destroy())
+const loading = new LogScreen(L`loading`)
+
+const hs = name => Promise.resolve()
+  .then(() => loading.say(L`loading.config`))
+  .then(loader.loadConfig)
+  .then(() => loading.say(L`loading.connection`))
+  .then(() => handshake(name))
+  .then(() => loading.destroy())
 
 loading.mount(document.body)
 

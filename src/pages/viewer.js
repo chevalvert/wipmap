@@ -1,7 +1,7 @@
 'use strict'
 
 import L from 'loc'
-import config from 'config'
+import store from 'store'
 import ws from 'utils/websocket'
 
 import error from 'utils/error'
@@ -43,9 +43,10 @@ function setup () {
 
 function start (json) {
   const map = new Map(json)
-  const fog = new Fog(config.fog.color)
   map.mount(document.querySelector('.map'))
-  fog.mount(document.querySelector('.map'))
+
+  const fog = new Fog(store.get('config.fog').color)
+  if (store.get('config.fog').enable) fog.mount(document.querySelector('.map'))
 
   agents.setup()
   if (!window.isProduction) fps()
@@ -68,7 +69,7 @@ function end () {
   ws.off('landmark.add')
   agents.removeAll()
 
-  const endScreen = new SelfDestructingLogScreen(L`gameover`, L`gameover.message`, config.secondsBeforeReboot, 'game-over-screen')
+  const endScreen = new SelfDestructingLogScreen(L`gameover`, L`gameover.message`, store.get('config.gameover').duration, 'game-over-screen')
 
   Promise.resolve()
   .then(() => endScreen.mount(document.body))

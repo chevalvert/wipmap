@@ -1,8 +1,10 @@
 @keyframes shake {
+  0% { pointer-events: none; }
   10%, 90% { transform: rotate(-0.5deg) translate3d(-0.1rem, 0, 0); }
   20%, 80% { transform: rotate(1deg) translate3d(0.2rem, 0, 0); }
   30%, 50%, 70% { transform: rotate(-2deg) translate3d(-0.4rem, 0, 0); }
   40%, 60% { transform: rotate(2deg) translate3d(0.4rem, 0, 0); }
+  100% { pointer-events: auto; }
 }
 
 @mixin btn-color ($color) {
@@ -13,7 +15,6 @@
 button.button {
   @include no-select();
   @include reset-Button();
-  @include easing(300ms);
 
   display: inline-block;
   margin-top: 0.3rem;
@@ -22,7 +23,7 @@ button.button {
 
   will-change: transform;
 
-  &:not(.is-disabled):not(.is-shaking):active {
+  &:not(.is-disabled):active {
     transform: translateY(0.5rem);
     box-shadow: none;
   }
@@ -36,10 +37,7 @@ button.button {
     box-shadow: 0 0.5rem 0 0 darken($gray, 10%);
   }
 
-  &.is-shaking {
+  &.is-shaking:not(:active) {
     animation: shake 500ms cubic-bezier(.36,.07,.19,.97) both;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000px;
   }
 }

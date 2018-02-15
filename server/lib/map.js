@@ -10,7 +10,7 @@ const _HISTORY_ = path.join(_DATA_, 'history.json')
 
 const makeUID = require(path.join(__dirname, 'utils', 'create-map-uid'))
 const mapFilename = require(path.join(__dirname, 'utils', 'create-map-filename'))(_MAPS_)
-const config = require(path.join(__dirname, '..', '..', 'server.config.json'))
+const config = require(path.join(__dirname, '..', '..', 'wipmap.config.json'))
 
 let map = {}
 let filename
@@ -39,7 +39,7 @@ function create ([x, y, force = false], opts) {
         ? fs.readJsonSync(filename, () => console.log('foo'))
         : {
           uid: makeUID(),
-          ...wipmap(x, y, Object.assign({}, config.wipmap, opts || {})),
+          ...wipmap(x, y, Object.assign({}, config['wipmap-generate'], opts || {})),
           landmarks: []
         }
       resolve(map)

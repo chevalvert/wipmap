@@ -14,18 +14,19 @@ const server = Server({
 })
 
 const app = require(path.join(__dirname, 'app'))(server, {
-  verbose: true
+  verbose: true,
+  liveReload: args.live
 })
 
 server
 // WebSocket actions subscription
 .watch({
-  client: client => server.send('handshake', null, client),
   'client.quit': app.resolveClientQuit,
   handshake: app.handshake,
   'agent.move': data => server.broadcast('agent.move', data, app.viewers)
 })
 // RESTful routing, available at /api/endpoint
+.route('/config', app.rest(app.sendConfig), 'GET')
 .route('/map/:x/:y/:force', app.rest(app.createMap), 'POST')
 .route('/agent/:id', app.rest(app.getAgent), 'GET')
 .route('/landmark', app.rest(app.addLandmark), 'POST')

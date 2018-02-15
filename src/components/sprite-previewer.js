@@ -1,6 +1,6 @@
 'use strict'
 
-import config from 'config'
+import store from 'store'
 import prng from 'utils/prng'
 import { aabb, center } from 'utils/aabb'
 import distanceSquared from 'utils/distance-squared'
@@ -36,10 +36,10 @@ export default class SpritePreviewer extends Canvas {
   generateSpritesPoints () {
     prng.setSeed(this.seed)
     const vmin = Math.min(this.width, this.height)
-    this.scale = vmin / config.agent.fov
+    this.scale = vmin / store.get('config.agent').fov
 
     const res = this.spritesheet.resolution
-    const radius = config.agent.fov / 2
+    const radius = store.get('config.agent').fov / 2
     const round = map(this.modifiers.order, 0, 100, res, 1)
     const minDistance = map(this.modifiers.density, 0, 100, res * 2, res / 2)
     const maxDistance = minDistance * 2

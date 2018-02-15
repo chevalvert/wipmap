@@ -1,9 +1,9 @@
 'use strict'
 
 import L from 'loc'
-import config from 'config'
+import store from 'store'
+import host from 'utils/get-host'
 import ws from 'utils/websocket'
-import store from 'utils/store'
 import events from 'utils/events'
 
 import fetchJSON from 'utils/fetch-json'
@@ -41,7 +41,7 @@ function setup ({ id: _id, color: _color }) {
 
   ws.on('landmark.add', ({ landmarksLength }) => {
     progress.value = landmarksLength
-    if (progress.value >= config.gameover) {
+    if (progress.value >= store.get('config.gameover').landmarksLength) {
       if (gameoverScreen) gameoverScreen.destroy()
       gameoverScreen = new LogScreen(L`gameover`, L`remote.gameover.message`)
       gameoverScreen.mount(document.body)
@@ -84,6 +84,7 @@ function start () {
     if (!data.direction) return
 
     btnGenerate.mount(document.querySelector('.button-wrapper'))
+    document.querySelector('.button-wrapper').classList.add('is-mounted')
     btnGenerate.enable()
 
     // Trying to compress data to reduce transport payload
@@ -97,7 +98,7 @@ function generate () {
   const loading = new LogScreen(L`loading`, L`landmark-generator.getting`)
   Promise.resolve()
   .then(() => loading.mount(document.body))
-  .then(() => fetchJSON(`http://${config.server.address}:${config.server.port}/api/agent/${SESSION.id}/`))
+  .then(() => fetchJSON(`http://${host.address}:${host.port}/api/agent/${SESSION.id}/`))
   .then(agent => {
     const landmarks = LandmarkGenerator.findAvailable(agent.currentBiome)
     if (!landmarks || objectIsEmpty(landmarks)) {
@@ -130,7 +131,7 @@ function send (data) {
   Promise.resolve()
   .then(() => loading.mount(document.body))
   .then(() => new Promise((resolve, reject) => {
-    post(`http://${config.server.address}:${config.server.port}/api/landmark`, data)
+    post(`http://${host.address}:${host.port}/api/landmark`, data)
     .then(res => {
       if (res.ok) resolve(res)
       else reject(res.statusText)

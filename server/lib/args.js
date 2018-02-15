@@ -8,14 +8,16 @@ const minimistOpts = {
     'open',
     'fullscreen',
     'help',
-    'version'
+    'version',
+    'live'
   ],
   sring: ['port'],
   alias: {
+    fullscreen: ['f'],
     help: ['h'],
+    live: ['l'],
     open: ['o'],
     port: ['p'],
-    fullscreen: ['f'],
     version: ['v']
   },
   default: {

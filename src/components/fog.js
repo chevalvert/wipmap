@@ -1,7 +1,6 @@
 'use strict'
 
-import config from 'config'
-import store from 'utils/store'
+import store from 'store'
 import events from 'utils/events'
 
 import Canvas from 'abstractions/Canvas'
@@ -9,8 +8,8 @@ import Canvas from 'abstractions/Canvas'
 export default class Fog extends Canvas {
   constructor (color) {
     super()
-    this.color = color || '#F2F2F2'
-    this.brush = store.get('spritesheet_brush')
+    this.color = color || '#F2F2F2'
+    this.brush = store.get('spritesheet.brush')
   }
 
   didMount () {

@@ -1,0 +1,90 @@
+{
+  "remotes": {
+    "max": 0,
+    "colors": ["#56E271", "#F9D43A", "#FF6464"]
+  },
+
+  "wipmap-generate": {
+    "width": 8,
+    "height": 6,
+    "decimals": 3,
+
+    "jitter": 0.4,
+    "distortion": 1,
+    "gradient": 0,
+    "poissonDensity": 0.3,
+
+    "probablities": {
+      "water": 0.03,
+      "forest": 0.02
+    },
+
+    "biomesMap": [
+      ["TAIGA", "JUNGLE", "SWAMP"],
+      ["TUNDRA", "PLAINS", "PLAINS"],
+      ["TUNDRA", "PLAINS", "DESERT"]
+    ]
+  },
+
+  "gameover": {
+    "landmarksLength": 3,
+    "duration": 10
+  },
+
+  "fog": {
+    "enable": true,
+    "color": "white"
+  },
+
+  "agent": {
+    "speed": 100,
+    "fov": 100,
+    "inertia": {
+      "interpolation": "linear",
+      "rigidity": 0.1,
+      "friction": 10
+    },
+    "forbidden": []
+  },
+
+  "spritesheets": {
+    "grass": { "src": "spritesheets/grass.png", "resolution": 10 },
+    "sand": { "src": "spritesheets/sand.png", "resolution": 10 },
+    "tree": { "src": "spritesheets/tree.png", "resolution": 40, "length": 7 },
+    "water": { "src": "spritesheets/water.png", "resolution": 20 },
+    "dune": { "src": "spritesheets/dune.png", "resolution": 20 },
+    "brush": { "src": "brush.png" },
+    "house": { "src": "spritesheets/house.png", "resolution": 20 },
+    "rock": { "src": "spritesheets/rock.png", "resolution": 20 },
+    "debug": { "src": "debug.png", "resolution": 20 }
+  },
+
+  "biomes": {
+    "PLAINS": [["grass", 0.01]],
+    "DESERT": [["sand", 1], ["dune", 0.001]],
+
+    "TAIGA": [["sand", 1]],
+    "TUNDRA": [["sand", 1]],
+    "SWAMP": [["sand", 1]],
+
+    "FOREST": [["tree", 0.1]],
+    "WATER": [["water", 0.5]]
+  },
+
+  "landmarks": {
+    "house": {
+      "biomes": ["PLAINS", "FOREST"],
+      "variables": [
+        ["small", "big"],
+        ["light", "heavy"]
+      ]
+    },
+    "tree": {
+      "biomes": ["PLAINS", "DESERT", "TAIGA", "TUNDRA", "SWAMP", "FOREST", "WATER"],
+      "variables": [
+        ["touffu", "pas touffu"],
+        ["vert", "bleu"]
+      ]
+    }
+  }
+}

@@ -1,8 +1,8 @@
 'use strict'
 
 import L from 'loc'
+import store from 'store'
 import bel from 'bel'
-import config from 'config'
 
 import Emitter from 'tiny-emitter'
 import DomComponent from 'abstractions/DomComponent'
@@ -24,7 +24,7 @@ export default class Progress extends DomComponent {
     class='progress'
     data-name=${L`progress`}
     style='--color: ${this.color}'>
-      ${this.refs.value}<span class='progress-total'>${config.gameover}</span>
+      ${this.refs.value}<span class='progress-total'>${store.get('config.gameover').landmarksLength}</span>
     </div>`
   }
 

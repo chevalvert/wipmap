@@ -1,7 +1,6 @@
 'use strict'
 
-import config from 'config'
-import store from 'utils/store'
+import store from 'store'
 
 import prng from 'utils/prng'
 import { toWorld } from 'utils/map-to-world'
@@ -53,9 +52,9 @@ export default class Map extends Canvas {
       points.forEach(point => {
         const [x, y] = toWorld(point)
 
-        if (config.biomes[type]) {
+        if (store.get('config.biomes')[type]) {
           // TODO: real density repartition calc instead of simple probability calc
-          config.biomes[type].forEach(item => {
+          store.get('config.biomes')[type].forEach(item => {
             if (prng.random() < item[1]) {
               const itemScale = item[2] || 1
               this.drawSprite(item[0], x, y, this.scale * itemScale)

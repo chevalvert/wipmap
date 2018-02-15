@@ -1,6 +1,6 @@
 'use strict'
 
-import store from 'utils/store'
+import store from 'store'
 import { map } from 'missing-math'
 
 let mapSize = [0, 0]

@@ -1,6 +1,6 @@
 'use strict'
 
-import config from 'config'
+import store from 'store'
 
 import bel from 'bel'
 import nipple from 'nipplejs'
@@ -40,7 +40,7 @@ export default class Nipple extends DomComponent {
     this.joystick.on('start', () => { !this.disabled && raf.add(this.onMove) })
     this.joystick.on('end', () => { raf.remove(this.onMove) })
     this.joystick.on('move', (_, data) => {
-      const speed = Math.min(data.force, 1) * config.agent.speed
+      const speed = Math.min(data.force, 1) * store.get('config.agent').speed
       this.dir = [
         Math.cos(data.angle.radian) * speed,
         -Math.sin(data.angle.radian) * speed

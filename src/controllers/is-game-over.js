@@ -1,6 +1,6 @@
 'use strict'
 
-import config from 'config'
+import store from 'store'
 import landmarks from 'controllers/landmarks'
 
-export default () => landmarks.length >= config.gameover
+export default () => landmarks.length >= store.get('config.gameover').landmarksLength

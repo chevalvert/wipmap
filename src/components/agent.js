@@ -1,14 +1,11 @@
 'use strict'
 
-import config from 'config'
-import store from 'utils/store'
+import store from 'store'
 import events from 'utils/events'
-import ws from 'utils/websocket'
 
 import Inertia from 'utils/inertia'
 import inPolygon from 'point-in-polygon'
 import { toMap } from 'utils/map-to-world'
-import landmarks from 'controllers/landmarks'
 
 import raf from 'raf'
 import bel from 'bel'
@@ -22,8 +19,8 @@ export default class Agent extends DomComponent {
     this.x = x
     this.y = y
 
-    this.ix = new Inertia(Object.assign({}, { value: this.x }, config.agent.inertia || {}))
-    this.iy = new Inertia(Object.assign({}, { value: this.y }, config.agent.inertia || {}))
+    this.ix = new Inertia(Object.assign({}, { value: this.x }, store.get('config.agent').inertia || {}))
+    this.iy = new Inertia(Object.assign({}, { value: this.y }, store.get('config.agent').inertia || {}))
 
     console.log(`#agent-${this.id} has been created.`)
   }
@@ -67,7 +64,7 @@ export default class Agent extends DomComponent {
 
     this.ix.update()
     this.iy.update()
-    if (!this.ix.stopped || !this.iy.stopped) {
+    if (!this.ix.stopped || !this.iy.stopped) {
       this.applyPosition(this.ix.value, this.iy.value)
     }
   }
@@ -89,11 +86,11 @@ export default class Agent extends DomComponent {
   }
 
   canMoveTo (x, y) {
-    return x > 0
-      && y > 0
-      && x < store.get('width')
-      && y < store.get('height')
-      && !this.inForbiddenCell(x, y)
+    return x > 0 &&
+      y > 0 &&
+      x < store.get('width') &&
+      y < store.get('height') &&
+      !this.inForbiddenCell(x, y)
   }
 
   // This method is perf heavy, and should only use in async calls

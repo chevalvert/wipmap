@@ -13,12 +13,12 @@
   <link rel="stylesheet" href="{{compiler.hash}}.css">
   {{/if}}
 </head>
-<body>
+<body class="{{#unless compiler.isProduction}}is-not-production{{/unless}}">
   <main>
     <section class="map"></section>
   </main>
   <script type="text/javascript">
-    window.isProduction = {{ compiler.isProduction}}
+    window.isProduction = {{ compiler.isProduction }}
   </script>
   <script src="{{compiler.hash}}.js"></script>
 </body>

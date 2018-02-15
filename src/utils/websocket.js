@@ -1,11 +1,11 @@
 'use strict'
 
-import config from 'config'
+import host from 'utils/get-host'
 
 import Emitter from 'tiny-emitter'
 import ReconnectingWebSocket from 'reconnectingwebsocket'
 
-const ws = new ReconnectingWebSocket(`ws://${config.server.address}:${config.server.port}`)
+const ws = new ReconnectingWebSocket(`ws://${host.address}:${host.port}`)
 const events = new Emitter()
 
 let connected = false

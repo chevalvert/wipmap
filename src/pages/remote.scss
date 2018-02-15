@@ -19,8 +19,10 @@
     top: 5rem;
     right: 5rem;
 
-    button {
+    // Avoid conflict with button.is-shaking animation
+    &.is-mounted {
       animation: fallIn 300ms ease-out forwards;
+      button {}
     }
   }
 

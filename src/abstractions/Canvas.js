@@ -1,15 +1,14 @@
 'use strict'
 
-import store from 'utils/store'
-
 import bel from 'bel'
 import drawSprite from 'utils/draw-sprite'
+import getUrlParam from 'utils/get-url-param'
 
 import DomComponent from 'abstractions/DomComponent'
 
 export default class Canvas extends DomComponent {
   render () {
-    this.scale = store.get('scale')
+    this.scale = getUrlParam('scale') || 1
     const el = bel`<canvas></canvas>`
     return el
   }

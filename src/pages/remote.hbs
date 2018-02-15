@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="{{compiler.hash}}.css">
   {{/if}}
 </head>
-<body ontouchstart="">
+<body class="{{#unless compiler.isProduction}}is-not-production{{/unless}}" ontouchstart="">
   <main>
     <section class="controls">
       <div class="progress-wrapper"></div>

@@ -1,8 +1,7 @@
 'use strict'
 
 import L from 'loc'
-import config from 'config'
-import store from 'utils/store'
+import store from 'store'
 import events from 'utils/events'
 
 import getSpriteIndex from 'utils/get-sprite-index'
@@ -19,7 +18,7 @@ export default class LandmarkGenerator extends DomComponent {
   static findAvailable (biome) {
     if (!biome) return
     let landmarks = {}
-    Object.entries(config.landmarks).forEach(([category, landmark]) => {
+    Object.entries(store.get('config.landmarks')).forEach(([category, landmark]) => {
       if (!landmark.biomes.includes(biome.type)) return
       landmarks[category] = landmark
     })
@@ -119,7 +118,7 @@ export default class LandmarkGenerator extends DomComponent {
 
   getSprite () {
     const name = this.refs.words.category.word
-    const spritesheet = store.get(`spritesheet_${name}`)
+    const spritesheet = store.get(`spritesheet.${name}`)
     return {
       name,
       spritesheet,
