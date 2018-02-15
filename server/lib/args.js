@@ -11,16 +11,19 @@ const minimistOpts = {
     'version',
     'live'
   ],
-  sring: ['port'],
+  string: ['log', 'log-level', 'port'],
   alias: {
     fullscreen: ['f'],
     help: ['h'],
     live: ['l'],
+    log: [],
+    'log-level': [],
     open: ['o'],
     port: ['p'],
     version: ['v']
   },
   default: {
+    'log-level': 6,
     port: 8888
   }
 }
@@ -28,7 +31,7 @@ const minimistOpts = {
 const argv = minimist(process.argv.slice(2), minimistOpts)
 
 if (argv.help) {
-  console.log(fs.readFileSync(path.join(__dirname, '..', 'usage.txt'), 'utf-8'))
+  console.log(fs.readFileSync(path.join(__dirname, '..', 'USAGE'), 'utf-8'))
   process.exit(0)
 }
 

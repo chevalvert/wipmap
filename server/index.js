@@ -6,7 +6,10 @@ process.title = 'wipmap-server'
 const path = require('path')
 const opn = require('opn')
 const args = require(path.join(__dirname, 'lib', 'args'))
+const log = require(path.join(__dirname, 'lib', 'utils', 'log'))
 const Server = require(path.join(__dirname, 'lib', 'server'))
+
+const ENV = process.env.NODE_ENV || 'production'
 
 const server = Server({
   public: path.join(__dirname, '..', 'build'),
@@ -14,8 +17,8 @@ const server = Server({
 })
 
 const app = require(path.join(__dirname, 'app'))(server, {
-  verbose: true,
-  liveReload: args.live
+  liveReload: args.live,
+  dashboard: ENV !== 'production'
 })
 
 server
@@ -32,8 +35,8 @@ server
 .route('/landmark', app.rest(app.addLandmark), 'POST')
 .start()
 .then(url => {
-  console.log(`Server is listenning on ${url}`)
+  log.info(`Server is listenning on ${url}`)
   if (args.open || args.fullscreen) {
     opn(url, { app: ['google chrome', args.fullscreen ? '--kiosk' : ''] })
   }
-}).catch(err => console.log(err))
+}).catch(err => log.error(err))

@@ -2,14 +2,15 @@
 
 const path = require('path')
 const fs = require('fs-extra')
+const log = require(path.join(__dirname, 'lib', 'utils', 'log'))
 const map = require(path.join(__dirname, 'lib', 'map'))
 
 const _CONFIG_ = path.join(__dirname, '..', 'wipmap.config.json')
 const config = require(_CONFIG_)
 
 const defaultOpts = {
-  verbose: true,
-  liveReload: false
+  liveReload: false,
+  dashboard: false
 }
 
 const remotes = {}
@@ -24,7 +25,8 @@ module.exports = function (server, opts) {
 
     handshake: ({ type }, client) => {
       client.type = type
-      opts.verbose && server.print()
+      if (opts.dashboard) server.print()
+      else log.debug('Connection', client.ip, client.uid, client.type)
       if (type === 'viewer') viewers.push(client)
       if (type === 'remote') {
         if (config.remotes.max > 0 && Object.keys(remotes).length >= config.remotes.max) {
@@ -36,7 +38,8 @@ module.exports = function (server, opts) {
     },
 
     resolveClientQuit: client => {
-      opts.verbose && server.print()
+      if (opts.dashboard) server.print()
+      else log.debug('Disconnection', client.ip, client.uid, client.type)
       if (~viewers.indexOf(client)) viewers.splice(viewers.indexOf(client), 1)
       if (remotes[client.uid]) {
         server.broadcast('agent.remove', { id: client.uid }, viewers)
@@ -49,7 +52,7 @@ module.exports = function (server, opts) {
       action(req)
       .then(resp => res.json(resp))
       .catch(error => {
-        console.log(error)
+        log.error(error)
         res.json({ error: error.toString() })
       })
     },

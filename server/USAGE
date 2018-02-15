@@ -1,0 +1,27 @@
+wipmap
+
+Usage:
+  wipmap --open
+  wipmap -of --log=<path>
+  wipmap --log-level=debug
+  wipmap --help
+  wipmap --version
+
+Options:
+  -o, --open              Open browser.
+  -p, --port=<PORT>       Run server on custom port (default is 8888).
+  -f, --fullscreen        Open browser in kiosk mode.
+  -h, --help              Show this screen.
+  -v, --version           Print the current version.
+  --log=<path>            Pipe stdout to the specified log file.
+  --log-level=<level>     Set the log level (default is 'info').
+
+Log level:
+  0, emergency            System is unusable.
+  1, alert                Action must be taken immediately.
+  2, critical             The system is in critical condition.
+  3, error                Error condition.
+  4, warning              Warning condition.
+  5, notice               A normal but significant condition.
+  6, info                 A purely informational message.
+  7, debug                Messages to debug an application.
