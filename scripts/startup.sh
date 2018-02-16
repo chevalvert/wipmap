@@ -14,4 +14,4 @@ CONFIG="$PWD/wipmap.config.json"
 mkdir -p $LOGS
 mkdir -p $DATA
 
-node $APP/server --open --fullscreen --config=$CONFIG --data=$DATA --log=$LOGS/$(date +%Y-%m-%d_%H-%M).log
+node $APP/server --open --fullscreen --live --config=$CONFIG --data=$DATA --log=$LOGS/$(date +%Y-%m-%d_%H-%M).log
