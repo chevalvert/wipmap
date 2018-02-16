@@ -60,9 +60,9 @@ locales.fr['remote.buttons.validate'] = 'valider'
 locales.fr['remote.landmark-generator.prefix.context'] = 'biome = '
 locales.fr['remote.landmark-generator.prefix.type'] = 'objet = '
 locales.fr['remote.landmark-generator.prefix.variable'] = '  objet.'
-locales.fr['remote.landmark-generator.prefix.modifier-length'] = 'objet.nombre = '
+locales.fr['remote.landmark-generator.prefix.modifier-length'] = 'objet.nombre  = '
 locales.fr['remote.landmark-generator.prefix.modifier-density'] = 'objet.densité = '
-locales.fr['remote.landmark-generator.prefix.modifier-order'] = 'objet.chaos = '
+locales.fr['remote.landmark-generator.prefix.modifier-order'] = 'objet.chaos   = '
 
 export default (key, LANG = 'fr') => {
   if (!key) return
