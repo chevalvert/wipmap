@@ -17,12 +17,14 @@ wipmap
 
 Usage:
   wipmap --open
-  wipmap -of --log=<path>
-  wipmap --log-level=debug
+  wipmap -of --log=<path> --data=<path> --config<path>
+  wipmap --log-level=debug --config=<path>
   wipmap --help
   wipmap --version
 
 Options:
+  -c, --config            Run server with specified config file.
+  -d, --data              Specify data/ export directory.
   -o, --open              Open browser.
   -p, --port=<PORT>       Run server on custom port (default is 8888).
   -f, --fullscreen        Open browser in kiosk mode.
@@ -40,6 +42,7 @@ Log level:
   5, notice               A normal but significant condition.
   6, info                 A purely informational message.
   7, debug                Messages to debug an application.
+
 ```
 
 ## Configuration

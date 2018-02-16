@@ -4,13 +4,14 @@ const path = require('path')
 const fs = require('fs-extra')
 const wipmap = require('wipmap-generate')
 
-const _DATA_ = path.join(__dirname, '..', 'data')
-const _MAPS_ = path.join(_DATA_, 'maps')
-const _HISTORY_ = path.join(_DATA_, 'history.json')
+const args = require(path.join(__dirname, 'args'))
+const config = require(args.config)
+
+const _MAPS_ = path.join(args.data, 'maps')
+const _HISTORY_ = path.join(args.data, 'history.json')
 
 const makeUID = require(path.join(__dirname, 'utils', 'create-map-uid'))
 const mapFilename = require(path.join(__dirname, 'utils', 'create-map-filename'))(_MAPS_)
-const config = require(path.join(__dirname, '..', '..', 'wipmap.config.json'))
 
 let map = {}
 let filename

@@ -4,9 +4,8 @@ const path = require('path')
 const fs = require('fs-extra')
 const log = require(path.join(__dirname, 'lib', 'utils', 'log'))
 const map = require(path.join(__dirname, 'lib', 'map'))
-
-const _CONFIG_ = path.join(__dirname, '..', 'wipmap.config.json')
-const config = require(_CONFIG_)
+const args = require(path.join(__dirname, 'lib', 'args'))
+const config = require(args.config)
 
 const defaultOpts = {
   liveReload: false,
@@ -59,7 +58,7 @@ module.exports = function (server, opts) {
 
     sendConfig: req => {
       if (!opts.liveReload) return Promise.resolve(config)
-      return fs.readJson(_CONFIG_)
+      return fs.readJson(args.config)
     },
 
     getAgent: req => new Promise((resolve, reject) => {
