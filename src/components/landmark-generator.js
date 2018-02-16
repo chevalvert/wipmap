@@ -117,8 +117,8 @@ export default class LandmarkGenerator extends DomComponent {
   }
 
   getSprite () {
-    const name = this.refs.words.category.word
-    const spritesheet = store.get(`spritesheet.${name}`)
+    const name = `${this.agent.currentBiome.type.toLowerCase()}-${this.refs.words.category.word}`
+    const spritesheet = store.get(`spritesheet.` + name)
     return {
       name,
       spritesheet,

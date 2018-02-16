@@ -41,7 +41,7 @@ export default class SpritePreviewer extends Canvas {
     const res = this.spritesheet.resolution
     const radius = store.get('config.agent').fov / 2
     const round = map(this.modifiers.order, 0, 100, res, 1)
-    const minDistance = map(this.modifiers.density, 0, 100, res * 2, res / 2)
+    const minDistance = map(this.modifiers.density, 0, 100, res * 2, res / 4)
     const maxDistance = minDistance * 2
 
     const poisson = new Poisson([radius * 2, radius * 2], minDistance, maxDistance, 10, prng.random)
@@ -76,7 +76,7 @@ export default class SpritePreviewer extends Canvas {
       y = this.height / 2 + y * this.scale
 
       // Note: drawing the sprite from the bottom of its hitbox
-      y += (this.spritesheet.resolution / 2) * this.scale
+      // y += (this.spritesheet.resolution / 2) * this.scale
       this.drawSprite(this.spritesheet.name, Math.floor(x), Math.floor(y), this.scale, this.spriteIndex)
     })
   }

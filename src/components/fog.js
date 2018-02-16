@@ -30,11 +30,6 @@ export default class Fog extends Canvas {
 
   clear ([x, y]) {
     // TODO: use a brush spritesheet with random sprite index to simulate
-    // blured noised moving radius
-    // this.context.drawImage(this.brush, x - this.brush.width / 2, y - this.brush.height / 2)
-
-    this.context.beginPath()
-    this.context.arc(x, y, 50, 0, Math.PI * 2)
-    this.context.fill()
+    this.context.drawImage(this.brush, x - this.brush.width / 2, y - this.brush.height / 2)
   }
 }
