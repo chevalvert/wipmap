@@ -7,13 +7,15 @@ const path = require('path')
 const opn = require('opn')
 const args = require(path.join(__dirname, 'lib', 'args'))
 const log = require(path.join(__dirname, 'lib', 'utils', 'log'))
+const config = require(args.config)
 const Server = require(path.join(__dirname, 'lib', 'server'))
 
 const ENV = process.env.NODE_ENV || 'production'
 
 const server = Server({
   public: path.join(__dirname, '..', 'build'),
-  port: args.port
+  port: args.port,
+  wsTimeout: config.remotes.timeout
 })
 
 const app = require(path.join(__dirname, 'app'))(server, {

@@ -9,10 +9,12 @@ const cors = require('cors')
 const table = require('console.table') // eslint-disable-line no-unused-vars
 
 const findFirstAvailableAddress = require(path.join(__dirname, 'utils', 'find-first-available-address'))
+const quitOnTimeout = require(path.join(__dirname, 'utils', 'quit-ws-client-on-timeout'))
 
 const defaultOpts = {
   port: 8888,
-  public: path.join(process.cwd(), 'public')
+  public: path.join(process.cwd(), 'public'),
+  wsTimeout: 1500
 }
 
 module.exports = function WebServer (opts) {
@@ -63,9 +65,10 @@ module.exports = function WebServer (opts) {
 
         wss = new websocket.Server({ server })
         wss.on('connection', (client, req) => {
+          quitOnTimeout(client, opts.wsTimeout)
+
           client.ip = req.connection.remoteAddress
           client.uid = cuid()
-
           events.emit('client', client)
 
           client.on('message', message => {
@@ -77,6 +80,8 @@ module.exports = function WebServer (opts) {
             events.emit('error', err)
             if (err.code === 'ECONNRESET') events.emit('client.quit', client)
           })
+
+          client.on('close', () => events.emit('client.quit', client))
         })
 
         wss.on('error', err => { events.emit('error', err) })
