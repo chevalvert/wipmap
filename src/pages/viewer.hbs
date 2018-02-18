@@ -20,6 +20,7 @@
   </main>
   <script type="text/javascript">
     window.isProduction = {{ compiler.isProduction }}
+    window.devServer = "{{ compiler.devServer }}"
   </script>
   <script src="{{compiler.hash}}.js"></script>
 </body>

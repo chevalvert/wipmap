@@ -59,7 +59,7 @@ function init () {
   sh.step(2, 2, 'Starting the browser-sync server...')
   bs.init({
     server: {
-      baseDir: paths.static,
+      baseDir: paths.static
     },
     open: false,
     reloadOnRestart: true,
@@ -74,5 +74,7 @@ function init () {
       path.join(paths.layouts, '**/*'),
       path.join(paths.static, '**/*')
     ]
+  }, () => {
+    store.devServerUrl = bs.getOption('urls').get('external')
   })
 }

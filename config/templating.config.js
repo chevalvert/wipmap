@@ -21,6 +21,7 @@ module.exports = {
     // set compiler data for use inside layouts
     data.compiler = {
       hash: store.hash,
+      devServer: (!isProduction) && store.devServerUrl,
       publicPath: paths.public,
       isProduction
     }

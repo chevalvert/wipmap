@@ -1,7 +1,10 @@
 'use strict'
 
-// TODO: window.devServer = { address, port } instead of hardcoding IP
+import parseURL from 'utils/parse-url'
+
+const url = parseURL(window.devServer || window.location.hostname)
+
 export default {
-  address: window.isProduction ? window.location.hostname : '192.168.1.69',
+  address: url.hostname,
   port: 8888
 }
