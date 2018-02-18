@@ -16,7 +16,7 @@ $ <a href="https://yarnpkg.com/en/docs/install">yarn</a> install
 wipmap
 
 Usage:
-  wipmap --open
+  wipmap --open --live
   wipmap -of --log=<path> --data=<path> --config<path>
   wipmap --log-level=debug --config=<path>
   wipmap --help
@@ -25,6 +25,7 @@ Usage:
 Options:
   -c, --config            Run server with specified config file.
   -d, --data              Specify data/ export directory.
+  -l, --live              Enable hot reloading of config file.
   -o, --open              Open browser.
   -p, --port=<PORT>       Run server on custom port (default is 8888).
   -f, --fullscreen        Open browser in kiosk mode.
@@ -42,12 +43,11 @@ Log level:
   5, notice               A normal but significant condition.
   6, info                 A purely informational message.
   7, debug                Messages to debug an application.
-
 ```
 
 ## Configuration
 
-See [docs/configuration.md](docs/configuration.md)
+See [`docs/configuration.md`](docs/configuration.md)
 
 <sup>For more details about map generation and configuration, see [`wipmap-generate`](https://github.com/chevalvert/wipmap-generate).</sup>
 

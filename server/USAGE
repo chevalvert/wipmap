@@ -1,7 +1,7 @@
 wipmap
 
 Usage:
-  wipmap --open
+  wipmap --open --live
   wipmap -of --log=<path> --data=<path> --config<path>
   wipmap --log-level=debug --config=<path>
   wipmap --help
@@ -10,6 +10,7 @@ Usage:
 Options:
   -c, --config            Run server with specified config file.
   -d, --data              Specify data/ export directory.
+  -l, --live              Enable hot reloading of config file.
   -o, --open              Open browser.
   -p, --port=<PORT>       Run server on custom port (default is 8888).
   -f, --fullscreen        Open browser in kiosk mode.
