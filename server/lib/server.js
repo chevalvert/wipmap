@@ -9,12 +9,10 @@ const cors = require('cors')
 const table = require('console.table') // eslint-disable-line no-unused-vars
 
 const findFirstAvailableAddress = require(path.join(__dirname, 'utils', 'find-first-available-address'))
-const quitOnTimeout = require(path.join(__dirname, 'utils', 'quit-ws-client-on-timeout'))
 
 const defaultOpts = {
   port: 8888,
-  public: path.join(process.cwd(), 'public'),
-  wsTimeout: 1500
+  public: path.join(process.cwd(), 'public')
 }
 
 module.exports = function WebServer (opts) {
@@ -65,8 +63,6 @@ module.exports = function WebServer (opts) {
 
         wss = new websocket.Server({ server })
         wss.on('connection', (client, req) => {
-          quitOnTimeout(client, opts.wsTimeout)
-
           client.ip = req.connection.remoteAddress
           client.uid = cuid()
           events.emit('client', client)

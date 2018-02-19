@@ -3,11 +3,11 @@
 import store from 'store'
 import ws from 'utils/websocket'
 import { toWorld } from 'utils/map-to-world'
-import shuffle from 'utils/shuffle-array'
+import shuffle from 'utils/array-shuffle'
 
 import Agent from 'components/agent'
 
-let agents = []
+const agents = {}
 let forbiddenCells
 let startingPoints
 
@@ -23,7 +23,15 @@ function setup () {
     .filter(biome => !biome.isBoundary && !store.get('config.agent').forbidden.includes(biome.type))
     .map(biome => biome.site)
 
-  ws.on('agent.add', ({ id, color }) => add(id, color))
+  ws.on('agents.list', agentsID => {
+    // This closure references agents by ID
+    const currentAgents = Object.keys(agents)
+    const agentsToRemove = currentAgents.filter(id => !agentsID.includes(id))
+
+    agentsToRemove.forEach(id => remove(id))
+  })
+
+  // ws.on('agent.add', ({ id, color }) => add(id, color))
   ws.on('agent.remove', ({ id }) => remove(id))
   ws.on('agent.move', ([dx, dy, id, color]) => {
     const agent = agents[id] || add(id, color)

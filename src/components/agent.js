@@ -51,10 +51,14 @@ export default class Agent extends DomComponent {
     raf.remove(this.update)
   }
 
-  pause () { this.paused = true }
+  pause () {
+    this.paused = true
+    this.addClass('is-paused')
+  }
 
   resume () {
     this.paused = false
+    this.removeClass('is-paused')
     this.ix.cancel()
     this.iy.cancel()
   }

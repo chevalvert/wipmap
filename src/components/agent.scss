@@ -49,4 +49,5 @@ $agent-eye-color: $white;
   // &::before { margin-left: -($agent-eye-diameter / 2 + $agent-eye-spacing); }
   // &::after { margin-left:  -($agent-eye-diameter / 2 - $agent-eye-spacing); }
 
+  &.is-paused {}
 }

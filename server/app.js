@@ -39,10 +39,11 @@ module.exports = function (server, opts) {
     resolveClientQuit: client => {
       if (opts.dashboard) server.print()
       else log.debug('Disconnection', client.ip, client.uid, client.type)
+
       if (~viewers.indexOf(client)) viewers.splice(viewers.indexOf(client), 1)
       if (remotes[client.uid]) {
-        server.broadcast('agent.remove', { id: client.uid }, viewers)
         delete remotes[client.uid]
+        server.broadcast('agents.list', Object.keys(remotes), viewers)
       }
     },
 
@@ -97,6 +98,6 @@ module.exports = function (server, opts) {
       server.send('UID', { UID: map.uid }, client)
       server.send('landmark.add', { landmarksLength: map.landmarks.length }, client)
     }, 1000)
-    server.broadcast('agent.add', { id: client.uid, color }, viewers)
+    server.broadcast('agents.list', Object.keys(remotes), viewers)
   }
 }
