@@ -1,7 +1,6 @@
 {
   "remotes": {
     "max": 0,
-    "timeout": 2000,
     "colors": [
       "rgb(255, 50, 70)",
       "rgb(255, 90, 20)",

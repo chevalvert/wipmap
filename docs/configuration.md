@@ -11,7 +11,6 @@
 {
   "remotes": {
     "max": 0,                # number of maximum simultaneous remote connections
-    "timeout": 2000,         # duration in ms before disconnecting non-responding remote
     "colors": [              # list of remote CSS valid colors
       "rgb(255, 50, 70)",
       "rgb(255, 90, 20)",
