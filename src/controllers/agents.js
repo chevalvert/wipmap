@@ -38,7 +38,12 @@ function setup () {
     agent.move([dx, dy] || [0, 0])
   })
 
-  ws.on('agent.get', ({ id }) => ws.send('agent.get.response', agents[id] && agents[id].props))
+  ws.on('agent.get', ({ id }) => {
+    const agent = agents[id]
+
+    if (agent) agent.pause()
+    ws.send('agent.get.response', agent && agent.props)
+  })
 }
 
 function add (id, color = 'black') {

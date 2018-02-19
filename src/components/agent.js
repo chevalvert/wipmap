@@ -76,6 +76,7 @@ export default class Agent extends DomComponent {
   move ([dx, dy]) {
     const newx = this.x + dx
     const newy = this.y + dy
+    this.resume()
     this.canMoveTo(newx, this.y) && this.ix.to(newx)
     this.canMoveTo(this.x, newy) && this.iy.to(newy)
     return this

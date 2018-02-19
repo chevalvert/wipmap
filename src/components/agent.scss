@@ -1,21 +1,25 @@
-$agent-diameter: 20px;
-$agent-eye-diameter: 4px;
-$agent-eye-spacing: 3px;
-$agent-eye-height: -3px;
-$agent-eye-color: $white;
-
-@keyframes blink {
-  90% {
-    transform: none;
-    animation-timing-function: ease-in;
-  }
-  93% { transform: scaleY(0) scaleX(0.9); }
-  100% { animation-timing-function: ease-out; }
-}
+$agent-diameter: 2rem;
+$agent-fov: 15rem;
+$agent-pulse-border-width: 0.5rem;
+$agent-pulse-duration: 2000ms;
 
 @keyframes appear {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes pulse {
+ 0% {
+    opacity: 1;
+    width: 0;
+    height: 0;
+  }
+
+  100% {
+    opacity: 0;
+    width: $agent-fov;
+    height: $agent-fov;
+  }
 }
 
 .agent {
@@ -32,22 +36,23 @@ $agent-eye-color: $white;
   background: var(--agent-color, black);
   border-radius: 100%;
 
-  // &::after, &::before {
-  //   content: '';
-  //   position: absolute;
-  //   top: $agent-diameter / 2;
-  //   left: $agent-diameter / 2;
-  //   animation: blink 2.4s infinite;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
 
-  //   width: $agent-eye-diameter;
-  //   height: $agent-eye-diameter;
-  //   margin-top: -($agent-eye-diameter / 2 - $agent-eye-height);
-  //   background: $agent-eye-color;
-  //   border-radius: 100%;
-  // }
+    border: $agent-pulse-border-width solid var(--agent-color, black);
+    border-radius: 100%;
 
-  // &::before { margin-left: -($agent-eye-diameter / 2 + $agent-eye-spacing); }
-  // &::after { margin-left:  -($agent-eye-diameter / 2 - $agent-eye-spacing); }
+    transform: translateX(-50%) translateY(-50%);
+  }
 
-  &.is-paused {}
+  &.is-paused {
+    &::before {
+      animation: pulse $agent-pulse-duration ease-out infinite;
+    }
+  }
 }
