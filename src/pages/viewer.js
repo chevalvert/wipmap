@@ -24,6 +24,9 @@ const x = getUrlParam('x') || '+'
 const y = getUrlParam('y') || '0'
 const f = getUrlParam('force')
 
+let map
+let fog
+
 function setup () {
   const loading = new LogScreen(L`loading`)
   Promise.resolve()
@@ -42,12 +45,13 @@ function setup () {
 }
 
 function start (json) {
+  landmarks.reset()
   json.landmarks.forEach(landmarks.add)
 
-  const map = new Map(json)
+  map = new Map(json)
   map.mount(document.querySelector('.map'))
 
-  const fog = new Fog(store.get('config.fog').color)
+  fog = new Fog(store.get('config.fog').color)
   if (store.get('config.fog').enable) fog.mount(document.querySelector('.map'))
 
   agents.setup()
@@ -70,6 +74,10 @@ function end () {
   Promise.resolve()
   .then(() => endScreen.mount(document.body))
   .then(() => endScreen.waitFor('destroy'))
+  .then(() => {
+    map.destroy()
+    fog.destroy()
+  })
   .then(setup)
   .catch(err => {
     console.log(err)
