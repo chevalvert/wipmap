@@ -36,23 +36,28 @@ $agent-pulse-duration: 2000ms;
   background: var(--agent-color, black);
   border-radius: 100%;
 
-  &::before {
+  &::before, &::after {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+
     width: 0;
     height: 0;
-
     border: $agent-pulse-border-width solid var(--agent-color, black);
     border-radius: 100%;
-
-    transform: translateX(-50%) translateY(-50%);
   }
 
-  &.is-paused {
-    &::before {
-      animation: pulse $agent-pulse-duration ease-out infinite;
+  &.is-paused, &.is-paused.has-revealed-landmark {
+    &::before { animation: pulse $agent-pulse-duration ease-out infinite; }
+  }
+
+  &.has-revealed-landmark {
+    &::before { animation: pulse $agent-pulse-duration ease-out; }
+    &::after {
+      // background: var(--agent-color, black);
+      animation: pulse #{$agent-pulse-duration / 2} ease-out;
     }
   }
 }

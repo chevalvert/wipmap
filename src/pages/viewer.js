@@ -59,7 +59,15 @@ function start (json) {
 
   ws.on('landmark.add', landmark => {
     landmarks.add(landmark)
-    agents.resume(landmark.agent.id)
+
+    const agent = agents.get(landmark.agent.id)
+    if (agent) {
+      agent.resume()
+      agent.removeClass('has-revealed-landmark')
+      agent.repaint()
+      agent.addClass('has-revealed-landmark')
+    }
+
     map.update()
     if (isGameOver()) end()
   })

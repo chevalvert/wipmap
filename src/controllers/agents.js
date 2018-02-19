@@ -34,13 +34,12 @@ function setup () {
   // ws.on('agent.add', ({ id, color }) => add(id, color))
   ws.on('agent.remove', ({ id }) => remove(id))
   ws.on('agent.move', ([dx, dy, id, color]) => {
-    const agent = agents[id] || add(id, color)
+    const agent = get(id) || add(id, color)
     agent.move([dx, dy] || [0, 0])
   })
 
   ws.on('agent.get', ({ id }) => {
-    const agent = agents[id]
-
+    const agent = get(id)
     if (agent) agent.pause()
     ws.send('agent.get.response', agent && agent.props)
   })
@@ -60,24 +59,23 @@ function removeAll () {
   Object.keys(agents).forEach(remove)
 }
 
-function remove (id) {
+function get (id) {
   if (!id) return
-  if (!agents[id]) return
-
-  agents[id].destroy()
-  delete agents[id]
+  return agents[id]
 }
 
-function resume (id) {
-  if (!id) return
-  if (!agents[id]) return
-  agents[id].resume()
+function remove (id) {
+  const agent = get(id)
+  if (agent) {
+    agent.destroy()
+    delete agents[id]
+  }
 }
 
 export default {
+  get,
   setup,
   add,
   remove,
-  removeAll,
-  resume
+  removeAll
 }
