@@ -17,7 +17,7 @@ let map = {}
 let filename
 let { history = [] } = fs.pathExistsSync(_HISTORY_) && fs.readJsonSync(_HISTORY_)
 
-function create ([x, y, force = false], opts) {
+function create ([x, y, force = false], opts = {}) {
   return new Promise((resolve, reject) => {
     // Auto move to the next [x,y] when requesting /map/[+|-]/[+|-]
     ;[x, y] = [x, y].map((v, index) => {
@@ -36,11 +36,12 @@ function create ([x, y, force = false], opts) {
 
     if (!+force && map.x === x && map.y === y) resolve(map)
     else {
+      opts = Object.asign({}, (args.live ? fs.readJsonSync(args.config) : config)['wipmap-generate'], opts)
       map = (!+force && fs.pathExistsSync(filename))
         ? fs.readJsonSync(filename)
         : {
           uid: makeUID(),
-          ...wipmap(x, y, Object.assign({}, config['wipmap-generate'], opts || {})),
+          ...wipmap(x, y, opts),
           landmarks: []
         }
       resolve(map)
