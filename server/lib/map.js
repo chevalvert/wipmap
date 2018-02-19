@@ -26,8 +26,8 @@ function create ([x, y, force = false], opts = {}) {
       const previousMap = history[history.length - 1]
       if (!previousMap) return 0
 
-      if (v === '+') return previousMap[index] + 1
-      if (v === '-') return Math.max(0, previousMap[index] - 1)
+      if (v === '+') return (previousMap[index] || 0) + 1
+      if (v === '-') return Math.max(0, (previousMap[index] || 0) - 1)
 
       reject(new TypeError(`map.create expects [x,y] to be [int|"+"|"-"], "${v}" given.`))
     }).map(v => parseInt(v))
@@ -36,7 +36,7 @@ function create ([x, y, force = false], opts = {}) {
 
     if (!+force && map.x === x && map.y === y) resolve(map)
     else {
-      opts = Object.asign({}, (args.live ? fs.readJsonSync(args.config) : config)['wipmap-generate'], opts)
+      opts = Object.assign({}, (args.live ? fs.readJsonSync(args.config) : config)['wipmap-generate'], opts)
       map = (!+force && fs.pathExistsSync(filename))
         ? fs.readJsonSync(filename)
         : {
