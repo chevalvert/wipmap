@@ -3,12 +3,12 @@ $agent-fov: 15rem;
 $agent-pulse-border-width: 0.5rem;
 $agent-pulse-duration: 2000ms;
 
-@keyframes appear {
+@keyframes agent-appear {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes pulse {
+@keyframes agent-pulse {
  0% {
     opacity: 1;
     width: 0;
@@ -23,7 +23,7 @@ $agent-pulse-duration: 2000ms;
 }
 
 .agent {
-  animation: appear 1000ms ease-out forwards;
+  animation: agent-appear 1000ms ease-out forwards;
   will-change: transform;
 
   position: absolute;
@@ -50,14 +50,14 @@ $agent-pulse-duration: 2000ms;
   }
 
   &.is-paused, &.is-paused.has-revealed-landmark {
-    &::before { animation: pulse $agent-pulse-duration ease-out infinite; }
+    &::before { animation: agent-pulse $agent-pulse-duration ease-out infinite; }
   }
 
   &.has-revealed-landmark {
-    &::before { animation: pulse $agent-pulse-duration ease-out; }
+    &::before { animation: agent-pulse $agent-pulse-duration ease-out; }
     &::after {
       // background: var(--agent-color, black);
-      animation: pulse #{$agent-pulse-duration / 2} ease-out;
+      animation: agent-pulse #{$agent-pulse-duration / 2} ease-out;
     }
   }
 }
