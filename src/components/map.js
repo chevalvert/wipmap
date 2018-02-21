@@ -25,10 +25,21 @@ export default class Map extends Canvas {
   didMount () {
     super.didMount()
     this.addClass('map')
+
+    this.bindFuncs(['fillSize'])
+    this.fillSize()
+    window.addEventListener('resize', this.fillSize)
+  }
+
+  willUnmount () {
+    window.removeEventListener('resize', this.fillSize)
+  }
+
+  fillSize () {
+    this.resize([window.innerWidth, window.innerHeight])
   }
 
   onresize () {
-    this.resize([window.innerWidth, window.innerHeight])
     store.set('width', this.width)
     store.set('height', this.height)
 

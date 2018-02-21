@@ -14,18 +14,33 @@ export default class Fog extends Canvas {
 
   didMount () {
     super.didMount()
-    this.bindFuncs(['clear'])
-
-    this.resize([window.innerWidth, window.innerHeight])
     this.addClass('fog')
 
+    this.bindFuncs(['clear', 'fillSize'])
+
+    this.fillSize()
+    window.addEventListener('resize', this.fillSize)
+    events.on('fog.clear', ({ position }) => this.clear(position))
+  }
+
+  willUnmount () {
+    window.removeEventListener('resize', this.fillSize)
+  }
+
+  fillSize () {
+    this.resize([window.innerWidth, window.innerHeight])
+  }
+
+  applyContextStyle () {
     this.context.fillStyle = this.color
     this.context.fillRect(0, 0, this.width, this.height)
 
     this.smooth(false)
     this.context.globalCompositeOperation = 'destination-out'
+  }
 
-    events.on('fog.clear', ({ position }) => this.clear(position))
+  onresize () {
+    this.applyContextStyle()
   }
 
   clear ([x, y]) {

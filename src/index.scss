@@ -16,13 +16,17 @@ $red:    #FF6464;
 
 @import 'components/agent';
 @import 'components/button';
+@import 'components/draw-to-move';
+@import 'components/drawable-canvas';
 @import 'components/fog';
 @import 'components/input-number';
 @import 'components/input-word';
+@import 'components/landmark-drawer';
 @import 'components/landmark-generator';
 @import 'components/log-screen';
 @import 'components/map';
 @import 'components/nipple';
+@import 'components/plotter-cursor';
 @import 'components/progress';
 @import 'components/self-destructing-log-screen';
 @import 'components/sprite-previewer';

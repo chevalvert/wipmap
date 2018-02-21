@@ -1,12 +1,13 @@
 .progress {
-  font-family: 'Friction Mono', sans-serif;
-
-  font-size: 2.5rem;
   color: var(--color);
+
+  text-transform: uppercase;
+  font-weight: bold;
 
   &::before {
     content: attr(data-name)' ';
     color: $black;
+    font-weight: normal;
   }
 
   &-value {}

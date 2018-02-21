@@ -18,15 +18,25 @@ export default class SpritePreviewer extends Canvas {
 
   didMount () {
     super.didMount()
+    this.bindFuncs(['updateSize'])
     this.addClass('sprite-previewer')
+    window.addEventListener('resize', this.updateSize)
+    this.updateSize()
+  }
+
+  willUnmount () {
+    window.removeEventListener('resize', this.updateSize)
+  }
+
+  updateSize () {
+    this.resize([window.innerWidth * 0.5, window.innerWidth * 0.5])
   }
 
   onresize () {
-    this.resize([window.innerWidth * 0.4, window.innerWidth * 0.4])
-    this.update({})
+    this.update()
   }
 
-  setSprite (spritesheet, spriteIndex, { length = 1, density = 1, order = 1 }) {
+  setSprite (spritesheet, spriteIndex, { length = 1, density = 1, order = 1 } = {}) {
     this.spritesheet = spritesheet
     this.spriteIndex = spriteIndex
     this.modifiers = { length, density, order }

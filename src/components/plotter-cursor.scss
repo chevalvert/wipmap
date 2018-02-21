@@ -1,0 +1,33 @@
+$plotter-cursor-diameter: 4rem;
+
+@keyframes plotter-cursor-appear {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.plotter-cursor {
+  position: absolute;
+
+  // Using ::before to allow transform X/Y on element
+  &::before {
+    content: '';
+    display: block;
+
+    opacity: 0;
+    will-change: transform opacity;
+    width: $plotter-cursor-diameter;
+    height: $plotter-cursor-diameter;
+    margin-left: -($plotter-cursor-diameter / 2);
+    margin-top: -($plotter-cursor-diameter / 2);
+
+    background: var(--plotter-cursor-color, $black);
+    border-radius: 100%;
+    animation: plotter-cursor-appear 500ms cubic-bezier(.75, -0.5, 0, 2) forwards;
+  }
+}

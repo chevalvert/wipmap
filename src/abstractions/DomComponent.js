@@ -21,10 +21,6 @@ export default class DomComponent {
   // Use it if you want to create DOM from the JS and use mount instead of hydrate
   render () {}
 
-  // Helper to show / hide component
-  show () {}
-  hide () {}
-
   // Called after the component is instantiated
   didInit () {}
 
@@ -135,5 +131,25 @@ export default class DomComponent {
     if (this.refs.base) {
       void this.refs.base.offsetHeight
     }
+  }
+
+  show () {
+    this.hidden = false
+    if (this.refs.base) this.refs.base.style.display = ''
+  }
+
+  hide () {
+    this.hidden = true
+    if (this.refs.base) this.refs.base.style.display = 'none'
+  }
+
+  enable () {
+    this.disabled = false
+    this.removeClass('is-disabled')
+  }
+
+  disable () {
+    this.disabled = true
+    this.addClass('is-disabled')
   }
 }

@@ -2,15 +2,16 @@
 
 import L from 'loc'
 import store from 'store'
-import host from 'utils/get-host'
-import ws from 'utils/websocket'
-import events from 'utils/events'
-
-import fetchJSON from 'utils/fetch-json'
-import post from 'utils/post'
-import objectIsEmpty from 'utils/object-is-empty'
 
 import error from 'utils/error'
+import fetchJSON from 'utils/fetch-json'
+import getAvailableLandmarks from 'utils/get-available-landmarks'
+import host from 'utils/get-host'
+import loading from 'utils/loading-wrapper'
+import objectIsEmpty from 'utils/object-is-empty'
+import post from 'utils/post'
+import ws from 'utils/websocket'
+
 import loader from 'controllers/loader'
 
 import LogScreen from 'components/log-screen'
@@ -28,10 +29,7 @@ let gameoverScreen
 const SESSION = { id: null, color: null }
 
 function setup ({ id: _id, color: _color }) {
-  if (!_id) {
-    error(L`error.noslot`)
-    return
-  }
+  if (!_id) return error(L`error.noslot`)
 
   SESSION.id = store.set('remote.id', _id)
   SESSION.color = store.set('remote.color', _color)
@@ -55,19 +53,14 @@ function setup ({ id: _id, color: _color }) {
     if (gameoverScreen) gameoverScreen.destroy()
   })
 
-  const loading = new LogScreen(L`loading`, L`remote.waiting-for-server`)
-  Promise.resolve()
-  .then(() => loading.mount(document.body))
-  .then(() => ws.waitFor('UID'))
-  .then(() => loading.say(L`loading.sprites`))
-  .then(() => loader.loadSprites())
-  .then(start)
-  .then(() => loading.destroy())
-  .catch(err => {
-    console.error(err)
-    loading.destroy()
-    error(err)
-  })
+  loading(L`loading`, [
+    L`remote.waiting-for-server`,
+    () => ws.waitFor('UID'),
+
+    L`loading.sprites`,
+    () => loader.loadSprites(),
+    start
+  ]).catch(error)
 }
 
 function start () {
@@ -76,6 +69,7 @@ function start () {
   nipple.enable()
 
   btnGenerate = btnGenerate || new Button({ value: L`remote.buttons.generate`, color: SESSION.color }, generate)
+  btnGenerate.show()
   btnGenerate.disable()
 
   if (generator) generator.destroy()
@@ -95,33 +89,30 @@ function start () {
 }
 
 function generate () {
-  const loading = new LogScreen(L`loading`, L`landmark-generator.getting`)
-  Promise.resolve()
-  .then(() => loading.mount(document.body))
-  .then(() => fetchJSON(`http://${host.address}:${host.port}/api/agent/${SESSION.id}/`))
-  .then(agent => {
-    const landmarks = LandmarkGenerator.findAvailable(agent.currentBiome)
-    if (!landmarks || objectIsEmpty(landmarks)) {
-      btnGenerate.shake()
+  loading(L`loading`, [
+    L`landmark-generator.getting`,
+    () => fetchJSON(`http://${host.address}:${host.port}/api/agent/${SESSION.id}/`),
+    agent => {
+      const landmarks = getAvailableLandmarks(agent.currentBiome)
+      if (!landmarks || objectIsEmpty(landmarks)) {
+        btnGenerate.shake()
+        btnGenerate.disable()
+        return Promise.resolve()
+      }
+
+      generator = new LandmarkGenerator(agent, landmarks, { color: SESSION.color })
+      generator.mount(document.querySelector('.landmark-generator-wrapper'))
+
+      nipple.disable()
       btnGenerate.disable()
-      loading.destroy()
-      return Promise.resolve(null)
+      btnGenerate.hide()
+
+      return Promise.resolve(generator)
     }
-
-    generator = new LandmarkGenerator(agent, landmarks)
-    generator.mount(document.querySelector('.landmark-generator-wrapper'))
-
-    nipple.disable()
-    btnGenerate.disable()
-  })
-  .then(() => loading.destroy())
-  .then(() => events.waitFor('landmark-generator.validate'))
+  ])
+  .then(generator => generator ? generator.waitFor('validate') : Promise.resolve())
   .then(send)
-  .catch(err => {
-    console.error(err)
-    loading.destroy()
-    error(err)
-  })
+  .catch(error)
 }
 
 function send (data) {
@@ -150,5 +141,5 @@ function send (data) {
 
 export default {
   setup,
-  waitForSlot: ws.once('remote.slot.attributed', data => { setup(data) })
+  waitForSlot: () => ws.once('remote.slot.attributed', data => setup(data))
 }

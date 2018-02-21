@@ -1,0 +1,38 @@
+$draw-to-move-instructions-opacity: 0.1;
+
+.draw-to-move {
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    filter: none;
+  }
+
+  &::before {
+    @include easing(10000ms, opacity);
+    opacity: $draw-to-move-instructions-opacity;
+
+    pointer-events: none;
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 230px;
+    height: 180px;
+
+    // THANKS ZACK ;-)
+    background-image: url('/instruction-draw.gif');
+    background-position: center center;
+    background-repeat: no-repeat;
+    filter: invert(100%);
+  }
+
+  &:active::before,
+  &.has-cursor::before {
+    @include easing(500ms, opacity);
+    opacity: 0;
+  }
+}

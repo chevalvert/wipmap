@@ -16,12 +16,6 @@ export default class Canvas extends DomComponent {
   didMount () {
     this.bindFuncs(['onresize'])
     this.context = this.refs.base.getContext('2d')
-    this.onresize()
-    window.addEventListener('resize', this.onresize)
-  }
-
-  willUnmount () {
-    window.removeEventListener('resize', this.onresize)
   }
 
   onresize () {}
@@ -35,6 +29,7 @@ export default class Canvas extends DomComponent {
       this.refs.base.style.width = this.width + 'px'
       this.refs.base.style.height = this.height + 'px'
     }
+    this.onresize()
   }
 
   drawSprite (...args) {

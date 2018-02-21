@@ -10,7 +10,7 @@ $nipple-radius: 200px;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
 
-  &.is-hidden {
+  &.is-disabled {
     pointer-events: none;
     opacity: 0.1;
   }

@@ -23,19 +23,14 @@ export default class Button extends DomComponent {
     </button>`
   }
 
-  enable () {
-    this.disabled = false
-    this.removeClass('is-disabled')
-  }
-
-  disable () {
-    this.disabled = true
-    this.addClass('is-disabled')
-  }
-
   shake () {
     this.removeClass('is-shaking')
     this.repaint()
     this.addClass('is-shaking')
+  }
+
+  enable () {
+    super.enable()
+    this.removeClass('is-shaking')
   }
 }

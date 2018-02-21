@@ -2,21 +2,20 @@
 
 import L from 'loc'
 import store from 'store'
+
 import ws from 'utils/websocket'
-
 import error from 'utils/error'
-import loader from 'controllers/loader'
-import LogScreen from 'components/log-screen'
-import SelfDestructingLogScreen from 'components/self-destructing-log-screen'
+import loading from 'utils/loading-wrapper'
+import getUrlParam from 'utils/get-url-param'
 
+import loader from 'controllers/loader'
 import agents from 'controllers/agents'
 import landmarks from 'controllers/landmarks'
 import isGameOver from 'controllers/is-game-over'
 
 import Map from 'components/map'
 import Fog from 'components/fog'
-
-import getUrlParam from 'utils/get-url-param'
+import SelfDestructingLogScreen from 'components/self-destructing-log-screen'
 
 import fps from 'fps-indicator'
 
@@ -28,20 +27,13 @@ let map
 let fog
 
 function setup () {
-  const loading = new LogScreen(L`loading`)
-  Promise.resolve()
-  .then(() => loading.mount(document.body))
-  .then(() => loading.say(L`loading.sprites`))
-  .then(() => loader.loadSprites())
-  .then(() => loading.say(L`loading.map`))
-  .then(() => loader.loadMap([x, y, f]))
-  .then(start)
-  .then(() => loading.destroy())
-  .catch(err => {
-    console.error(err)
-    loading.destroy()
-    error(err)
-  })
+  loading(L`loading`, [
+    L`loading.sprites`,
+    loader.loadSprites,
+    L`loading.map`,
+    () => loader.loadMap([x, y, f]),
+    start
+  ]).catch(error)
 }
 
 function start (json) {

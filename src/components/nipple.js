@@ -52,15 +52,9 @@ export default class Nipple extends DomComponent {
   watchOnce (cb) { this.events.once('move', cb) }
   unwatch (cb) { this.events.off('move', cb) }
 
-  enable () {
-    this.disabled = false
-    this.removeClass('is-hidden')
-  }
-
   disable () {
-    this.disabled = true
+    super.disable()
     raf.remove(this.onMove)
-    this.addClass('is-hidden')
   }
 
   onMove () {

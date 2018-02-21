@@ -16,13 +16,13 @@
 <body class="{{#unless compiler.isProduction}}is-not-production{{/unless}}" ontouchstart="">
   <main>
     <section class="controls">
-      <div class="progress-wrapper"></div>
       <div class="button-wrapper"></div>
       <ul class="map-infos">
         <li class="map-info" id="uid"></li>
+        <li class="map-info progress-wrapper"></li>
       </ul>
     </section>
-    <section class="landmark-generator-wrapper"></section>
+    <section class="landmark-generator-wrapper landmark-drawer-wrapper"></section>
   </main>
   <script type="text/javascript">
     window.isProduction = {{ compiler.isProduction }}

@@ -2,11 +2,12 @@
 
 import L from 'loc'
 import store from 'store'
-import events from 'utils/events'
 
 import getSpriteIndex from 'utils/get-sprite-index'
+import getAvailableLandmarks from 'utils/get-available-landmarks'
 
 import bel from 'bel'
+import Emitter from 'tiny-emitter'
 
 import Button from 'components/button'
 import InputWord from 'components/input-word'
@@ -14,25 +15,28 @@ import InputNumber from 'components/input-number'
 import SpritePreviewer from 'components/sprite-previewer'
 import DomComponent from 'abstractions/DomComponent'
 
+const defaultOpts = {
+  color: 'black'
+}
+
 export default class LandmarkGenerator extends DomComponent {
-  static findAvailable (biome) {
-    if (!biome) return
-    let landmarks = {}
-    Object.entries(store.get('config.landmarks')).forEach(([category, landmark]) => {
-      if (!landmark.biomes.includes(biome.type)) return
-      landmarks[category] = landmark
-    })
-    return landmarks
+  constructor (agent, landmarks, opts = {}) {
+    super()
+    this.opts = Object.assign({}, defaultOpts, opts)
+    this.agent = agent
+    this.landmarks = landmarks || getAvailableLandmarks(agent.currentBiome)
+    this.events = new Emitter()
   }
 
-  constructor (agent, landmarks) {
-    super()
-    this.agent = agent
-    this.landmarks = landmarks || this.findAvailable(agent.currentBiome)
+  watch (event, callback) { this.events.on(event, callback) }
+  watchOnce (event, callback) { this.events.once(event, callback) }
+  unwatch (event, callback) { this.events.off(event, callback) }
+  waitFor (event) {
+    return new Promise((resolve, reject) => this.events.once(event, resolve))
   }
 
   render () {
-    const color = store.get('remote.color')
+    const color = this.opts.color
 
     this.refs.words = {
       context: this.registerComponent(InputWord, { words: this.agent.currentBiome.type, loc: 'biome.' }),
@@ -142,7 +146,7 @@ export default class LandmarkGenerator extends DomComponent {
     // TODO: handle undefined sprite ?
     const sprite = this.getSprite()
     const points = this.refs.preview.points
-    events.emit('landmark-generator.validate', {
+    this.events.emit('validate', {
       sprite,
       points,
       agent: this.agent

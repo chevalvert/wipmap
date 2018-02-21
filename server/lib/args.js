@@ -5,11 +5,12 @@ const path = require('path')
 const minimist = require('minimist')
 const minimistOpts = {
   boolean: [
-    'open',
     'fullscreen',
     'help',
-    'version',
-    'live'
+    'live',
+    'open',
+    'plotter',
+    'version'
   ],
   string: [
     'config',
@@ -19,14 +20,15 @@ const minimistOpts = {
     'port'
   ],
   alias: {
+    'log-level': [],
     config: ['c'],
     data: ['d'],
     fullscreen: ['f'],
     help: ['h'],
     live: ['l'],
     log: [],
-    'log-level': [],
     open: ['o'],
+    plotter: [],
     port: ['p'],
     version: ['v']
   },

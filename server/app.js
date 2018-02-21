@@ -67,6 +67,8 @@ module.exports = function (server, opts) {
       server.broadcast('agent.get', { id: req.params.id }, viewers)
     }),
 
+    getCurrentBiome: req => Promise.resolve(map.getBiomeAt([req.x, req.y])),
+
     createMap: req => new Promise((resolve, reject) => {
       Promise.resolve()
       .then(() => map.save()) // Save previously created map (skipped if first map)

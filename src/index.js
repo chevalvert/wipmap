@@ -8,6 +8,7 @@ import handshake from 'utils/handshake'
 import Navigo from 'navigo'
 import viewer from 'pages/viewer'
 import remote from 'pages/remote'
+import remotePlotter from 'pages/remote.plotter'
 
 import LogScreen from 'components/log-screen'
 
@@ -25,7 +26,8 @@ loading.mount(document.body)
 const router = new Navigo(null, false)
 const routes = {
   '/': () => hs('viewer').then(viewer.setup),
-  '/remote': () => hs('remote').then(remote.waitForSlot)
+  '/remote': () => hs('remote').then(remote.waitForSlot),
+  '/remote/plotter': () => hs('remote').then(remotePlotter.waitForSlot)
 }
 
 Object.entries(routes).forEach(([endpoint, callback]) => {

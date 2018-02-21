@@ -75,10 +75,21 @@ function save () {
   })
 }
 
+function getBiomeAt ([x, y]) {
+  const debug = {
+    site: [0.5, 0.5],
+    cell: [[1, 0.5], [1, 1], [0.5, 1], [0, 0.5], [0.5, 0]],
+    type: 'PLAINS',
+    isBoundary: true
+  }
+  return debug
+}
+
 module.exports = {
   create,
   save,
   addLandmark,
+  getBiomeAt,
   get uid () { return map.uid },
   get landmarks () { return map.landmarks || [] },
   get history () { return history }

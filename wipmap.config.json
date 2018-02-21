@@ -20,6 +20,13 @@
     ]
   },
 
+  "plotter": {
+    "moverMaxLength": 100,
+    "drawerMaxLines": 100,
+    "drawerMaxLength": 300,
+    "drawerScale": 20
+  },
+
   "wipmap-generate": {
     "width": 8,
     "height": 6,

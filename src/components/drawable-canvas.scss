@@ -1,0 +1,6 @@
+canvas.drawable {
+  @include easing(300ms, filter);
+  &.is-disabled {
+    filter: grayscale(1);
+  }
+}
