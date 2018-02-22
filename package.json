@@ -1,6 +1,6 @@
 {
   "name": "wipmap-app",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "wipmap main app",
   "bin": {
     "wipmap": "node server/index.js"
