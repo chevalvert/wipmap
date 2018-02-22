@@ -37,7 +37,7 @@ export default class Canvas extends DomComponent {
   }
 
   smooth (v = true) {
-    this.imageSmoothingEnabled = v
+    this.context.imageSmoothingEnabled = v
   }
 
   toDataURL () {

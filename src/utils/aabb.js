@@ -12,8 +12,10 @@ function aabb (points) {
     if (x > xmax) xmax = x
     if (y > ymax) ymax = y
 
-    if (w !== undefined && x + w > xmax) xmax = x + w
-    if (h !== undefined && y + h > ymax) ymax = y + h
+    if (w !== undefined && x - w / 2 < xmin) xmin = x - w / 2
+    if (h !== undefined && y - h / 2 < ymin) ymin = y - h / 2
+    if (w !== undefined && x + w / 2 > xmax) xmax = x + w / 2
+    if (h !== undefined && y + h / 2 > ymax) ymax = y + h / 2
   })
 
   return {

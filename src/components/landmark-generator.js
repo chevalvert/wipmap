@@ -51,7 +51,7 @@ export default class LandmarkGenerator extends DomComponent {
     this.refs.modifiers = {
       length: this.registerComponent(InputNumber, { range: [1, 100], step: 1, color }, () => this.preview()),
       density: this.registerComponent(InputNumber, { value: 50, range: [0, 100], step: 10, color, prefix: '%' }, () => this.preview()),
-      order: this.registerComponent(InputNumber, { value: 50, range: [0, 100], step: 50, color, prefix: '%' }, () => this.preview())
+      order: this.registerComponent(InputNumber, { value: 50, range: [0, 100], step: 25, color, prefix: '%' }, () => this.preview())
     }
 
     this.refs.buttons = {
@@ -114,9 +114,11 @@ export default class LandmarkGenerator extends DomComponent {
     })
     this.refs.preview.setSprite(sprite.spritesheet, sprite.index, modifiers)
 
+    // this.refs.modifiers.length.refs.btns[1].enable()
     if (this.refs.modifiers.length.value > this.refs.preview.points.length) {
-      this.refs.modifiers.length.refs.btns[1].shake()
+      console.log('foo')
       this.refs.modifiers.length.value = this.refs.preview.points.length
+      this.refs.modifiers.length.refs.btns[1].disable()
     }
   }
 
