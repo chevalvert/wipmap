@@ -7,13 +7,18 @@ $log-screen-sprite-animation-duration: 100;
   to { background-position: #{$log-screen-sprite-animation-size * $log-screen-sprite-animation-length}px; }
 }
 
-@keyframes log-screen-fadein {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes log-screen-content-fadein {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .log-screen {
-  animation: log-screen-fadein 1000ms ease-out forwards;
   z-index: 9999;
   position: fixed;
   top: 0;
@@ -23,10 +28,39 @@ $log-screen-sprite-animation-duration: 100;
   background: $white;
   color: $black;
 
+  &-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.2em;
+  }
+
+  &-title {
+    font-weight: bold;
+    font-size: 3rem;
+  }
+
   &.error &-title { color: $red }
   &.warning &-title { color: $yellow }
   &.success &-title { color: $green }
-  &.loading &-title::before {
+
+  &-message {
+    font-size: 2rem;
+    margin-top: 0.8em;
+  }
+
+  &.error &-message {
+    font-family: 'Friction Mono', sans-serif;
+    text-transform: none;
+    color: $gray;
+  }
+}
+
+.log-screen.loading {
+  .log-screen-title::before {
     @include no-smooth();
     content: '';
     display: block;
@@ -46,23 +80,8 @@ $log-screen-sprite-animation-duration: 100;
       infinite;
   }
 
-  &-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    text-align: center;
-    text-transform: uppercase;
-    line-height: 1.2em;
-  }
-
-  &-title {
-    font-weight: bold;
-    font-size: 3rem;
-  }
-
-  &-message {
-    font-size: 2rem;
-    margin-top: 0.8em;
+  .log-screen-content {
+    animation: log-screen-content-fadein 2000ms ease-out forwards;
+    will-change: transform opacity;
   }
 }

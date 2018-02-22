@@ -1,5 +1,11 @@
 $nipple-radius: 200px;
 
+@keyframes nipple-appear {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+
 .nipple-component {
   z-index: 1;
   position: fixed;
@@ -13,5 +19,12 @@ $nipple-radius: 200px;
   &.is-disabled {
     pointer-events: none;
     opacity: 0.1;
+  }
+
+  &:not(.is-disabled) .nipple {
+    & > * {
+      animation: nipple-appear 500ms cubic-bezier(.75, -0.5, 0, 2) forwards;
+      &:last-child { animation-delay: 50ms; }
+    }
   }
 }
