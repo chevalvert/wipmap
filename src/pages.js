@@ -12,6 +12,12 @@ module.exports = [
     layout: 'pages/remote.hbs'
   },
   {
+    // This handles 404 on /remote/
+    output: 'remote/index.html',
+    content: { title: title + ' — remote' },
+    layout: 'pages/remote.hbs'
+  },
+  {
     output: 'remote/plotter.html',
     content: { title: title + ' — remote-plotter' },
     layout: 'pages/remote.hbs'
