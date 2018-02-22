@@ -1,10 +1,11 @@
 'use strict'
 
-import L from 'loc'
 import LogScreen from 'components/log-screen'
 
 export default function (err) {
-  const error = new LogScreen(L`error`, err.toString(), 'error')
+  err = err instanceof Error ? err : new Error(err)
+
+  const error = new LogScreen(err.name, err.message, 'error')
   console.error(err)
   error.mount(document.body)
 }
