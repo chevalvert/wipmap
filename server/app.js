@@ -1,11 +1,9 @@
 'use strict'
 
 const path = require('path')
-const fs = require('fs-extra')
 const log = require(path.join(__dirname, 'lib', 'utils', 'log'))
 const map = require(path.join(__dirname, 'lib', 'map'))
-const args = require(path.join(__dirname, 'lib', 'args'))
-const config = require(args.config)
+const getConfig = require(path.join(__dirname, 'lib', 'utils', 'get-config'))
 
 const defaultOpts = {
   liveReload: false,
@@ -28,11 +26,12 @@ module.exports = function (server, opts) {
       else log.debug('Connection', client.ip, client.uid, client.type)
       if (type === 'viewer') viewers.push(client)
       if (type === 'remote') {
+        const config = getConfig()
         if (config.remotes.max > 0 && Object.keys(remotes).length >= config.remotes.max) {
           server.send('remote.slot.attributed', {}, client)
           return
         }
-        registerRemote(client)
+        registerRemote(client, config)
       }
     },
 
@@ -57,10 +56,7 @@ module.exports = function (server, opts) {
       })
     },
 
-    sendConfig: req => {
-      if (!opts.liveReload) return Promise.resolve(config)
-      return fs.readJson(args.config)
-    },
+    sendConfig: req => Promise.resolve(getConfig()),
 
     getAgent: req => new Promise((resolve, reject) => {
       server.once('agent.get.response', agent => resolve(agent || {}))
@@ -92,7 +88,7 @@ module.exports = function (server, opts) {
 
   return api
 
-  function registerRemote (client) {
+  function registerRemote (client, config) {
     remotes[client.uid] = client
     const color = config.remotes.colors[Math.floor(Math.random() * config.remotes.colors.length)]
     server.send('remote.slot.attributed', { id: client.uid, color }, client)

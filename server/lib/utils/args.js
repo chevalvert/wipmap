@@ -33,7 +33,6 @@ const minimistOpts = {
     version: ['v']
   },
   default: {
-    config: path.join(__dirname, '..', '..', 'wipmap.config.json'),
     data: path.join(__dirname, '..', 'data'),
     'log-level': 6,
     port: 8888

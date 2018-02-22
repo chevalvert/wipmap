@@ -2,7 +2,7 @@
 
 const path = require('path')
 const fs = require('fs-extra')
-const args = require(path.join(__dirname, '..', '..', 'lib', 'args'))
+const args = require(path.join(__dirname, '..', '..', 'lib', 'utils', 'args'))
 const Log = require('log')
 
 const stream = args.log

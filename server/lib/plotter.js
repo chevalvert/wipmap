@@ -1,13 +1,11 @@
 'use strict'
 
 const path = require('path')
-const fs = require('fs-extra')
 
 const Plotter = require('xy-plotter')
 const Emitter = require('tiny-emitter')
 
-const args = require(path.join(__dirname, 'args'))
-const config = require(args.config)
+const getConfig = require(path.join(__dirname, 'utils', 'get-config'))
 
 const defaultOpts = {
   address: null,
@@ -47,7 +45,7 @@ module.exports = function (server, opts) {
     move: line => {
       if (!line || line.length === 0) return
 
-      const scale = (args.live ? fs.readJsonSync(args.config) : config)['plotter']['drawerScale']
+      const scale = getConfig()['plotter']['drawerScale']
       const job = plotter.Job('move')
 
       job.pen_up()
@@ -62,7 +60,7 @@ module.exports = function (server, opts) {
     draw: lines => {
       if (!lines || lines.length === 0) return
 
-      const scale = (args.live ? fs.readJsonSync(args.config) : config)['plotter']['drawerScale']
+      const scale = getConfig()['plotter']['drawerScale']
       const job = plotter.Job('draw')
 
       lines.forEach(line => {

@@ -4,8 +4,8 @@ const path = require('path')
 const fs = require('fs-extra')
 const wipmap = require('wipmap-generate')
 
-const args = require(path.join(__dirname, 'args'))
-const config = require(args.config)
+const args = require(path.join(__dirname, 'utils', 'args'))
+const getConfig = require(path.join(__dirname, 'utils', 'get-config'))
 
 const _MAPS_ = path.join(args.data, 'maps')
 const _HISTORY_ = path.join(args.data, 'history.json')
@@ -36,7 +36,7 @@ function create ([x, y, force = false], opts = {}) {
 
     if (!+force && map.x === x && map.y === y) resolve(map)
     else {
-      opts = Object.assign({}, (args.live ? fs.readJsonSync(args.config) : config)['wipmap-generate'], opts)
+      opts = Object.assign({}, getConfig()['wipmap-generate'], opts)
       map = (!+force && fs.pathExistsSync(filename))
         ? fs.readJsonSync(filename)
         : {
