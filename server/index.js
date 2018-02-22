@@ -12,9 +12,6 @@ const args = require(path.join(__dirname, 'lib', 'utils', 'args'))
 const log = require(path.join(__dirname, 'lib', 'utils', 'log'))
 const Server = require(path.join(__dirname, 'lib', 'server'))
 
-const getConfig = require(path.join(__dirname, 'lib', 'utils', 'get-config'))
-console.log(getConfig())
-
 const server = Server({
   public: path.join(__dirname, '..', 'build'),
   port: args.port
