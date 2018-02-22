@@ -22,7 +22,7 @@ export default class Progress extends DomComponent {
     return bel`
     <div
     class='progress'
-    data-name=${L`progress`}
+    data-name=${L`ui.progress`}
     style='--color: ${this.color}'>
       ${this.refs.value}<span class='progress-total'>${store.get('config.gameover').landmarksLength}</span>
     </div>`

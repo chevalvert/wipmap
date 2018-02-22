@@ -55,8 +55,8 @@ export default class LandmarkGenerator extends DomComponent {
     }
 
     this.refs.buttons = {
-      random: this.registerComponent(Button, { value: L`remote.buttons.random`, color }, () => this.randomize()),
-      validate: this.registerComponent(Button, { value: L`remote.buttons.validate`, color }, () => this.validate())
+      random: this.registerComponent(Button, { value: L`ui.random`, color }, () => this.randomize()),
+      validate: this.registerComponent(Button, { value: L`ui.validate`, color }, () => this.validate())
     }
 
     this.refs.preview = this.registerComponent(SpritePreviewer)
@@ -75,7 +75,7 @@ export default class LandmarkGenerator extends DomComponent {
             return bel`
             <li
             class='landmark-generator-sentence-word'
-            data-name=${L(`remote.landmark-generator.prefix.${key}`)}>
+            data-name=${L(`ui.landmark-generator.${key}`)}>
               ${el}
             </li>`
           }))

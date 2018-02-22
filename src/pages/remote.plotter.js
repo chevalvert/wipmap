@@ -41,7 +41,7 @@ function setup ({ id, color }) {
     L`remote.initializing`,
     setupProgress,
 
-    L`remote.waiting-for-server`,
+    L`loading.waiting-for-server`,
     () => ws.waitFor('UID'),
 
     L`loading.sprites`,
@@ -63,7 +63,7 @@ function setupProgress () {
     progress.value = landmarksLength
     if (progress.value >= store.get('config.gameover').landmarksLength) {
       if (gameoverScreen) gameoverScreen.destroy()
-      gameoverScreen = new LogScreen(L`gameover`, L`remote.gameover.message`)
+      gameoverScreen = new LogScreen(L`gameover`, L`gameover.message.remote`)
       gameoverScreen.mount(document.body)
     }
   })
@@ -81,7 +81,7 @@ function start () {
   control.enable()
   control.show()
 
-  btnDraw = btnDraw || new Button({ value: L`remote.buttons.draw`, color: SESSION.color }, draw)
+  btnDraw = btnDraw || new Button({ value: L`ui.draw`, color: SESSION.color }, draw)
 
   if (drawer) drawer.destroy()
 
@@ -110,10 +110,10 @@ function start () {
 
 function draw () {
   loading(L`loading`, [
-    L`landmark-generator.getting`,
+    L`loading.fetching-plotter`,
     () => fetchJSON(`http://${host.address}:${host.port}/api/plotter/biome`),
 
-    L`landmark-generator.initializing`,
+    L`remote.landmark-generator.initializing`,
     biome => {
       const landmarks = getAvailableLandmarks(biome)
       if (!landmarks || objectIsEmpty(landmarks)) {

@@ -41,7 +41,7 @@ function setup ({ id: _id, color: _color }) {
     progress.value = landmarksLength
     if (progress.value >= store.get('config.gameover').landmarksLength) {
       if (gameoverScreen) gameoverScreen.destroy()
-      gameoverScreen = new LogScreen(L`gameover`, L`remote.gameover.message`)
+      gameoverScreen = new LogScreen(L`gameover`, L`gameover.message.remote`)
       gameoverScreen.mount(document.body)
     }
   })
@@ -54,7 +54,7 @@ function setup ({ id: _id, color: _color }) {
   })
 
   loading(L`loading`, [
-    L`remote.waiting-for-server`,
+    L`loading.waiting-for-server`,
     () => ws.waitFor('UID'),
 
     L`loading.sprites`,
@@ -68,7 +68,7 @@ function start () {
   nipple.mount(document.querySelector('.controls'))
   nipple.enable()
 
-  btnGenerate = btnGenerate || new Button({ value: L`remote.buttons.generate`, color: SESSION.color }, generate)
+  btnGenerate = btnGenerate || new Button({ value: L`ui.generate`, color: SESSION.color }, generate)
   btnGenerate.show()
   btnGenerate.disable()
 
@@ -90,7 +90,7 @@ function start () {
 
 function generate () {
   loading(L`loading`, [
-    L`landmark-generator.getting`,
+    L`loading.fetching-agent`,
     () => fetchJSON(`http://${host.address}:${host.port}/api/agent/${SESSION.id}/`),
     agent => {
       const landmarks = getAvailableLandmarks(agent.currentBiome)
@@ -118,7 +118,7 @@ function generate () {
 function send (data) {
   if (!data) return start()
 
-  const loading = new LogScreen(L`loading`, L`landmark-generator.sending`)
+  const loading = new LogScreen(L`loading`, L`remote.landmark-generator.sending`)
   Promise.resolve()
   .then(() => loading.mount(document.body))
   .then(() => new Promise((resolve, reject) => {

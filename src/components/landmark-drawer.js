@@ -72,8 +72,8 @@ export default class LandmarkDrawer extends DomComponent {
     this.refs.cursor = this.registerComponent(PlotterCursor, color)
 
     this.refs.buttons = {
-      undo: this.registerComponent(Button, { value: L`remote.buttons.undo`, color }, () => this.refs.drawer.undo()),
-      validate: this.registerComponent(Button, { value: L`remote.buttons.draw`, color }, () => this.validate())
+      undo: this.registerComponent(Button, { value: L`ui.undo`, color }, () => this.refs.drawer.undo()),
+      validate: this.registerComponent(Button, { value: L`ui.draw`, color }, () => this.validate())
     }
 
     return bel`<div class='landmark-drawer'>
