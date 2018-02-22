@@ -30,13 +30,20 @@ module.exports = function (server, opts) {
     disconnectOnJobEnd: true
   })
 
+  let isIddle = true
   let position = [plotter.width / 2, plotter.height / 2]
   const init = plotter.Job('init').home().move(...position)
 
   if (opts.mock) mock(init)
   else {
-    serial.on('job-start', job => server.broadcast('job-start', job))
-    serial.on('job-end', job => server.broadcast('job-end', job))
+    serial.on('job-start', job => {
+      isIddle = false
+      server.broadcast('job-start', job)
+    })
+    serial.on('job-end', job => {
+      isIddle = true
+      server.broadcast('job-end', job)
+    })
     serial.on('job-progress', data => server.broadcast('job-progress', data))
     serial.send(init)
   }
@@ -46,7 +53,9 @@ module.exports = function (server, opts) {
     once: events.once.bind(events),
     off: events.off.bind(events),
 
+    get iddle () { return isIddle },
     get position () { return position },
+
     move: pathToJob('move', (job, line) => {
       const scale = getConfig()['plotter']['drawerScale']
 
@@ -86,6 +95,7 @@ module.exports = function (server, opts) {
   }
 
   function mock (job) {
+    isIddle = false
     server.broadcast('job-start', job)
     Promise.all(
       job.buffer.map((cmd, index) => new Promise(resolve => setTimeout(() => {
@@ -94,7 +104,10 @@ module.exports = function (server, opts) {
         resolve()
       }, 300 * index)))
     )
-    .then(() => server.broadcast('job-end', job))
+    .then(() => {
+      isIddle = true
+      server.broadcast('job-end', job)
+    })
     .catch(err => log.error(err))
   }
 }

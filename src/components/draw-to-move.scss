@@ -31,7 +31,8 @@ $draw-to-move-instructions-opacity: 0.1;
   }
 
   &:active::before,
-  &.has-cursor::before {
+  &.has-cursor::before,
+  &.is-disabled::before {
     @include easing(500ms, opacity);
     opacity: 0;
   }

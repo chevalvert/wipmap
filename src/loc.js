@@ -11,6 +11,7 @@ locales.fr['loading.generating'] = 'génération de la nouvelle carte'
 locales.fr['loading.map'] = 'génération de la carte'
 locales.fr['loading.sprites'] = 'pré-chargement des images'
 locales.fr['loading.waiting-for-server'] = 'en attente de connection'
+locales.fr['loading.waiting-for-plotter'] = 'en attente du plotter'
 
 locales.fr['error'] = 'erreur'
 locales.fr['error.noslot'] = 'plus de place disponible'

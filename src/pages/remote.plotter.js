@@ -50,6 +50,11 @@ function setup ({ id, color }) {
     L`loading.map`,
     () => loader.loadMap([x, y, f]),
     json => setUID(json.uid),
+
+    L`loading.waiting-for-plotter`,
+    () => fetchJSON(`http://${host.address}:${host.port}/api/plotter/iddle`),
+    iddle => (!iddle) && ws.waitFor('job-end'),
+
     start
   ])
   .catch(error)
