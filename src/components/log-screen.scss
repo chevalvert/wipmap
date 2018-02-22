@@ -1,35 +1,68 @@
+$log-screen-sprite-animation-size: 110;
+$log-screen-sprite-animation-length: 12;
+$log-screen-sprite-animation-duration: 100;
+
+@keyframes log-screen-sprite-animation {
+  from { background-position: 0px; }
+  to { background-position: #{$log-screen-sprite-animation-size * $log-screen-sprite-animation-length}px; }
+}
+
+@keyframes log-screen-fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .log-screen {
+  animation: log-screen-fadein 1000ms ease-out forwards;
   z-index: 9999;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: $black;
+  background: $white;
+  color: $black;
 
-  color: $white;
-  &.error .log-screen-title { color: $red }
-  &.warning .log-screen-title { color: $yellow }
-  &.success .log-screen-title { color: $green }
+  &.error &-title { color: $red }
+  &.warning &-title { color: $yellow }
+  &.success &-title { color: $green }
+  &.loading &-title::before {
+    @include no-smooth();
+    content: '';
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: -3rem;
+    transform: translate(-50%, -100%) scale(1.5);
+    transform-origin: 50% 100%;
+    width: #{$log-screen-sprite-animation-size}px;
+    height: #{$log-screen-sprite-animation-size}px;
 
-  .log-screen-content {
+    background-image: url('/LOADING-SIMPLE-110px.png');
+    animation:
+      log-screen-sprite-animation
+      #{$log-screen-sprite-animation-duration * $log-screen-sprite-animation-length}ms
+      steps($log-screen-sprite-animation-length)
+      infinite;
+  }
+
+  &-content {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     text-align: center;
-  }
-
-  .log-screen-title {
-    font-weight: bold;
     text-transform: uppercase;
-    font-size: 5rem;
     line-height: 1.2em;
   }
 
-  .log-screen-message {
-    font-style: italic;
+  &-title {
+    font-weight: bold;
+    font-size: 3rem;
+  }
+
+  &-message {
     font-size: 2rem;
-    margin-top: 1rem;
+    margin-top: 0.8em;
   }
 }

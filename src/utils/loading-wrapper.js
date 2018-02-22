@@ -3,7 +3,7 @@
 import LogScreen from 'components/log-screen'
 
 export default (title, steps) => new Promise((resolve, reject) => {
-  const loading = new LogScreen(title)
+  const loading = new LogScreen(title, '', 'loading')
   loading.mount(document.body)
 
   let previousResolution
