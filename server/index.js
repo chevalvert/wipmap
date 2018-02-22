@@ -34,19 +34,21 @@ server
 })
 
 if (args.plotter) {
-  const plotter = require(path.join(__dirname, 'lib', 'plotter'))(server, {
-    address: process.env.PLOTTER_COM_PORT
-  })
-
   server
-  .watch({
-    'agent.move.line': plotter.move,
-    'plotter.draw': plotter.draw
-  })
   .route('/plotter/biome', (req, res) => app.rest(app.getCurrentBiome)(plotter.position, res), 'GET')
   .start()
   .then(url => log.info(`Server is listenning on ${url}`))
   .catch(err => log.error(err))
+
+  const plotter = require(path.join(__dirname, 'lib', 'plotter'))(server, {
+    address: process.env.PLOTTER_COM_PORT,
+    mock: process.env.PLOTTER_MOCK
+  })
+
+  server.watch({
+    'agent.move.line': plotter.move,
+    'plotter.draw': plotter.draw
+  })
 } else {
   server
   .watch({ 'agent.move': data => server.broadcast('agent.move', data, app.viewers) })
