@@ -1,5 +1,6 @@
 build/*
 server/data/*
+.env
 
 ####### NODE ########
 .tmp
