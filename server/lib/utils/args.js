@@ -33,7 +33,7 @@ const minimistOpts = {
     version: ['v']
   },
   default: {
-    data: path.join(__dirname, '..', 'data'),
+    data: path.join(__dirname, '..', '..', 'data'),
     'log-level': 6,
     port: 8888
   }
