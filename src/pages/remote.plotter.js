@@ -87,17 +87,19 @@ function start () {
   control.show()
 
   btnDraw = btnDraw || new Button({ value: L`ui.draw`, color: SESSION.color }, draw)
+  btnDraw.mount(document.querySelector('.button-wrapper'))
+  document.querySelector('.button-wrapper').classList.add('is-mounted')
 
   if (drawer) drawer.destroy()
 
   control.watch(line => {
-    btnDraw.mount(document.querySelector('.button-wrapper'))
-    document.querySelector('.button-wrapper').classList.add('is-mounted')
     btnDraw.disable()
     control.disable()
 
     ws.send('agent.move.line', line)
-    ws.on('job-progress', ({ progress }) => {
+    ws.on('job-progress', ({ cmd, progress }) => {
+      if (!~cmd.indexOf('G1') && !~cmd.indexOf('\n')) return
+
       const percent = progress.elapsed / progress.total
       control.moveCursor(percent)
     })
@@ -149,7 +151,9 @@ function send (lines) {
   drawer.disable()
   ws.send('plotter.draw', lines)
 
-  ws.on('job-progress', ({ progress }) => {
+  ws.on('job-progress', ({ cmd, progress }) => {
+    if (!~cmd.indexOf('G1') && !~cmd.indexOf('\n')) return
+
     const percent = progress.elapsed / progress.total
     drawer.moveCursor(percent)
   })

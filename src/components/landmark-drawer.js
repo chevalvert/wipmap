@@ -69,7 +69,7 @@ export default class LandmarkDrawer extends DomComponent {
       lineWidth: 10
     })
 
-    this.refs.cursor = this.registerComponent(PlotterCursor, color)
+    this.refs.cursor = this.registerComponent(PlotterCursor, color, this.refs.drawer)
 
     this.refs.buttons = {
       undo: this.registerComponent(Button, { value: L`ui.undo`, color }, () => this.refs.drawer.undo()),

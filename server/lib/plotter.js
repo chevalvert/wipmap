@@ -69,8 +69,8 @@ module.exports = function (server, opts) {
     draw: pathToJob('draw', (job, lines) => {
       const scale = getConfig()['plotter']['drawerScale']
 
-      job.pen_up()
       lines.forEach(line => {
+        job.pen_up()
         line.forEach(([x, y], index) => {
           position = [x, y]
           job.move(x * scale, y * scale)
@@ -100,7 +100,7 @@ module.exports = function (server, opts) {
     Promise.all(
       job.buffer.map((cmd, index) => new Promise(resolve => setTimeout(() => {
         log.debug(`MOCK "${job.name}"`, cmd)
-        server.broadcast('job-progress', { progress: { elapsed: index, total: job.buffer.length } })
+        server.broadcast('job-progress', { job, cmd, progress: { elapsed: index, total: job.buffer.length } })
         resolve()
       }, 300 * index)))
     )
