@@ -19,7 +19,7 @@ let { history = [] } = fs.pathExistsSync(_HISTORY_) && fs.readJsonSync(_HISTORY_
 
 function create ([x, y, force = false], opts = {}) {
   return new Promise((resolve, reject) => {
-    // Auto move to the next [x,y] when requesting /map/[+|-]/[+|-]
+    // NOTE: auto move to the next [x,y] when requesting /map/[+|-]/[+|-]
     ;[x, y] = [x, y].map((v, index) => {
       if (!isNaN(v)) return v
 
@@ -90,6 +90,10 @@ module.exports = {
   save,
   addLandmark,
   getBiomeAt,
+
+  // Return current map, create a new one if no map exists
+  get: () => Object.keys(map).length ? Promise.resolve(map) : create(['+', 0]),
+
   get uid () { return map.uid },
   get landmarks () { return map.landmarks || [] },
   get history () { return history }

@@ -86,7 +86,7 @@ module.exports = function (server, opts) {
       applyPosition(job)
 
       if (opts.mock) mock(job)
-      else serial.send(job)
+      else serial.send(job).catch(err => log.error(err))
     }
   }
 

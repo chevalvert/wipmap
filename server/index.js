@@ -25,7 +25,6 @@ const app = require(path.join(__dirname, 'app'))(server, {
 server
 // RESTful routing, available at /api/endpoint
 .route('/config', app.rest(app.sendConfig), 'GET')
-.route('/map/:x/:y/:force', app.rest(app.createMap), 'POST')
 .route('/landmark', app.rest(app.addLandmark), 'POST')
 // WebSocket events subscription
 .watch({
@@ -35,10 +34,9 @@ server
 
 if (args.plotter) {
   server
-  .watch({
-    'agent.move.line': line => plotter.move(line),
-    'plotter.draw': lines => plotter.draw(lines)
-  })
+  .route('/map', app.rest(app.getMap), 'GET')
+  .route('/plotter/move', (req, res) => plotter.move(req.body), 'POST')
+  .route('/plotter/draw', (req, res) => plotter.draw(req.body), 'POST')
   .route('/plotter/iddle', (req, res) => res.json(plotter.iddle), 'GET')
   .route('/plotter/biome', (req, res) => app.rest(app.getCurrentBiome)(plotter.position, res), 'GET')
   .start()
@@ -52,6 +50,7 @@ if (args.plotter) {
 } else {
   server
   .watch({ 'agent.move': data => server.broadcast('agent.move', data, app.viewers) })
+  .route('/map/:x/:y/:force', app.rest(app.createMap), 'POST')
   .route('/agent/:id', app.rest(app.getAgent), 'GET')
   .start()
   .then(url => {

@@ -9,8 +9,8 @@ import fetchJSON from 'utils/fetch-json'
 import objectIsEmpty from 'utils/object-is-empty'
 import error from 'utils/error'
 import loading from 'utils/loading-wrapper'
-import getUrlParam from 'utils/get-url-param'
 import getAvailableLandmarks from 'utils/get-available-landmarks'
+import post from 'utils/post'
 
 import loader from 'controllers/loader'
 
@@ -20,15 +20,14 @@ import Progress from 'components/progress'
 import DrawToMove from 'components/draw-to-move'
 import Button from 'components/button'
 
+/* global location */
+
 let control
 let btnDraw
 let drawer
 let progress
 let gameoverScreen
 
-const x = getUrlParam('x') || '+'
-const y = getUrlParam('y') || '0'
-const f = getUrlParam('force')
 const SESSION = { id: null, color: null }
 
 function setup ({ id, color }) {
@@ -37,28 +36,18 @@ function setup ({ id, color }) {
   SESSION.id = id
   SESSION.color = color
 
-  // NOTE: display loading screen again if plotter init whille page is already loaded
-  ws.on('job-start', ({ job }) => {
-    if (job.name !== 'init') return
-    loading(L`loading`, [
-      L`loading.waiting-for-plotter`,
-      () => ws.waitFor('job-end'),
-      start
-    ]).catch(error)
-  })
+  // NOTE: reload page if plotter inits while page is already loaded
+  ws.on('job-start', ({ job }) => job.name === 'init' && location.reload())
 
   loading(L`loading`, [
     L`remote.initializing`,
     setupProgress,
 
-    L`loading.waiting-for-server`,
-    () => ws.waitFor('UID'),
-
     L`loading.sprites`,
     () => loader.loadSprites(),
 
     L`loading.map`,
-    () => loader.loadMap([x, y, f]),
+    () => fetchJSON(`http://${host.address}:${host.port}/api/map`),
     json => setUID(json.uid),
 
     L`loading.waiting-for-plotter`,
@@ -71,7 +60,7 @@ function setup ({ id, color }) {
 }
 
 function setupProgress () {
-  progress = new Progress({ color: SESSION.color })
+  progress = progress || new Progress({ color: SESSION.color })
   progress.mount(document.querySelector('.progress-wrapper'))
 
   ws.on('landmark.add', ({ landmarksLength }) => {
@@ -106,7 +95,8 @@ function start () {
     btnDraw.disable()
     control.disable()
 
-    ws.send('agent.move.line', line)
+    post(`http://${host.address}:${host.port}/api/plotter/move`, line)
+
     ws.on('job-progress', ({ job, cmd, progress }) => {
       if (job.name !== 'move') return
 
@@ -159,7 +149,8 @@ function send (lines) {
   if (!lines) return start()
 
   drawer.disable()
-  ws.send('plotter.draw', lines)
+
+  post(`http://${host.address}:${host.port}/api/plotter/draw`, lines)
 
   ws.on('job-progress', ({ cmd, progress }) => {
     const percent = progress.elapsed / progress.total
@@ -168,7 +159,12 @@ function send (lines) {
 
   ws.once('job-end', () => {
     ws.off('job-progress')
-    start()
+    post(`http://${host.address}:${host.port}/api/landmark`, lines)
+    .then(res => {
+      if (res.ok) Promise.resolve(res)
+      else Promise.reject(res.statusText)
+    })
+    .then(start)
   })
 }
 

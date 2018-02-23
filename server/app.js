@@ -65,6 +65,8 @@ module.exports = function (server, opts) {
 
     getCurrentBiome: req => Promise.resolve(map.getBiomeAt([req.x, req.y])),
 
+    getMap: req => Promise.resolve(map.get()),
+
     createMap: req => new Promise((resolve, reject) => {
       Promise.resolve()
       .then(() => map.save()) // Save previously created map (skipped if first map)

@@ -55,7 +55,7 @@
   },
 
   "gameover": {
-    "landmarksLength": 3000,
+    "landmarksLength": 3,
     "duration": 10
   },
 
