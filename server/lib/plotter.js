@@ -4,8 +4,8 @@ const path = require('path')
 
 const Plotter = require('xy-plotter')
 const Emitter = require('tiny-emitter')
+const { clamp } = require('missing-math')
 const log = require(path.join(__dirname, 'utils', 'log'))
-
 const getConfig = require(path.join(__dirname, 'utils', 'get-config'))
 
 const defaultOpts = {
@@ -57,25 +57,18 @@ module.exports = function (server, opts) {
     get position () { return position },
 
     move: pathToJob('move', (job, line) => {
-      const scale = getConfig()['plotter']['drawerScale']
+      const scale = getConfig().plotter.move.scale
 
       job.pen_up()
-      line.forEach(([x, y], index) => {
-        position = [x, y]
-        job.move(x * scale, y * scale)
-      })
+      line.forEach(([x, y]) => job.move(x * scale, y * scale))
     }),
 
     draw: pathToJob('draw', (job, lines) => {
-      const scale = getConfig()['plotter']['drawerScale']
+      const scale = getConfig().plotter.draw.scale
 
       lines.forEach(line => {
         job.pen_up()
-        line.forEach(([x, y], index) => {
-          position = [x, y]
-          job.move(x * scale, y * scale)
-          job.pen_down()
-        })
+        line.forEach(([x, y]) => job.move(x * scale, y * scale).pen_down())
       })
     })
   }
@@ -83,14 +76,29 @@ module.exports = function (server, opts) {
   return api
 
   function pathToJob (name, jobCommands) {
+    if (!isIddle) return
     return function (path) {
       if (!path || path.length === 0) return
 
       const job = plotter.Job(name)
       typeof jobCommands === 'function' && jobCommands(job, path)
 
+      applyPosition(job)
+
       if (opts.mock) mock(job)
       else serial.send(job)
+    }
+  }
+
+  function applyPosition (job) {
+    if (!job) return
+    const moves = job.buffer.filter(cmd => ~cmd.indexOf('G1'))
+    const lastMove = moves[moves.length - 1]
+    if (lastMove) {
+      const params = lastMove.split(' ')
+      const x = parseFloat(params[1].split('X').pop())
+      const y = parseFloat(params[2].split('Y').pop())
+      position = [clamp(x, 0, plotter.width), clamp(y, 0, plotter.height)]
     }
   }
 

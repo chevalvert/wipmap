@@ -21,10 +21,15 @@
   },
 
   "plotter": {
-    "moverMaxLength": 100,
-    "drawerMaxLines": 100,
-    "drawerMaxLength": 300,
-    "drawerScale": 20
+    "move": {
+      "maxLength": 300,
+      "scale": 10
+    },
+    "draw": {
+      "maxLines": 100,
+      "maxLength": 1000,
+      "scale": 2
+    }
   },
 
   "wipmap-generate": {

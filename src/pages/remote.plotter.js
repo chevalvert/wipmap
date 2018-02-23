@@ -37,6 +37,16 @@ function setup ({ id, color }) {
   SESSION.id = id
   SESSION.color = color
 
+  // NOTE: display loading screen again if plotter init whille page is already loaded
+  ws.on('job-start', ({ job }) => {
+    if (job.name !== 'init') return
+    loading(L`loading`, [
+      L`loading.waiting-for-plotter`,
+      () => ws.waitFor('job-end'),
+      start
+    ]).catch(error)
+  })
+
   loading(L`loading`, [
     L`remote.initializing`,
     setupProgress,
@@ -97,8 +107,8 @@ function start () {
     control.disable()
 
     ws.send('agent.move.line', line)
-    ws.on('job-progress', ({ cmd, progress }) => {
-      if (!~cmd.indexOf('G1') && !~cmd.indexOf('\n')) return
+    ws.on('job-progress', ({ job, cmd, progress }) => {
+      if (job.name !== 'move') return
 
       const percent = progress.elapsed / progress.total
       control.moveCursor(percent)
@@ -107,10 +117,10 @@ function start () {
     ws.once('job-end', () => {
       ws.off('job-progress')
       control.endCursor()
-      control.clear()
       control.enable()
-      btnDraw.show()
+      control.clear()
       btnDraw.enable()
+      btnDraw.show()
     })
   })
 }
@@ -152,8 +162,6 @@ function send (lines) {
   ws.send('plotter.draw', lines)
 
   ws.on('job-progress', ({ cmd, progress }) => {
-    if (!~cmd.indexOf('G1') && !~cmd.indexOf('\n')) return
-
     const percent = progress.elapsed / progress.total
     drawer.moveCursor(percent)
   })

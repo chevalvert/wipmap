@@ -64,8 +64,8 @@ export default class LandmarkDrawer extends DomComponent {
     this.refs.spriteHolder = this.registerComponent(Canvas)
 
     this.refs.drawer = this.registerComponent(DrawableCanvas, {
-      maxLines: store.get('config.plotter').drawerMaxLines,
-      maxLength: store.get('config.plotter').drawerMaxLength,
+      maxLines: store.get('config.plotter').draw.maxLines,
+      maxLength: store.get('config.plotter').draw.maxLength,
       lineWidth: 10
     })
 

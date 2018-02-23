@@ -32,7 +32,7 @@ export default class DrawToMove extends DomComponent {
     this.refs.drawer = this.registerComponent(DrawableCanvas, {
       color,
       maxLines: 1,
-      maxLength: store.get('config.plotter').moverMaxLength
+      maxLength: store.get('config.plotter').move.maxLength
     })
 
     this.refs.cursor = this.registerComponent(PlotterCursor, color)
