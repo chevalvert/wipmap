@@ -35,8 +35,8 @@ server
 if (args.plotter) {
   server
   .route('/map', app.rest(app.getMap), 'GET')
-  .route('/plotter/move', (req, res) => plotter.move(req.body), 'POST')
-  .route('/plotter/draw', (req, res) => plotter.draw(req.body), 'POST')
+  .route('/plotter/move', (req, res) => { plotter.move(req.body); res.end() }, 'POST')
+  .route('/plotter/draw', (req, res) => { plotter.draw(req.body); res.end() }, 'POST')
   .route('/plotter/iddle', (req, res) => res.json(plotter.iddle), 'GET')
   .route('/plotter/biome', (req, res) => app.rest(app.getCurrentBiome)(plotter.position, res), 'GET')
   .start()
