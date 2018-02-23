@@ -21,14 +21,21 @@
   },
 
   "plotter": {
+    "signature": {
+      "enable": true,
+      "prefix": "WIPMAP",
+      "fontSize": 5
+    },
     "move": {
       "maxLength": 300,
-      "scale": 100
+      "scale": 100,
+      "speed": 0.7
     },
     "draw": {
       "maxLines": 100,
       "maxLength": 1000,
-      "scale": 10
+      "scale": 10,
+      "speed": -1
     }
   },
 

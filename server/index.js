@@ -47,6 +47,8 @@ if (args.plotter) {
     address: process.env.PLOTTER_COM_PORT,
     mock: process.env.PLOTTER_MOCK
   })
+
+  app.getMap().then(plotter.init)
 } else {
   server
   .watch({ 'agent.move': data => server.broadcast('agent.move', data, app.viewers) })

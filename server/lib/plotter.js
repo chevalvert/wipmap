@@ -31,22 +31,19 @@ module.exports = function (server, opts) {
   })
 
   let isIddle = true
-  let position = [plotter.width / 2, plotter.height / 2]
-  const init = plotter.Job('init').home().move(...position)
+  let position = [0, 0]
 
-  if (opts.mock) mock(init)
-  else {
-    serial.on('job-start', job => {
-      isIddle = false
-      server.broadcast('job-start', job)
-    })
-    serial.on('job-end', job => {
-      isIddle = true
-      server.broadcast('job-end', job)
-    })
-    serial.on('job-progress', data => server.broadcast('job-progress', data))
-    serial.send(init)
-  }
+  serial.on('job-start', job => {
+    isIddle = false
+    server.broadcast('job-start', job)
+  })
+
+  serial.on('job-end', job => {
+    isIddle = true
+    server.broadcast('job-end', job)
+  })
+
+  serial.on('job-progress', data => server.broadcast('job-progress', data))
 
   const api = {
     on: events.on.bind(events),
@@ -56,19 +53,36 @@ module.exports = function (server, opts) {
     get iddle () { return isIddle },
     get position () { return position },
 
+    init: map => {
+      const signature = getConfig().plotter.signature
+      const job = plotter.Job('init')
+
+      job.home()
+      if (signature.enable) job.text(signature.prefix + map.uid, 0, plotter.height - signature.fontSize, signature)
+      job.pen_up()
+      job.move(plotter.width / 2, plotter.height / 2)
+
+      applyPosition(job)
+
+      if (opts.mock) mock(job)
+      else serial.send(job).catch(err => log.error(err))
+    },
+
     move: pathToJob('move', (job, line) => {
-      const scale = getConfig().plotter.move.scale
+      const config = getConfig().plotter.move
 
       job.pen_up()
-      line.forEach(([x, y]) => job.move(x * scale, y * scale))
+      job.setSpeed(config.speed > 0 ? config.speed : null)
+      line.forEach(([x, y]) => job.move(x * config.scale, y * config.scale))
     }),
 
     draw: pathToJob('draw', (job, lines) => {
-      const scale = getConfig().plotter.draw.scale
+      const config = getConfig().plotter.draw
 
+      job.setSpeed(config.speed > 0 ? config.speed : null)
       lines.forEach(line => {
         job.pen_up()
-        line.forEach(([x, y]) => job.move(x * scale, y * scale).pen_down())
+        line.forEach(([x, y]) => job.move(x * config.scale, y * config.scale).pen_down())
       })
     })
   }
