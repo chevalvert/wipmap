@@ -23,12 +23,12 @@
   "plotter": {
     "move": {
       "maxLength": 300,
-      "scale": 10
+      "scale": 100
     },
     "draw": {
       "maxLines": 100,
       "maxLength": 1000,
-      "scale": 2
+      "scale": 10
     }
   },
 

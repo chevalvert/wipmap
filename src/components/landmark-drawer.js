@@ -5,8 +5,8 @@ import store from 'store'
 import bel from 'bel'
 import raw from 'bel/raw'
 import Emitter from 'tiny-emitter'
+import { normalize } from 'missing-math'
 
-import normalizePath from 'utils/normalize-path'
 import getSpriteIndex from 'utils/get-sprite-index'
 
 import PlotterCursor from 'components/plotter-cursor'
@@ -130,10 +130,11 @@ export default class LandmarkDrawer extends DomComponent {
     const lines = this.refs.drawer.lines
     if (!lines || lines.length === 0) return
 
-    const line = lines[0]
-    if (!line || line.length === 0) return
-
-    const normalizedLines = normalizePath(lines)
+    const rect = this.refs.drawer.refs.base.getBoundingClientRect()
+    const normalizedLines = lines.map(line => line.map(([x, y]) => ([
+      normalize(x, rect.left, rect.width),
+      normalize(y, rect.top, rect.height)
+    ])))
 
     this.refs.cursor.begin(lines)
     this.addClass('has-cursor')

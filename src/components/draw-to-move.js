@@ -3,8 +3,7 @@
 import store from 'store'
 import bel from 'bel'
 import Emitter from 'tiny-emitter'
-
-import normalizePath from 'utils/normalize-path'
+import { normalize } from 'missing-math'
 
 import PlotterCursor from 'components/plotter-cursor'
 
@@ -56,10 +55,12 @@ export default class DrawToMove extends DomComponent {
     const line = lines[0]
     if (!line || line.length === 0) return
 
-    const normalizedLines = normalizePath(lines)
-    const normalizedLine = normalizedLines[0]
+    const normalizedLine = line.map(([x, y]) => ([
+      normalize(x, 0, Math.min(window.innerWidth, window.innerHeight)),
+      normalize(y, 0, Math.min(window.innerWidth, window.innerHeight))
+    ]))
 
-    this.refs.cursor.begin([line])
+    this.refs.cursor.begin(lines)
     this.events.emit('move', normalizedLine.map(point => point.map((v, i) => v - normalizedLine[0][i])))
   }
 
