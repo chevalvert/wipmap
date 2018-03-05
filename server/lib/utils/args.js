@@ -42,12 +42,12 @@ const minimistOpts = {
 const argv = minimist(process.argv.slice(2), minimistOpts)
 
 if (argv.help) {
-  console.log(fs.readFileSync(path.join(__dirname, '..', 'USAGE'), 'utf-8'))
+  console.log(fs.readFileSync(path.join(__dirname, '..', '..', 'USAGE'), 'utf-8'))
   process.exit(0)
 }
 
 if (argv.version) {
-  const pckg = require(path.join(__dirname, '..', '..', 'package.json'))
+  const pckg = require(path.join(__dirname, '..', '..', '..', 'package.json'))
   console.log(pckg.version)
   process.exit(0)
 }
