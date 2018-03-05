@@ -91,5 +91,8 @@
     "ws": "^4.0.0",
     "yo-yoify": "^4.0.0"
   },
-  "private": false
+  "private": false,
+  "optionalDependencies": {
+    "xy-plotter": "chevalvert/xy"
+  }
 }
