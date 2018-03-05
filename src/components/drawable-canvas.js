@@ -19,6 +19,7 @@ export default class DrawableCanvas extends Canvas {
   constructor (opts) {
     super()
     this.opts = Object.assign({}, defaultOpts, opts || {})
+    this.lines = []
     this.events = new Emitter()
   }
 
@@ -41,6 +42,7 @@ export default class DrawableCanvas extends Canvas {
     this.bindFuncs(['update', 'beginDraw', 'endDraw', 'draw'])
 
     this.resize([window.innerWidth, window.innerHeight])
+    raf.add(this.update)
 
     this.refs.base.addEventListener('mousedown', this.beginDraw, false)
     this.refs.base.addEventListener('mouseup', this.endDraw, false)
@@ -88,7 +90,6 @@ export default class DrawableCanvas extends Canvas {
     this.lines.push([])
     this.trimLines(this.opts.maxLines)
 
-    raf.add(this.update)
     this.events.emit('beginDraw')
   }
 
@@ -97,8 +98,6 @@ export default class DrawableCanvas extends Canvas {
     this.stopPropagation(e)
 
     this.isDrawing = false
-
-    raf.remove(this.update)
     this.events.emit('endDraw')
   }
 
