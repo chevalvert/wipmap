@@ -118,17 +118,17 @@ module.exports = function (server, opts) {
 
   function mock (job) {
     isIddle = false
-    server.broadcast('job-start', job)
+    server.broadcast('job-start', { job })
     Promise.all(
       job.buffer.map((cmd, index) => new Promise(resolve => setTimeout(() => {
         log.debug(`MOCK "${job.name}"`, cmd)
         server.broadcast('job-progress', { job, cmd, progress: { elapsed: index, total: job.buffer.length } })
         resolve()
-      }, 300 * index)))
+      }, 10 * index)))
     )
     .then(() => {
       isIddle = true
-      server.broadcast('job-end', job)
+      server.broadcast('job-end', { job })
     })
     .catch(err => log.error(err))
   }
