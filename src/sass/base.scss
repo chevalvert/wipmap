@@ -9,6 +9,8 @@ body {
   min-height: 100%;
 
   font-size: 2rem;
+  @media (max-width:500px) { font-size: 1.6rem; }
+
   line-height: 1.6em;
   margin: 0;
   padding: 0;

@@ -9,8 +9,13 @@
   .button-wrapper {
     z-index: 3;
     position: fixed;
+
     top: 5rem;
     right: 5rem;
+    @media (max-width:500px) {
+      top: 2rem;
+      right: 2rem;
+    }
 
     // Avoid conflict with button.is-shaking animation
     &.is-mounted {
@@ -23,16 +28,21 @@
     pointer-events: none;
     z-index: 2;
     position: fixed;
+
     bottom: 5rem;
     left: 5rem;
     right: 5rem;
+    @media (max-width:500px) {
+      bottom: 2rem;
+      left: 2rem;
+      right: 2rem;
+    }
 
     display: flex;
     justify-content: space-between;
 
-    .map-info {
-      display: inline-block;
-    }
+    .map-info { display: inline-block; }
+    .map-info:last-child { text-align: right; }
 
     #uid {
       font-weight: bold;

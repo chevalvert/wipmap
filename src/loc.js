@@ -17,7 +17,7 @@ locales.fr['error'] = 'erreur'
 locales.fr['error.noslot'] = 'plus de place disponible'
 
 locales.fr['ui.draw'] = 'dessiner'
-locales.fr['ui.generate'] = 'révéler un lieu'
+locales.fr['ui.generate'] = 'dessiner'
 locales.fr['ui.progress'] = 'objets'
 locales.fr['ui.random'] = 'aléatoire'
 locales.fr['ui.undo'] = '←'
