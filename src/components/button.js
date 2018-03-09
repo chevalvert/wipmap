@@ -18,7 +18,8 @@ export default class Button extends DomComponent {
     <button
     class='button'
     style='--color: ${this.color}; --box-color: ${lightness(this.color, -10)}'
-    onclick=${e => this.disabled ? this.shake() : this.onclick(e)}>
+    onclick=${e => this.disabled ? this.shake() : this.onclick(e)}
+    ontouchend=${e => this.disabled ? this.shake() : this.onclick(e)}>
       ${this.value}
     </button>`
   }
