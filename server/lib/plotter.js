@@ -59,7 +59,7 @@ module.exports = function (server, opts) {
       const job = plotter.Job('init')
 
       job.home()
-      if (signature.enable) job.text(signature.prefix + map.uid, 0, plotter.height - signature.fontSize, signature)
+      if (signature.enable) job.text(signature.prefix + map.uid, 0, plotter.height, signature)
       job.pen_up()
       job.move(plotter.width / 2, plotter.height / 2)
 
