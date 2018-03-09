@@ -45,7 +45,8 @@ if (args.plotter) {
 
   const plotter = require(path.join(__dirname, 'lib', 'plotter'))(server, {
     address: process.env.PLOTTER_COM_PORT,
-    mock: process.env.PLOTTER_MOCK
+    mock: process.env.PLOTTER_MOCK,
+    previewFile: process.env.PLOTTER_PREVIEW
   })
 
   app.getMap().then(plotter.init)

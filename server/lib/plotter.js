@@ -16,7 +16,8 @@ const defaultOpts = {
       down: 0
     }
   },
-  mock: false
+  mock: false,
+  previewFile: null
 }
 
 module.exports = function (server, opts) {
@@ -129,6 +130,7 @@ module.exports = function (server, opts) {
     .then(() => {
       isIddle = true
       server.broadcast('job-end', { job })
+      if (opts.previewFile) plotter.File().export(job, opts.previewFile)
     })
     .catch(err => log.error(err))
   }
