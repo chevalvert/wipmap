@@ -12,7 +12,8 @@ const findFirstAvailableAddress = require(path.join(__dirname, 'utils', 'find-fi
 
 const defaultOpts = {
   port: 8888,
-  public: path.join(process.cwd(), 'public')
+  public: path.join(process.cwd(), 'public'),
+  packs: null
 }
 
 module.exports = function WebServer (opts) {
@@ -22,6 +23,7 @@ module.exports = function WebServer (opts) {
   const router = express.Router()
 
   app.use(express.static(opts.public, { extensions: ['html'] }))
+  if (opts.packs) app.use('/packs', express.static(opts.packs))
   app.use(express.json())
   app.use(cors({ credentials: true, origin: true }))
   app.use('/api', router)

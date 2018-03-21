@@ -17,10 +17,12 @@ const minimistOpts = {
     'data',
     'log',
     'log-level',
-    'port'
+    'port',
+    'landmark-packs'
   ],
   alias: {
     'log-level': [],
+    'landmark-packs': [],
     config: ['c'],
     data: ['d'],
     fullscreen: ['f'],

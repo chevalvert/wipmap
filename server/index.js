@@ -14,7 +14,8 @@ const Server = require(path.join(__dirname, 'lib', 'server'))
 
 const server = Server({
   public: path.join(__dirname, '..', 'build'),
-  port: args.port
+  port: args.port,
+  packs: args['landmark-packs']
 })
 
 const app = require(path.join(__dirname, 'app'))(server, {

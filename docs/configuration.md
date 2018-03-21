@@ -1,148 +1,65 @@
-# wipmap/configuration
+# wipmap / docs / configuration
 
->For "live reload" capability run `node server` with the `-l, --live` flag:
->```sh
->$ node server --live --config=wipmap.config.json # enable live reloading of wipmap.config.json
->```
+The default configuration file for `wipmap` is [`wipmap.config.json`](../wipmap.config.json).  
 
-### [`wipmap.config.json`](../wipmap.config.json)
+You can specify your own config file with the `-c, --config` flag:
 
-<pre>
-{
-  "remotes": {
-    "max": 0,                # number of maximum simultaneous remote connections
-    "colors": [              # list of remote CSS valid colors
-      "rgb(255, 50, 70)",
-      "rgb(255, 90, 20)",
-      "rgb(255, 150, 40)",
-      "rgb(255, 225, 60)",
-      "rgb(80, 230, 130)",
-      "rgb(0, 120, 80)",
-      "rgb(0, 160, 180)",
-      "rgb(80, 130, 255)",
-      "rgb(20, 20, 180)",
-      "rgb(110, 230, 255)",
-      "rgb(150, 150, 255)",
-      "rgb(150, 60, 255)",
-      "rgb(110, 0, 120)",
-      "rgb(255, 100, 240)",
-      "rgb(255, 150, 155)"
-    ]
-  },
+```sh
+$ wipmap --config path/to/my/config.json
+```
 
-  "wipmap-generate": {       # wipmap-generate configuration
-    "width": 8,              # see <a href=https://github.com/chevalvert/wipmap-generate"">wipmap-generate module</a>
-    "height": 6,
-    "decimals": 3,
+Use the `-l, --live` flag to allow the server to re-read all config files (including external config files) on request:
 
-    "jitter": 0.4,
-    "distortion": 1,
-    "gradient": 0,
-    "poissonDensity": 0.3,
+```sh
+$ wipmap --live --config path/to/my/config.json
+```
+<sup>Note that in production, the `-l, --live` flag shouldn't be used, as it is far more efficient to request a cached config.</sup>
 
-    "probablities": {
-      "water": 0.01,
-      "forest": 0.02
-    },
+<br>
 
-    "biomesMap": [
-      ["TAIGA", "JUNGLE", "SWAMP"],
-      ["TUNDRA", "PLAINS", "PLAINS"],
-      ["TUNDRA", "PLAINS", "DESERT"]
-    ]
-  },
+## Reference
 
-  "gameover": {            
-    "landmarksLength": 100, # number of landmarks to reveal before reaching the gameover screen
-    "duration": 10          # duration of the gameover screen in seconds
-  },
+_You can find the default configuration in [`wipmap.config.json`](../wipmap.config.json)._
 
-  "fog": {
-    "enable": true,         # wether to enable or disable entirely the fog of war layer
-    "color": "white"        # CSS valid color of the fog
-  },
+### `remotes`
+- `max`: Number of maximum simultaneous remote connections. A value of `0` disables this limitation.
+- `colors`: Array of CSS valid remote colors.
 
-  "agent": {
-    "speed": 10,           # speed of the agent
-    "fov": 150,            # radius of the agent field of view
-    "inertia": {           # parameters of the agent <a href="../src/utils/inertia.js">inertia equation</a>
-      "interpolation": "linear",
-      "rigidity": 0.1,
-      "friction": 10
-    },
-    "forbidden": []        # list of biomes the agent can't move to
-  },
+---
+### `plotter`
+#### `signature`
+- `enable`: Enable or disable the signature function.
+- `prefix`: Arbitratry string appended before the map timestamp.
+- `fontSize`: Size of the signature in millimeters.
 
-  "spritesheets": {        # reference spritesheets assets
-    "blobs": { "src": "spritesheets/Biome-blobs-10px.png", "resolution": 10 },
-    "bush": { "src": "spritesheets/Biome-bush-20px.png", "resolution": 20 },
-    "dune": { "src": "spritesheets/Biome-dune-60px.png", "resolution": 60 },
-    "grass1": { "src": "spritesheets/Biome-grass1-10px.png", "resolution": 10 },
-    "grass2": { "src": "spritesheets/Biome-grass2-10px.png", "resolution": 10 },
-    "gravel": { "src": "spritesheets/Biome-gravel-10px.png", "resolution": 10 },
-    "hills": { "src": "spritesheets/Biome-hills-20px.png", "resolution": 20 },
-    "mountain": { "src": "spritesheets/Biome-mountain-60px.png", "resolution": 60 },
-    "pike": { "src": "spritesheets/Biome-pike-20px.png", "resolution": 20 },
-    "rock": { "src": "spritesheets/Biome-rock-20px.png", "resolution": 20 },
-    "sand": { "src": "spritesheets/Biome-sand-10px.png", "resolution": 10, "length": 5 },
-    "soil": { "src": "spritesheets/Biome-soil-10px.png", "resolution": 10 },
-    "tree": { "src": "spritesheets/Biome-tree-All-60px.png", "resolution": 60 },
-    "tree-forest": { "src": "spritesheets/Biome-tree-Forest-50px.png", "resolution": 50 },
-    "tree-jungle": { "src": "spritesheets/Biome-tree-Jungle-50px.png", "resolution": 50 },
-    "tree-plains": { "src": "spritesheets/Biome-tree-Plains-50px.png", "resolution": 50 },
-    "tree-taiga": { "src": "spritesheets/Biome-tree-Taiga-50px.png", "resolution": 50 },
+#### `move`
+- `maxLength`: Maximum length of the stroke used to move the pencil, in millimeters.
+- `scale`: Scale factor of the canvas. A value of `100` means that the canvas will be scaled to approximatively 100 millimeters.
+- `speed`: Speed setting for the plotter, from `0` to `1`. A value of `-1` disable this setting, allowing the plotter to fallback to the default non-linear speed.
 
-    "water1": { "src": "spritesheets/Biome-water1-20px.png", "resolution": 20 },
-    "water2": { "src": "spritesheets/Biome-water2-35px.png", "resolution": 35, "length": 2 },
-    "water3": { "src": "spritesheets/Biome-water3-40px.png", "resolution": 40 },
-    "water4": { "src": "spritesheets/Biome-water4-60px.png", "resolution": 60 },
-    "water5": { "src": "spritesheets/Biome-water5-60px.png", "resolution": 60, "length": 4 },
+#### `draw`
+- `maxLines`: Maximum length of lines allowed for a drawing. 
+- `maxLength`: Maximum length of all strokes of the drawing, in millimeters.
+- `scale`: Scale factor of the drawing. A value of `10` means that the drawing will be scaled to approximatively 10 millimeters.
+- `speed`: Speed setting for the plotter, from `0` to `1`. A value of `-1` disable this setting, allowing the plotter to fallback to the default non-linear speed.
 
-    "brush": { "src": "BRUSH-04-150px.png" },
+---
+### `wipmap-generate`
+See [`wipmap-generate`](https://github.com/chevalvert/wipmap-generate).
 
-    "desert-H": { "src": "spritesheets/Landmark-Desert-habitation-65px.png", "resolution": 65 },
-    "forest-H": { "src": "spritesheets/Landmark-Forest-habitation-65px.png", "resolution": 65 },
-    "jungle-H": { "src": "spritesheets/Landmark-Jungle-habitation-100px.png", "resolution": 100 },
-    "plains-H": { "src": "spritesheets/Landmark-Plains-habitation-65px.png", "resolution": 65 },
-    "swamp-H": { "src": "spritesheets/Landmark-Swamp-habitation-65px.png", "resolution": 65 },
-    "taiga-H": { "src": "spritesheets/Landmark-Taiga-habitation-100px.png", "resolution": 100 },
-    "tundra-H": { "src": "spritesheets/Landmark-Tundra-habitation-65px.png", "resolution": 65 },
+---
+### `gameover`
+- `landmarksLength`: Maximum number of landmarks to end a map.
+- `duration`: Duration of the gameover screen in seconds.
+---
+### `fog`
+- `enable`: Enable or disable the fog of war.
+- `color`: CSS valid color of the fog.
 
-    "desert-V": { "src": "spritesheets/Landmark-Desert-vegetation-90px.png", "resolution": 90 },
-    "forest-V": { "src": "spritesheets/Landmark-Forest-vegetation-45px.png", "resolution": 45 },
-    "jungle-V": { "src": "spritesheets/Landmark-Jungle-vegetation-110px.png", "resolution": 110 },
-    "plains-V": { "src": "spritesheets/Landmark-Plains-vegetation-45px.png", "resolution": 45 },
-    "swamp-V": { "src": "spritesheets/Landmark-Swamp-vegetation-45px.png", "resolution": 45 },
-    "taiga-V": { "src": "spritesheets/Landmark-Taiga-vegetation-45px.png", "resolution": 45 },
-    "tundra-V": { "src": "spritesheets/Landmark-Tundra-vegetation-45px.png", "resolution": 45 }
-  },
+---
+### `agent`
+- `speed`: Speed of the agent.
+- `fov`: Radius of the agent fov.
 
-  "biomes": {
-    "DESERT": [["sand", 1], ["dune", 0.01]],
-    "FOREST": [["soil", 0.01], ["tree-forest", 0.05]],
-    "JUNGLE": [["blobs",0.1], ["tree-jungle", 0.02]],
-    "PLAINS": [["grass2", 0.08], ["tree-plains", 0.003]],
-    "SWAMP": [["water1", 0.1], ["grass2", 0.02]],
-    "TAIGA": [["tree-taiga", 0.005], ["hills", 0.02], ["pike", 0.005]],
-    "TUNDRA": [["rock", 0.002], ["gravel", 0.04], ["bush", 0.002], ["mountain", 0.001]],
-    "WATER": [["water4", 1]]
-  },
-
-  "landmarks": {
-    "H": {
-      "biomes": ["DESERT", "FOREST", "JUNGLE", "PLAINS", "SWAMP", "TAIGA", "TUNDRA"],
-      "variables": [
-        ["small", "big"],
-        ["square", "round"]
-      ]
-    },
-    "V": {
-      "biomes": ["DESERT", "FOREST", "JUNGLE", "PLAINS", "SWAMP", "TAIGA", "TUNDRA"],
-      "variables": [
-        ["small", "big"],
-        ["leafy", "flowery"]
-      ]
-    }
-  }
-}
-</pre>
+#### `inertia`
+See [`utils/inertia.js`](../src/utils/inertia.js).

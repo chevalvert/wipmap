@@ -36,12 +36,14 @@ export default class LandmarkDrawer extends DomComponent {
   }
 
   getRandom (biome, landmarks) {
-    const categories = Object.keys(landmarks)
-    const category = categories[Math.floor(Math.random() * categories.length)]
+    const uids = Object.keys(landmarks)
+    const uid = uids[Math.floor(Math.random() * uids.length)]
     return {
+      uid,
       biome,
-      category,
-      variables: landmarks[category].variables.map(variable => {
+      // Regex allowing the use of optionnal articles matching `(de la )?végétation`
+      name: landmarks[uid].name.replace(/(\(|\)\?)/g, ''),
+      variables: landmarks[uid].variables.map(variable => {
         const index = Math.floor(Math.random() * variable.length)
         return { index, word: variable[index] }
       })
@@ -49,8 +51,10 @@ export default class LandmarkDrawer extends DomComponent {
   }
 
   getSprite (landmark) {
-    const name = `${landmark.biome.type.toLowerCase()}-${landmark.category}`
+    console.log(landmark)
+    const name = `landmark-${landmark.uid}-${landmark.biome.type.toLowerCase()}`
     const spritesheet = store.get(`spritesheet.` + name)
+
     return {
       name,
       spritesheet,
@@ -86,10 +90,10 @@ export default class LandmarkDrawer extends DomComponent {
       <div class='landmark-drawer-controls'>
         <div class='landmark-drawer-sentence' style='--word-color:${color}'>
           dessine${raw(' ')}
-          <strong>${L('landmark-drawer.' + this.landmark.category)}</strong>
-          <strong>${L('landmark-drawer.' + this.landmark.category + '.' + this.landmark.variables[0].word)}</strong>
+          <strong>${this.landmark.name}</strong>
+          <strong>${this.landmark.variables[0].word}</strong>
           et${raw(' ')}
-          <strong>${L('landmark-drawer.' + this.landmark.category + '.' + this.landmark.variables[1].word)}</strong>
+          <strong>${this.landmark.variables[1].word}</strong>
           dans${raw(' ')}
           <strong>${L('biome.' + this.landmark.biome.type)}</strong>
         </div>

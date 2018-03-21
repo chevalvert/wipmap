@@ -28,7 +28,7 @@ function loadSprites () {
       resolve()
     }
     spritesheet.onerror = function (err) { reject(err) }
-    spritesheet.src = opts.src
+    spritesheet.src = `http://${host.address}:${host.port}/${opts.src}`
   }))
 
   return Promise.all(spritesheets)

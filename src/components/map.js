@@ -79,8 +79,8 @@ export default class Map extends Canvas {
   updateBiomeSprites () {
     this.biomeSprites = []
     Object.entries(this.wipmap.points).forEach(([type, points]) => {
-      const sprites = store.get('config.biomes')[type]
-      if (!store.get('config.biomes')[type]) return
+      const sprites = store.get('config.textures')[type]
+      if (!store.get('config.textures')[type]) return
 
       points.forEach(point => {
         const [x, y] = toWorld(point)

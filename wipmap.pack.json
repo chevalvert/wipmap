@@ -1,0 +1,35 @@
+[
+  {
+    "name": "(une )?habitation",
+    "variables": [
+      ["petite", "grande"],
+      ["carrée", "ronde"]
+    ],
+    "spritesheets": [
+      { "biomes": ["DESERT"], "src": "spritesheets/landmark-desert-habitation-65px.png", "resolution": 65 },
+      { "biomes": ["FOREST"], "src": "spritesheets/landmark-forest-habitation-65px.png", "resolution": 65 },
+      { "biomes": ["JUNGLE"], "src": "spritesheets/landmark-jungle-habitation-100px.png", "resolution": 100 },
+      { "biomes": ["PLAINS"], "src": "spritesheets/landmark-plains-habitation-65px.png", "resolution": 65 },
+      { "biomes": ["SWAMP"], "src": "spritesheets/landmark-swamp-habitation-65px.png", "resolution": 65 },
+      { "biomes": ["TAIGA"], "src": "spritesheets/landmark-taiga-habitation-100px.png", "resolution": 100 },
+      { "biomes": ["TUNDRA"], "src": "spritesheets/landmark-tundra-habitation-65px.png", "resolution": 65 }
+    ]
+  },
+
+  {
+    "name": "(de la )?végétation",
+    "variables": [
+      ["petite", "grande"],
+      ["fleurie", "feuillue"]
+    ],
+    "spritesheets": [
+      { "biomes": ["DESERT"], "src": "spritesheets/landmark-desert-vegetation-90px.png", "resolution": 90 },
+      { "biomes": ["FOREST"], "src": "spritesheets/landmark-forest-vegetation-45px.png", "resolution": 45 },
+      { "biomes": ["JUNGLE"], "src": "spritesheets/landmark-jungle-vegetation-110px.png", "resolution": 110 },
+      { "biomes": ["PLAINS"], "src": "spritesheets/landmark-plains-vegetation-45px.png", "resolution": 45 },
+      { "biomes": ["SWAMP"], "src": "spritesheets/landmark-swamp-vegetation-45px.png", "resolution": 45 },
+      { "biomes": ["TAIGA"], "src": "spritesheets/landmark-taiga-vegetation-45px.png", "resolution": 45 },
+      { "biomes": ["TUNDRA"], "src": "spritesheets/landmark-tundra-vegetation-45px.png", "resolution": 45 }
+    ]
+  }
+]

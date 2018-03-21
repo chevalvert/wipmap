@@ -1,0 +1,40 @@
+{
+  "spritesheets": {
+    "brush": { "src": "brush-04-150px.png" },
+
+    "blobs": { "src": "spritesheets/biome-blobs-10px.png", "resolution": 10 },
+    "bush": { "src": "spritesheets/biome-bush-20px.png", "resolution": 20 },
+    "dune": { "src": "spritesheets/biome-dune-60px.png", "resolution": 60 },
+    "grass1": { "src": "spritesheets/biome-grass1-10px.png", "resolution": 10 },
+    "grass2": { "src": "spritesheets/biome-grass2-10px.png", "resolution": 10 },
+    "gravel": { "src": "spritesheets/biome-gravel-10px.png", "resolution": 10 },
+    "hills": { "src": "spritesheets/biome-hills-20px.png", "resolution": 20 },
+    "mountain": { "src": "spritesheets/biome-mountain-60px.png", "resolution": 60 },
+    "pike": { "src": "spritesheets/biome-pike-20px.png", "resolution": 20 },
+    "rock": { "src": "spritesheets/biome-rock-20px.png", "resolution": 20 },
+    "sand": { "src": "spritesheets/biome-sand-10px.png", "resolution": 10, "length": 5 },
+    "soil": { "src": "spritesheets/biome-soil-10px.png", "resolution": 10 },
+    "tree": { "src": "spritesheets/biome-tree-all-60px.png", "resolution": 60 },
+    "tree-forest": { "src": "spritesheets/biome-tree-forest-50px.png", "resolution": 50 },
+    "tree-jungle": { "src": "spritesheets/biome-tree-jungle-50px.png", "resolution": 50 },
+    "tree-plains": { "src": "spritesheets/biome-tree-plains-50px.png", "resolution": 50 },
+    "tree-taiga": { "src": "spritesheets/biome-tree-taiga-50px.png", "resolution": 50 },
+
+    "water1": { "src": "spritesheets/biome-water1-20px.png", "resolution": 20 },
+    "water2": { "src": "spritesheets/biome-water2-35px.png", "resolution": 35, "length": 2 },
+    "water3": { "src": "spritesheets/biome-water3-40px.png", "resolution": 40 },
+    "water4": { "src": "spritesheets/biome-water4-60px.png", "resolution": 60 },
+    "water5": { "src": "spritesheets/biome-water5-60px.png", "resolution": 60, "length": 4 }
+  },
+
+  "textures": {
+    "DESERT": [["sand", 1], ["dune", 0.01]],
+    "FOREST": [["soil", 0.01], ["tree-forest", 0.05]],
+    "JUNGLE": [["blobs",0.1], ["tree-jungle", 0.02]],
+    "PLAINS": [["grass2", 0.08], ["tree-plains", 0.003]],
+    "SWAMP": [["water1", 0.1], ["grass2", 0.02]],
+    "TAIGA": [["tree-taiga", 0.005], ["hills", 0.02], ["pike", 0.005]],
+    "TUNDRA": [["rock", 0.002], ["gravel", 0.04], ["bush", 0.002], ["mountain", 0.001]],
+    "WATER": [["water4", 1]]
+  }
+}

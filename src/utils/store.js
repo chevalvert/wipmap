@@ -6,6 +6,8 @@ const events = new Emitter()
 const NS = '__STORE.'
 const stored = {}
 
+window.store = stored
+
 export default {
   watch (k, cb) {
     events.on(NS + k, cb)

@@ -17,22 +17,27 @@ wipmap
 
 Usage:
   wipmap --open --live
-  wipmap -of --log=<path> --data=<path> --config<path>
-  wipmap --log-level=debug --config=<path>
+  wipmap -of --log=<PATH> --data=<PATH> --config=<PATH>
+  wipmap -l --data=<PATH> --config=<PATH> --landmark-packs=<PATH>
+  wipmap --plotter
   wipmap --help
   wipmap --version
 
-Options:
-  -c, --config            Run server with specified config file.
-  -d, --data              Specify data/ export directory.
+Flags:
   -l, --live              Enable hot reloading of config file.
   -o, --open              Open browser.
-  -p, --port=<PORT>       Run server on custom port (default is 8888).
   -f, --fullscreen        Open browser in kiosk mode.
+  --plotter               Run the server in plotter mode.
   -h, --help              Show this screen.
   -v, --version           Print the current version.
-  --log=<path>            Pipe stdout to the specified log file.
-  --log-level=<level>     Set the log level (default is 'info').
+
+Options:
+  -c, --config            Run the server with specified config file.
+  -d, --data=<PATH>       Specify data/ export directory.
+  -p, --port=<PORT>       Run server on custom port (default is 8888).
+  --landmark-packs=<PATH> Run the server with external landmarks packs.
+  --log=<PATH>            Pipe stdout to the specified log file.
+  --log-level=<LEVEL>     Set the log level (default is 'info').
 
 Log level:
   0, emergency            System is unusable.
@@ -51,7 +56,17 @@ See [`docs/configuration.md`](docs/configuration.md)
 
 <sup>For more details about map generation and configuration, see [`wipmap-generate`](https://github.com/chevalvert/wipmap-generate).</sup>
 
-## Multi-lang
+## External landmark packs
+
+See [`docs/landmark-packs.md`](docs/landmark-packs.md).
+
+<!-- 
+## Map texture
+
+See [`docs/texture.md`](docs/texture.md).
+-->
+
+## Multilang
 
 See [`src/loc.js`](src/loc.js)
 

@@ -68,7 +68,7 @@ $log-screen-sprite-animation-duration: 100;
     width: #{$log-screen-sprite-animation-size}px;
     height: #{$log-screen-sprite-animation-size}px;
 
-    background-image: url('/LOADING-SIMPLE-110px.png');
+    background-image: url('/loading-simple-110px.png');
     animation:
       log-screen-sprite-animation
       #{$log-screen-sprite-animation-duration * $log-screen-sprite-animation-length}ms
