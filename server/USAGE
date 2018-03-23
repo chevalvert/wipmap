@@ -15,6 +15,7 @@ Flags:
   --plotter               Run the server in plotter mode.
   -h, --help              Show this screen.
   -v, --version           Print the current version.
+  --no-default-pack       Run wipmap without loading default landmarks.
 
 Options:
   -c, --config            Run the server with specified config file.

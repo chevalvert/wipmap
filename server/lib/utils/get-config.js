@@ -23,7 +23,9 @@ function getConfig () {
       fs.readJsonSync(_DEFAULT_TEXPACK_)
     )
 
-    getLandmarkPacks(args['landmark-packs']).forEach(pack => {
+    getLandmarkPacks(args['landmark-packs'], {
+      useDefault: !(args['no-default-pack'] || true)
+    }).forEach(pack => {
       pack.landmarks.forEach((landmark, landmarkIndex) => {
         let biomes = []
         landmark.spritesheets.forEach(spritesheet => {

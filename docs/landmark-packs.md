@@ -8,10 +8,16 @@ You can add your own packs with the `--landmark-packs` option:
 $ wipmap --landmark-packs path/to/my/packs/
 ```
 
+To prevent `wipmap` from loading the default landmark pack, use the `--no-default-pack` flag:
+
+```sh
+$ wipmap --no-default-pack --landmark-packs path/to/my/packs/
+```
+
 Use the `-l, --live` flag to allow the server to re-read all config files (including external packs) on request:
 
 ```sh
-$ wipmap --live --config path/to/my/config.json
+$ wipmap --live --landmark-packs path/to/my/packs/
 ```
 <sup>Note that in production, the `-l, --live` flag shouldn't be used, as it is far more efficient to request a cached config.</sup>
 

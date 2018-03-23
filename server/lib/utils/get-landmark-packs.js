@@ -11,7 +11,9 @@ const defaultLandmarkPack = {
   landmarks: require(_DEFAULT_LANDMARK_PACK_)
 }
 
-module.exports = packsDirectory => {
+module.exports = (packsDirectory, { useDefault = true }) => {
+  if (!packsDirectory) return [defaultLandmarkPack]
+
   const packs = fs.readdirSync(packsDirectory)
   .map(name => ({
     name,
@@ -31,5 +33,7 @@ module.exports = packsDirectory => {
   })
   .filter(Boolean)
 
-  return [defaultLandmarkPack, ...packs]
+  return useDefault
+    ? [defaultLandmarkPack, ...packs]
+    : packs
 }

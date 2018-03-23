@@ -30,6 +30,7 @@ Flags:
   --plotter               Run the server in plotter mode.
   -h, --help              Show this screen.
   -v, --version           Print the current version.
+  --no-default-pack       Run wipmap without loading default landmarks.
 
 Options:
   -c, --config            Run the server with specified config file.
@@ -48,6 +49,7 @@ Log level:
   5, notice               A normal but significant condition.
   6, info                 A purely informational message.
   7, debug                Messages to debug an application.
+
 ```
 
 ## Configuration
